@@ -251,6 +251,177 @@
 		} );
 	}
 
+	/**
+	 * Abschnitte eines Inhaltstyps: nur zeigen, was zum gewählten Modus passt.
+	 */
+	function initTypePanels() {
+		document.querySelectorAll( '.lrm-typepanel' ).forEach( function ( panel ) {
+			var radios = panel.querySelectorAll( 'input[data-lrm-mode]' );
+
+			if ( ! radios.length ) {
+				return;
+			}
+
+			var apply = function () {
+				var mode = 'none';
+
+				radios.forEach( function ( radio ) {
+					if ( radio.checked ) {
+						mode = radio.getAttribute( 'data-lrm-mode' );
+					}
+				} );
+
+				panel.querySelectorAll( '.lrm-typeoptions' ).forEach( function ( block ) {
+					var forMode = block.getAttribute( 'data-lrm-for' );
+					var show = ( 'any' === forMode ) ? 'none' !== mode : forMode === mode;
+					block.classList.toggle( 'lrm-hidden', ! show );
+				} );
+			};
+
+			radios.forEach( function ( radio ) {
+				radio.addEventListener( 'change', apply );
+			} );
+
+			apply();
+
+			// Umschalten der Taxonomie blendet die passenden Begriffe ein.
+			var taxSelect = panel.querySelector( '[data-lrm-taxonomy]' );
+
+			if ( taxSelect ) {
+				var applyTax = function () {
+					panel.querySelectorAll( '[data-lrm-terms]' ).forEach( function ( group ) {
+						var active = group.getAttribute( 'data-lrm-terms' ) === taxSelect.value;
+						group.style.display = active ? '' : 'none';
+						group.querySelectorAll( 'input[type="checkbox"]' ).forEach( function ( input ) {
+							input.disabled = ! active;
+						} );
+					} );
+				};
+
+				taxSelect.addEventListener( 'change', applyTax );
+				applyTax();
+			}
+		} );
+	}
+
+	/**
+	 * Suche für große Bestände: Treffer anklicken, Auswahl als Marke behalten.
+	 */
+	function initItemPickers() {
+		var settings = window.lrmAdmin || {};
+
+		document.querySelectorAll( '[data-lrm-picker]' ).forEach( function ( picker ) {
+			var input = picker.querySelector( '[data-lrm-search]' );
+			var results = picker.querySelector( '[data-lrm-results]' );
+			var chosen = picker.querySelector( '[data-lrm-chosen]' );
+			var postType = picker.getAttribute( 'data-lrm-picker' );
+			var field = picker.getAttribute( 'data-lrm-field' );
+			var timer = null;
+
+			if ( ! input || ! results || ! chosen ) {
+				return;
+			}
+
+			/**
+			 * Eine Marke für die Auswahl anlegen.
+			 *
+			 * @param {number} id    Inhalts-ID.
+			 * @param {string} title Titel.
+			 */
+			function addItem( id, title ) {
+				if ( chosen.querySelector( 'input[value="' + id + '"]' ) ) {
+					return;
+				}
+
+				var tag = document.createElement( 'span' );
+				tag.className = 'lrm-tag lrm-tag--allow lrm-tag--removable';
+				tag.textContent = title + ' ';
+
+				var button = document.createElement( 'button' );
+				button.type = 'button';
+				button.className = 'lrm-tag__remove';
+				button.setAttribute( 'aria-label', settings.i18n && settings.i18n.remove ? settings.i18n.remove : 'Entfernen' );
+				button.innerHTML = '&times;';
+				tag.appendChild( button );
+
+				var hidden = document.createElement( 'input' );
+				hidden.type = 'hidden';
+				hidden.name = field + '[items][]';
+				hidden.value = id;
+				tag.appendChild( hidden );
+
+				chosen.appendChild( tag );
+			}
+
+			chosen.addEventListener( 'click', function ( event ) {
+				if ( event.target.classList.contains( 'lrm-tag__remove' ) ) {
+					event.target.closest( '.lrm-tag' ).remove();
+				}
+			} );
+
+			results.addEventListener( 'click', function ( event ) {
+				var hit = event.target.closest( '[data-lrm-hit]' );
+
+				if ( ! hit ) {
+					return;
+				}
+
+				event.preventDefault();
+				addItem( hit.getAttribute( 'data-id' ), hit.textContent.trim() );
+				results.innerHTML = '';
+				input.value = '';
+			} );
+
+			input.addEventListener( 'keydown', function ( event ) {
+				if ( 'Enter' === event.key ) {
+					event.preventDefault();
+				}
+			} );
+
+			input.addEventListener( 'input', function () {
+				window.clearTimeout( timer );
+
+				var term = input.value.trim();
+
+				if ( term.length < 2 ) {
+					results.innerHTML = '';
+					return;
+				}
+
+				timer = window.setTimeout( function () {
+					var url = settings.ajaxUrl + '?action=lrm_search_items&nonce=' + encodeURIComponent( settings.searchNonce ) +
+						'&post_type=' + encodeURIComponent( postType ) + '&term=' + encodeURIComponent( term );
+
+					window.fetch( url, { credentials: 'same-origin' } )
+						.then( function ( response ) {
+							return response.json();
+						} )
+						.then( function ( payload ) {
+							results.innerHTML = '';
+
+							if ( ! payload || ! payload.success || ! payload.data.length ) {
+								results.textContent = settings.i18n && settings.i18n.noHits ? settings.i18n.noHits : '';
+								return;
+							}
+
+							payload.data.forEach( function ( item ) {
+								var hit = document.createElement( 'button' );
+								hit.type = 'button';
+								hit.className = 'lrm-searchhit';
+								hit.setAttribute( 'data-lrm-hit', '1' );
+								hit.setAttribute( 'data-id', item.id );
+								hit.textContent = item.title;
+								results.appendChild( hit );
+							} );
+						} )
+						.catch( function () {
+							results.innerHTML = '';
+						} );
+				}, 250 );
+			} );
+		} );
+	}
+
 	document.addEventListener( 'DOMContentLoaded', function () {
 		var box = document.getElementById( 'lrm-box' );
 
@@ -260,5 +431,7 @@
 
 		initFilters();
 		initMenuList();
+		initTypePanels();
+		initItemPickers();
 	} );
 }() );

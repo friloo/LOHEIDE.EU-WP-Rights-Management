@@ -31,9 +31,12 @@ auch gegenüber dem Umgehungsrecht der Administratoren.
 * Dateischutz für den Uploads-Ordner: genereller Block ohne Anmeldung,
   Ausnahmeliste (Whitelist) und Regeln je Datei. Website-Logo und -Icon werden
   automatisch freigegeben, damit die Anmeldeseite vollständig bleibt.
-* Backend-Rechte je Rolle: nur zugewiesene Seiten bearbeiten, Beiträge auf
-  bestimmte Kategorien begrenzen, Menüpunkte ein- und ausblenden. Die nötigen
-  Fähigkeiten vergibt das Plugin selbst und nimmt sie beim Abschalten zurück.
+* Backend-Rechte je Rolle und Inhaltstyp: nichts, alles, einzeln zugewiesene
+  Inhalte oder alles innerhalb bestimmter Kategorien. Gilt auch für eigene
+  Inhaltstypen anderer Plugins. Dazu Rechte zum Anlegen und Löschen.
+* Menüpunkte und Dashboard-Bereiche je Rolle ein- und ausblenden, auf Wunsch
+  auch später hinzukommende Menüs. Die nötigen Fähigkeiten vergibt das Plugin
+  selbst und nimmt sie beim Abschalten zurück.
 * Shortcodes für einzelne Abschnitte.
 
 == Installation ==
@@ -64,6 +67,18 @@ Ja. Unter „Rechte → Backend“ werden einer Rolle die Seiten zugewiesen, die
 bearbeiten darf. Alle anderen Seiten erscheinen nicht in der Liste und sind auch
 über die Adresszeile gesperrt. Dasselbe gilt für Beiträge über die Kategorie.
 
+= Funktioniert das auch mit den Inhalten anderer Plugins? =
+
+Ja, sofern das Plugin einen regulären Inhaltstyp registriert. Dieser erscheint
+in der Rollenkonfiguration und lässt sich genauso zuweisen wie Seiten und
+Beiträge – etwa „alle Inhalte“ für die Gruppe, die ein Fachverfahren betreut.
+
+= Kann ich ein Plugin-Menü einer einzelnen Rolle vorbehalten? =
+
+Ja. Blenden Sie den Menüpunkt bei allen anderen Rollen aus. Administratoren
+sehen ihn weiterhin. Mit der Option „Später hinzukommende Menüpunkte ausblenden“
+bleiben auch neu installierte Plugins zunächst verborgen.
+
 = Schützt das Plugin auch Dateien im Uploads-Ordner? =
 
 Ja, sobald der Dateischutz eingeschaltet ist. Das Plugin schreibt dann eine
@@ -85,7 +100,7 @@ Ausnahmen lassen sich als Muster hinterlegen, etwa „briefkopf.png“ oder
 4. Bereich „Zugriffsrechte“ im Editor.
 5. Hinweis im Frontend.
 6. Dateischutz mit Ausnahmeliste und Statusprüfung.
-7. Backend-Rechte je Rolle.
+7. Backend-Rechte je Rolle und Inhaltstyp.
 
 == Changelog ==
 

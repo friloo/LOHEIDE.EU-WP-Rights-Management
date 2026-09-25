@@ -8,7 +8,7 @@
 [![WordPress](https://img.shields.io/badge/WordPress-5.8%2B-21759b)](#)
 [![PHP](https://img.shields.io/badge/PHP-7.4%2B-777bb4)](#)
 [![Lizenz](https://img.shields.io/badge/Lizenz-GPL--2.0--or--later-green)](#lizenz)
-[![Tests](https://img.shields.io/badge/Logiktests-102%20Pr%C3%BCfungen-16a34a)](#tests)
+[![Tests](https://img.shields.io/badge/Logiktests-124%20Pr%C3%BCfungen-16a34a)](#tests)
 
 Entwickelt von [LOHEIDE.EU](https://loheide.eu)
 
@@ -52,6 +52,7 @@ Dieses Plugin dreht die Logik um: **Eine gesperrte Rolle beendet die Prüfung so
 - [Shortcodes](#shortcodes)
 - [Für Entwickler](#für-entwickler)
 - [Tests](#tests)
+- [Entwicklung](#entwicklung)
 - [Betrieb](#betrieb)
 - [Grenzen](#grenzen)
 - [Mögliche Erweiterungen](#mögliche-erweiterungen)
@@ -73,7 +74,8 @@ Dieses Plugin dreht die Logik um: **Eine gesperrte Rolle beendet die Prüfung so
 | 📊 **Übersicht & Simulation** | Kennzahlen, Rollenmatrix und „Was sieht Rolle X?“ auf Knopfdruck |
 | ⚡ **Sammelbearbeitung** | Rechte für viele Seiten in einem Schritt setzen |
 | 📁 **Dateischutz** | Genereller Block für den Uploads-Ordner, Whitelist und Regeln je Datei |
-| 🛠️ **Backend-Rechte** | Rollen nur bestimmte Seiten und Kategorien bearbeiten lassen, Menüpunkte je Rolle |
+| 🛠️ **Backend-Rechte** | Je Inhaltstyp festlegen, was eine Rolle bearbeiten darf – Seiten, Beiträge und eigene Typen anderer Plugins |
+| 🧹 **Aufgeräumtes Backend** | Menüpunkte und Dashboard-Bereiche je Rolle ein- und ausblenden |
 | 🧱 **Shortcodes** | Einzelne Abschnitte innerhalb einer Seite schützen |
 
 ---
@@ -304,16 +306,34 @@ Der Anlass aus der Praxis: Die Mitarbeitervertretung pflegt ihre eigene Seite un
 schreibt Berichte in ihrer eigenen Kategorie. Sie soll genau das tun können –
 und sonst nichts sehen.
 
-**Rechte → Backend**, dort die Rolle wählen:
+**Rechte → Backend**, dort die Rolle wählen.
+
+### Je Inhaltstyp entscheiden
+
+Für jeden Inhaltstyp – Seiten, Beiträge und die eigenen Typen anderer Plugins –
+gibt es vier Möglichkeiten:
+
+| Modus | Bedeutung |
+| --- | --- |
+| **Nicht freigegeben** | Die Rolle sieht diesen Inhaltstyp gar nicht. |
+| **Alle Inhalte** | Alles von diesem Typ darf bearbeitet werden – passend für ein Fachverfahren, das eine Gruppe vollständig betreut. |
+| **Nur ausgewählte** | Einzeln zugewiesene Inhalte. Bei großen Beständen wird gesucht statt gelistet. |
+| **Nach Kategorie** | Alles innerhalb der gewählten Begriffe einer Taxonomie. Andere Begriffe stehen nicht zur Auswahl – auch nicht im Block-Editor. |
+
+<img src="docs/images/15-backend-inhaltstyp.png" alt="Auswahl des Modus für einen Inhaltstyp" width="820">
+
+Dazu je Inhaltstyp: **neue Inhalte anlegen**, **löschen** und **nur selbst
+verfasste Inhalte**. Ein neuer Beitrag erhält die freigegebene Kategorie
+automatisch; das lässt sich abschalten.
+
+### Menüs, Dashboard und Mediathek
 
 | Einstellung | Wirkung |
 | --- | --- |
-| **Bearbeitbare Seiten** | Nur diese Seiten darf die Rolle öffnen. Alle anderen erscheinen nicht einmal in der Liste. |
-| **Kategorien** | Die Rolle sieht und bearbeitet ausschließlich Beiträge dieser Kategorien. Andere Kategorien stehen nicht zur Auswahl – auch nicht im Block-Editor. |
-| **Neue Inhalte anlegen** | Getrennt für Seiten und Beiträge. Ein neuer Beitrag erhält automatisch die freigegebene Kategorie. |
-| **Nur selbst verfasste Beiträge** | Schränkt zusätzlich auf die eigenen Beiträge ein. |
+| **Sichtbare Menüpunkte** | Je Rolle ein- und ausschaltbar, einschließlich der Menüs anderer Plugins. Damit lässt sich ein Plugin einer Rolle vorbehalten. |
+| **Später hinzukommende Menüpunkte ausblenden** | Wird ein neues Plugin installiert, bleibt dessen Menü verborgen, bis es freigegeben wird. Menüs freigegebener Inhaltstypen bleiben davon unberührt. |
+| **Bereiche auf dem Dashboard** | „Auf einen Blick", „Aktivität" und alles andere lässt sich je Rolle abschalten. |
 | **Mediathek** | Zugriff ganz abschalten oder auf die eigenen Uploads begrenzen. |
-| **Sichtbare Menüpunkte** | Je Rolle festlegen, welche Menüs und Untermenüs erscheinen – auch die anderer Plugins. |
 
 <img src="docs/images/12-backend-rollen.png" alt="Rollenübersicht der Backend-Rechte" width="900">
 
@@ -326,26 +346,30 @@ Seitenliste steht genau eine Seite:
 
 ### Zwei Beispiele
 
-**Mitarbeitervertretung:** Seite „Mitarbeitervertretung" zugewiesen, Kategorie
-„Mitarbeitervertretung" freigegeben, neue Beiträge erlaubt, neue Seiten nicht.
-Menüs auf Dashboard, Beiträge, Medien und Seiten reduziert.
+**Mitarbeitervertretung:** Seite „Mitarbeitervertretung" einzeln zugewiesen,
+Beiträge auf die Kategorie „Mitarbeitervertretung" begrenzt, neue Beiträge und
+das Löschen eigener Berichte erlaubt, neue Seiten nicht. Menü auf Dashboard,
+Beiträge, Medien und Seiten reduziert, Dashboard-Bereiche abgeschaltet.
 
-**Künstlerteam:** Keine Seiten, keine Kategorien – dafür bleibt als einziger
-inhaltlicher Menüpunkt das Verleihsystem stehen. Alle anderen Rollen sehen es
-nicht, Administratoren schon.
+**Künstlerteam:** Keine Seiten, keine Beiträge – dafür **alle**
+Verleihgegenstände, der eigene Inhaltstyp des Verleih-Plugins. Als einziger
+inhaltlicher Menüpunkt bleibt das Verleihsystem stehen. Alle anderen Rollen
+sehen es nicht, Administratoren schon.
 
 ### Fähigkeiten werden mitgeführt
 
-Damit eine Rolle eine fremde Seite bearbeiten kann, braucht sie in WordPress
-zunächst das allgemeine Recht dazu (`edit_others_pages`). Das Plugin vergibt
-solche Fähigkeiten automatisch und begrenzt sie anschließend auf die
-zugewiesenen Inhalte. Endet die Beschränkung, nimmt es sie wieder zurück –
-Fähigkeiten, welche die Rolle schon vorher besaß, bleiben unangetastet.
+Damit eine Rolle einen fremden Inhalt bearbeiten kann, braucht sie in WordPress
+zunächst das allgemeine Recht dazu (`edit_others_pages`, bei eigenen Typen etwa
+`edit_others_verleihs`). Das Plugin liest die passenden Fähigkeiten aus der
+Registrierung des Inhaltstyps, vergibt sie automatisch und begrenzt sie
+anschließend auf die zugewiesenen Inhalte. Endet die Beschränkung, nimmt es sie
+wieder zurück – Fähigkeiten, welche die Rolle schon vorher besaß, bleiben
+unangetastet. Verwaltungsrechte wie `manage_options` werden nie vergeben.
 
 > [!IMPORTANT]
 > Aus demselben Grund entzieht das Plugin diese Fähigkeiten auch beim
 > **Deaktivieren**. Andernfalls dürfte die Rolle ohne die begrenzende Prüfung
-> plötzlich alle Seiten bearbeiten.
+> plötzlich alle Inhalte bearbeiten.
 
 ### Nicht nur ausgeblendet, sondern gesperrt
 
@@ -353,12 +377,12 @@ Ein verborgener Menüpunkt allein ist kein Schutz. Jede Beschränkung wird
 zusätzlich serverseitig geprüft:
 
 ```text
-Bearbeiten eines Inhalts  → map_meta_cap gibt „do_not_allow" zurück
+Bearbeiten und Löschen    → map_meta_cap gibt „do_not_allow" zurück
 Listen im Backend         → auf die zugewiesenen Inhalte eingegrenzt
 Aufruf per Adresszeile    → gesperrte Verwaltungsseiten antworten mit 403
-REST-Schnittstelle        → Bearbeiten fremder Inhalte wird abgewiesen,
-                            Neuanlage ohne Erlaubnis ebenso,
-                            Kategorien werden beim Speichern zurückgesetzt
+REST-Schnittstelle        → Bearbeiten und Löschen fremder Inhalte wird
+                            abgewiesen, Neuanlage ohne Erlaubnis ebenso,
+                            Begriffe werden beim Speichern zurückgesetzt
 ```
 
 Der letzte Punkt ist wichtig: Der Block-Editor arbeitet über die REST-Schnittstelle.
@@ -366,9 +390,9 @@ Prüfungen, die nur im Verwaltungsbereich greifen, wären dort wirkungslos.
 
 ### Mehrere Rollen
 
-Hat jemand zwei beschränkte Rollen, werden deren Freigaben zusammengeführt.
-Sobald **eine** Rolle beschränkt ist, gilt die Beschränkung – nur das
-Umgehungsrecht (im Regelfall Administratoren) hebt sie auf.
+Hat jemand zwei beschränkte Rollen, werden deren Freigaben zusammengeführt –
+die weiter gefasste gewinnt. Sobald **eine** Rolle beschränkt ist, gilt die
+Beschränkung; nur das Umgehungsrecht (im Regelfall Administratoren) hebt sie auf.
 
 ---
 
@@ -435,7 +459,9 @@ Auch hier schlägt `deny` jedes `roles`.
 | `lrm_branding_attachments` | Filter | Anhänge, die immer öffentlich bleiben |
 | `lrm_file_denied` | Action | Eine Datei wurde abgewiesen |
 | `lrm_backend_user_config` | Filter | Wirksame Backend-Regel eines Benutzers |
-| `lrm_backend_allowed_pages` | Filter | Bearbeitbare Seiten einer Rolle |
+| `lrm_backend_post_types` | Filter | Zuweisbare Inhaltstypen |
+| `lrm_backend_allowed_items` | Filter | Einzeln zugewiesene Inhalte eines Typs |
+| `lrm_backend_protected_menus` | Filter | Menüs, die trotz Beschränkung sichtbar bleiben |
 | `lrm_backend_can_edit_post` | Filter | Entscheidung für weitere Inhaltstypen |
 | `lrm_backend_required_caps` | Filter | Fähigkeiten, die eine beschränkte Rolle erhält |
 | `lrm_loaded` | Action | Plugin vollständig geladen |
@@ -505,9 +531,39 @@ Ausnahmeliste, Vererbung vom übergeordneten Inhalt auf den Anhang und die Abweh
 von Pfadmanipulationen – darunter `../`, URL-kodierte Varianten, Nullbytes und
 der Versuch, `wp-config.php` oder eine PHP-Datei ausliefern zu lassen.
 
-Der dritte Satz (32 Prüfungen) deckt die Backend-Rechte ab: Zuweisung von Seiten,
-Kategoriebindung bei Beiträgen, Mediathek, das Vergeben und Zurücknehmen der
-Fähigkeiten sowie die Zusammenführung mehrerer Rollen.
+Der dritte Satz (54 Prüfungen) deckt die Backend-Rechte ab: alle vier Modi je
+Inhaltstyp, eigene Inhaltstypen, Löschrechte, Mediathek, das Vergeben und
+Zurücknehmen der Fähigkeiten, die Übernahme älterer Regeln und die
+Zusammenführung mehrerer Rollen.
+
+Die Prüfungen laufen zusätzlich bei jedem Push über GitHub Actions, gegen
+PHP 7.4, 8.1 und 8.3.
+
+---
+
+## Entwicklung
+
+### Demo-Umgebung aufbauen
+
+Damit sich Änderungen an einer realistischen Installation prüfen lassen, legt
+ein Skript Rollen, Kategorien, Seiten, Beiträge, Benutzer und die passenden
+Regeln an:
+
+```bash
+php tools/demo-setup.php /pfad/zur/wordpress-installation
+```
+
+Angelegt werden unter anderem die Rollen *Mitarbeitervertretung*, *Künstlerteam*,
+*Kunde* und *Gesperrtes Konto*, eine geschützte Intranet-Struktur sowie die
+Demo-Benutzer `demo.mav`, `demo.kunst`, `demo.kunde`, `demo.partner` und
+`demo.gesperrt` – alle mit dem Passwort `demo1234`. Das Skript lässt sich
+mehrfach ausführen und verwendet Vorhandenes weiter.
+
+### Automatische Prüfung
+
+`.github/workflows/tests.yml` führt bei jedem Push die Syntaxprüfung aller
+PHP-Dateien, die drei Testsätze (gegen PHP 7.4, 8.1 und 8.3) und die
+Syntaxprüfung des JavaScripts aus.
 
 ---
 
@@ -537,10 +593,7 @@ Damit klar ist, was das Plugin **nicht** leistet:
 
 ## Mögliche Erweiterungen
 
-Was das Plugin heute nicht kann, aber sinnvoll ergänzen würde – nach Nutzen
-geordnet, damit die Reihenfolge nachvollziehbar bleibt.
-
-### Naheliegend
+Was das Plugin heute nicht kann, aber sinnvoll ergänzen würde.
 
 | Funktion | Warum | Umfang |
 | --- | --- | --- |
@@ -548,22 +601,15 @@ geordnet, damit die Reihenfolge nachvollziehbar bleibt.
 | **Rechte für einzelne Personen** | „Diese eine Person darf ausnahmsweise rein" – heute braucht es dafür eine eigene Rolle. Eine gesperrte Person würde wie eine gesperrte Rolle gegen jede Freigabe gewinnen. | mittel |
 | **Zugriffsprotokoll** | Wer hat wann worauf zugegriffen, wer wurde abgewiesen – mit Aufbewahrungsfrist und automatischem Löschen. Bei vertraulichen Unterlagen kaum verzichtbar. | größer |
 | **Zugangslinks für Externe** | Zeitlich begrenzter Link auf Seite oder Datei, ohne Benutzerkonto. Praktisch, um ein Angebot zu verschicken, das nach sieben Tagen verfällt. | mittel |
-
-### Handwerk
-
-| Funktion | Warum | Umfang |
-| --- | --- | --- |
-| **Tests bei jedem Push** | Die Prüfungen laufen bisher nur auf Zuruf. Als GitHub Action sichern sie jede Änderung ab. | sehr klein |
 | **Export und Import der Regeln** | Konfiguration sichern und auf eine andere Installation übertragen, etwa von Test auf Produktiv. | klein |
 | **Übersetzbarkeit** | Die Texte sind deutsch hinterlegt; für ein mehrsprachiges Backend fehlt eine `.pot`-Datei. | klein |
-| **Skalierung** | Die Übersicht wertet bis zu 500 Regeln aus. Für größere Bestände wäre ein Zwischenspeicher nötig. | mittel |
 
 ### Nur bei Bedarf
 
 - **Sitemaps von SEO-Plugins** (Yoast, Rank Math) – bisher wird nur die WordPress-eigene Sitemap gefiltert.
 - **Gezielte Ausnahmen für Caching-Plugins** – die üblichen Signale werden gesetzt, eine direkte Anbindung wäre genauer.
 - **Übersetzungs-Plugins** (WPML, Polylang) – Übersetzungen erben die Regel des Originals nicht automatisch.
-- **WooCommerce** – Produkte und Downloads nach Rolle freigeben.
+- **Kommentare** – beschränkte Rollen können bisher keine Kommentare moderieren.
 
 ### Bewusst nicht vorgesehen
 
@@ -585,7 +631,9 @@ _lrm_message  _lrm_hide
 ```
 
 Die Backend-Rechte liegen in der Option `lrm_backend`, je Rolle mit den
-zugewiesenen Seiten, Kategorien, Menüpunkten und den vergebenen Fähigkeiten.
+Regeln pro Inhaltstyp, den Menüpunkten, den Dashboard-Bereichen und den
+vergebenen Fähigkeiten. `lrm_dashboard_widgets` merkt sich die vorhandenen
+Dashboard-Bereiche für die Auswahl.
 
 Global: Option `lrm_settings`. Bei aktivem Dateischutz zusätzlich ein
 Regelblock in `wp-content/uploads/.htaccess`, der beim Abschalten und beim

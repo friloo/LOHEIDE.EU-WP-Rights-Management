@@ -184,7 +184,11 @@ class LRM_Admin {
 				'lrm-admin',
 				'lrmAdmin',
 				array(
+					'ajaxUrl'     => admin_url( 'admin-ajax.php' ),
+					'searchNonce' => wp_create_nonce( 'lrm_search_items' ),
 					'i18n' => array(
+						'remove'      => __( 'Entfernen', 'loheide-rights-management' ),
+						'noHits'      => __( 'Keine Treffer.', 'loheide-rights-management' ),
 						'conflict'    => __( 'Folgende Rollen sind freigegeben und gleichzeitig gesperrt: %s. Für diese Rollen gilt die Sperre.', 'loheide-rights-management' ),
 						'sumPublic'   => __( 'Ergebnis: Der Inhalt ist öffentlich sichtbar.', 'loheide-rights-management' ),
 						'sumLoggedIn' => __( 'Ergebnis: Sichtbar für alle angemeldeten Benutzer.', 'loheide-rights-management' ),

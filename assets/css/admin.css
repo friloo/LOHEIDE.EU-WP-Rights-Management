@@ -1438,3 +1438,80 @@
 .lrm-check.is-muted {
 	opacity: .45;
 }
+
+/* ------------------------------------------- Inhaltstypen und Auswahlfelder */
+
+.lrm-typepanel .lrm-typeoptions {
+	margin-top: 16px;
+}
+
+.lrm-typeoptions--always {
+	padding-top: 14px;
+	border-top: 1px solid #f0f0f1;
+}
+
+.lrm-searchbox--block {
+	display: flex;
+	margin-bottom: 10px;
+}
+
+.lrm-searchbox--block input[type="search"] {
+	width: 100%;
+}
+
+.lrm-itempicker .lrm-searchresults {
+	display: flex;
+	flex-direction: column;
+	gap: 2px;
+	max-height: 220px;
+	overflow-y: auto;
+	margin-bottom: 10px;
+}
+
+.lrm-searchhit {
+	text-align: left;
+	padding: 7px 11px;
+	border: 1px solid var(--lrm-border);
+	border-radius: 6px;
+	background: var(--lrm-surface);
+	cursor: pointer;
+	font-size: 13px;
+}
+
+.lrm-searchhit:hover {
+	background: var(--lrm-accent-soft);
+	border-color: var(--lrm-accent);
+}
+
+.lrm-chosen {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 6px;
+	min-height: 24px;
+}
+
+.lrm-tag--removable {
+	display: inline-flex;
+	align-items: center;
+	gap: 6px;
+	padding-right: 4px;
+}
+
+.lrm-tag__remove {
+	border: 0;
+	background: transparent;
+	cursor: pointer;
+	font-size: 15px;
+	line-height: 1;
+	padding: 0 3px;
+	color: inherit;
+	opacity: .65;
+}
+
+.lrm-tag__remove:hover {
+	opacity: 1;
+}
+
+.lrm-termgroup {
+	margin-top: 10px;
+}

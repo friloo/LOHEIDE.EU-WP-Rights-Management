@@ -429,3 +429,101 @@ function get_user_by( $field, $value ) {
 
 $GLOBALS['lrm_test_roles']            = array();
 $GLOBALS['lrm_test_post_categories']  = array();
+
+// ------------------------------------------ Attrappen für Inhaltstypen.
+
+function get_post_type_object( $post_type ) {
+	$caps = array(
+		'edit_posts'             => 'edit_' . $post_type . 's',
+		'edit_published_posts'   => 'edit_published_' . $post_type . 's',
+		'edit_others_posts'      => 'edit_others_' . $post_type . 's',
+		'publish_posts'          => 'publish_' . $post_type . 's',
+		'delete_posts'           => 'delete_' . $post_type . 's',
+		'delete_published_posts' => 'delete_published_' . $post_type . 's',
+		'delete_others_posts'    => 'delete_others_' . $post_type . 's',
+		'read_private_posts'     => 'read_private_' . $post_type . 's',
+	);
+
+	// Seiten und Beiträge nutzen die bekannten Bezeichnungen.
+	if ( 'page' === $post_type ) {
+		$caps = array(
+			'edit_posts'             => 'edit_pages',
+			'edit_published_posts'   => 'edit_published_pages',
+			'edit_others_posts'      => 'edit_others_pages',
+			'publish_posts'          => 'publish_pages',
+			'delete_posts'           => 'delete_pages',
+			'delete_published_posts' => 'delete_published_pages',
+			'delete_others_posts'    => 'delete_others_pages',
+			'read_private_posts'     => 'read_private_pages',
+		);
+	} elseif ( 'post' === $post_type ) {
+		$caps = array(
+			'edit_posts'             => 'edit_posts',
+			'edit_published_posts'   => 'edit_published_posts',
+			'edit_others_posts'      => 'edit_others_posts',
+			'publish_posts'          => 'publish_posts',
+			'delete_posts'           => 'delete_posts',
+			'delete_published_posts' => 'delete_published_posts',
+			'delete_others_posts'    => 'delete_others_posts',
+			'read_private_posts'     => 'read_private_posts',
+		);
+	}
+
+	return (object) array(
+		'name'   => $post_type,
+		'cap'    => (object) $caps,
+		'labels' => (object) array(
+			'name'          => ucfirst( $post_type ),
+			'singular_name' => ucfirst( $post_type ),
+		),
+	);
+}
+
+function wp_get_object_terms( $post_id, $taxonomy, $args = array() ) {
+	$taxonomy = is_array( $taxonomy ) ? reset( $taxonomy ) : $taxonomy;
+
+	if ( isset( $GLOBALS['lrm_test_object_terms'][ $post_id ][ $taxonomy ] ) ) {
+		return $GLOBALS['lrm_test_object_terms'][ $post_id ][ $taxonomy ];
+	}
+
+	// Rückfall auf die Kategorien aus dem Beitragstest.
+	if ( 'category' === $taxonomy && isset( $GLOBALS['lrm_test_post_categories'][ $post_id ] ) ) {
+		return $GLOBALS['lrm_test_post_categories'][ $post_id ];
+	}
+
+	return array();
+}
+
+function get_object_taxonomies( $post_type, $output = 'names' ) {
+	return array();
+}
+
+function is_wp_error( $thing ) {
+	return $thing instanceof WP_Error;
+}
+
+/**
+ * Fehlerobjekt-Attrappe.
+ */
+class WP_Error {
+
+	/**
+	 * Fehlercode.
+	 *
+	 * @var string
+	 */
+	public $code = '';
+
+	/**
+	 * Konstruktor.
+	 *
+	 * @param string $code    Code.
+	 * @param string $message Meldung.
+	 * @param array  $data    Daten.
+	 */
+	public function __construct( $code = '', $message = '', $data = array() ) {
+		$this->code = $code;
+	}
+}
+
+$GLOBALS['lrm_test_object_terms'] = array();

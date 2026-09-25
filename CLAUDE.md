@@ -25,6 +25,20 @@ Administratoren. Die Reihenfolge in `LRM_Access::evaluate()` ist verbindlich.
 3. **Syntax prüfen:** `for f in $(find . -name '*.php' -not -path './.git/*'); do php -l "$f"; done`
 4. **In den Hauptbranch mergen** und beide Branches pushen.
 
+Die GitHub Action `.github/workflows/tests.yml` führt dasselbe bei jedem Push
+gegen PHP 7.4, 8.1 und 8.3 aus.
+
+## Änderungen an einer echten Installation prüfen
+
+```bash
+php tools/demo-setup.php /pfad/zur/wordpress-installation
+```
+
+Legt Rollen, Seiten, Kategorien, Beiträge, Benutzer und Regeln an (Passwort
+aller Demo-Benutzer: `demo1234`). Danach als Administrator anmelden und unter
+„Rechte“ prüfen; für die Sicht einer beschränkten Rolle mit `demo.mav` oder
+`demo.kunst` anmelden.
+
 ## Konventionen
 
 - **Sprache:** Oberfläche, Kommentare und Commit-Nachrichten auf Deutsch.
@@ -37,7 +51,9 @@ Administratoren. Die Reihenfolge in `LRM_Access::evaluate()` ist verbindlich.
 - **Backend-Rechte:** Verborgene Menüpunkte sind kein Schutz. Jede Beschränkung
   muss zusätzlich serverseitig greifen – über `map_meta_cap`, gefilterte Listen,
   eine Sperre beim Direktaufruf und die REST-Schnittstelle. Der Block-Editor
-  arbeitet über REST, wo `is_admin()` nicht greift.
+  arbeitet über REST, wo `is_admin()` nicht greift. Menüs freigegebener
+  Inhaltstypen dürfen nie automatisch verborgen werden: WordPress sperrt
+  Seiten, die in keinem Menü stehen.
 - **Branding:** Der Hinweis „Entwickelt von LOHEIDE.EU“ erscheint im Kopf und
   Fuß der Plugin-Seiten, im Editor-Bereich, in der Plugin-Liste und in der
   Werkzeugleiste. Im Frontend ist er abschaltbar.
@@ -59,6 +75,7 @@ auf höchstens 1500 Pixel Breite zu verkleinern.
 | `includes/class-lrm-backend.php` | Datenmodell der Backend-Rechte |
 | `includes/class-lrm-backend-guard.php` | Durchsetzung im Verwaltungsbereich |
 | `includes/class-lrm-backend-admin.php` | Oberfläche der Backend-Rechte |
+| `tools/demo-setup.php` | Baut eine Demo-Umgebung zum Prüfen auf |
 | `includes/class-lrm-frontend.php` | Durchsetzung im Frontend |
 | `includes/class-lrm-metabox.php` | Bereich im Editor, Sammelbearbeitung |
 | `includes/class-lrm-admin.php` | Verwaltungsseiten |

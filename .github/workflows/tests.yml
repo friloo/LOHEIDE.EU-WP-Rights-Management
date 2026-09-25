@@ -1,0 +1,58 @@
+name: Tests
+
+on:
+  push:
+    branches: ['**']
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  tests:
+    name: PHP ${{ matrix.php }}
+    runs-on: ubuntu-latest
+
+    strategy:
+      fail-fast: false
+      matrix:
+        php: ['7.4', '8.1', '8.3']
+
+    steps:
+      - name: Quelltext holen
+        uses: actions/checkout@v4
+
+      - name: PHP einrichten
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php }}
+          coverage: none
+
+      - name: Syntax aller PHP-Dateien prüfen
+        run: |
+          set -e
+          find . -name '*.php' -not -path './.git/*' -print0 \
+            | xargs -0 -n1 -P4 php -l
+
+      - name: Zugriffslogik
+        run: php tests/test-access.php
+
+      - name: Dateischutz
+        run: php tests/test-media.php
+
+      - name: Backend-Rechte
+        run: php tests/test-backend.php
+
+  javascript:
+    name: JavaScript
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Quelltext holen
+        uses: actions/checkout@v4
+
+      - name: Node einrichten
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Syntax prüfen
+        run: node --check assets/js/admin.js

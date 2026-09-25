@@ -1,0 +1,164 @@
+/**
+ * LOHEIDE Rechteverwaltung – Hinweis im Frontend.
+ *
+ * Die Farben erben so weit wie möglich vom Theme, damit die Box sich in helle
+ * und dunkle Layouts einfügt. Der Akzent lässt sich über --lrm-gate-accent
+ * überschreiben.
+ */
+
+.lrm-gate {
+	--lrm-gate-accent: #3858e9;
+	--lrm-gate-line: rgba(127, 127, 127, .28);
+	--lrm-gate-tint: rgba(127, 127, 127, .07);
+
+	box-sizing: border-box;
+	max-width: 620px;
+	margin: 2.5rem auto;
+	padding: 2.25rem 2rem;
+	border: 1px solid var(--lrm-gate-line);
+	border-radius: 14px;
+	background: var(--lrm-gate-tint);
+	text-align: center;
+	color: inherit;
+}
+
+.lrm-gate__icon {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	width: 56px;
+	height: 56px;
+	margin-bottom: 1rem;
+	border-radius: 50%;
+	border: 1px solid var(--lrm-gate-line);
+	color: var(--lrm-gate-accent);
+}
+
+.lrm-gate__title {
+	margin: 0 0 .6rem;
+	font-size: 1.4rem;
+	line-height: 1.25;
+	color: inherit;
+}
+
+.lrm-gate__text {
+	margin: 0 auto 1.25rem;
+	max-width: 46ch;
+	line-height: 1.65;
+	opacity: .85;
+}
+
+.lrm-gate__text p:last-child {
+	margin-bottom: 0;
+}
+
+.lrm-gate__hint {
+	margin: 0;
+	font-size: .9rem;
+	opacity: .7;
+}
+
+.lrm-gate__actions {
+	margin: 0;
+}
+
+.lrm-gate__button {
+	display: inline-block;
+	padding: .7rem 1.5rem;
+	border-radius: 8px;
+	background: var(--lrm-gate-accent);
+	color: #fff;
+	text-decoration: none;
+	font-weight: 600;
+	transition: filter .15s ease;
+}
+
+.lrm-gate__button:hover,
+.lrm-gate__button:focus {
+	filter: brightness(.9);
+	color: #fff;
+}
+
+/* ------------------------------------------------------- Anmeldeformular */
+
+.lrm-gate__form {
+	max-width: 330px;
+	margin: 0 auto;
+	text-align: left;
+}
+
+.lrm-gate__form label {
+	display: block;
+	margin-bottom: .25rem;
+	font-size: .875rem;
+	font-weight: 600;
+}
+
+.lrm-gate__form input[type="text"],
+.lrm-gate__form input[type="password"] {
+	box-sizing: border-box;
+	width: 100%;
+	padding: .55rem .7rem;
+	margin-bottom: .75rem;
+	border: 1px solid var(--lrm-gate-line);
+	border-radius: 7px;
+	background: transparent;
+	color: inherit;
+	font-size: 1rem;
+}
+
+.lrm-gate__form input[type="text"]:focus,
+.lrm-gate__form input[type="password"]:focus {
+	border-color: var(--lrm-gate-accent);
+	outline: 2px solid var(--lrm-gate-accent);
+	outline-offset: 1px;
+}
+
+.lrm-gate__form .login-remember {
+	font-size: .875rem;
+	font-weight: 400;
+}
+
+.lrm-gate__form input[type="submit"] {
+	width: 100%;
+	padding: .7rem 1.2rem;
+	margin-top: .5rem;
+	border: 0;
+	border-radius: 8px;
+	background: var(--lrm-gate-accent);
+	color: #fff;
+	font-size: 1rem;
+	font-weight: 600;
+	cursor: pointer;
+}
+
+.lrm-gate__form input[type="submit"]:hover {
+	filter: brightness(.9);
+}
+
+/* ------------------------------------------------- Hinweis für Redaktionen */
+
+.lrm-gate__debug {
+	margin: 1.25rem 0 0;
+	padding-top: 1rem;
+	border-top: 1px dashed var(--lrm-gate-line);
+	font-size: .8rem;
+	opacity: .7;
+	text-align: left;
+}
+
+/* ---------------------------------------------------- Shortcode-Ersatztext */
+
+.lrm-inline-notice {
+	padding: .75rem 1rem;
+	border-left: 3px solid #3858e9;
+	background: rgba(127, 127, 127, .07);
+	font-size: .9rem;
+}
+
+@media (max-width: 480px) {
+	.lrm-gate {
+		padding: 1.75rem 1.25rem;
+		margin: 1.5rem auto;
+	}
+}

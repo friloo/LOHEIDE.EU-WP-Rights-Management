@@ -1,0 +1,14 @@
+# Abhängigkeiten
+/vendor/
+/node_modules/
+
+# Build und Pakete
+*.zip
+/build/
+
+# Systemdateien
+.DS_Store
+Thumbs.db
+
+# Übersetzungen (kompiliert)
+*.mo

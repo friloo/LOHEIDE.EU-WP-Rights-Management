@@ -51,6 +51,8 @@ class LRM_Settings {
 			'inherit_default'   => 1,
 			'show_toolbar'      => 1,
 			'show_login_form'   => 1,
+			'show_credit'       => 1,
+			'metabox_context'   => 'side',
 		);
 	}
 
@@ -155,12 +157,16 @@ class LRM_Settings {
 		$action                 = isset( $input['denied_action'] ) ? sanitize_key( $input['denied_action'] ) : 'message';
 		$clean['denied_action'] = in_array( $action, array( 'message', 'login', '404', 'redirect' ), true ) ? $action : 'message';
 
+		// Position der Metabox im Editor.
+		$context                  = isset( $input['metabox_context'] ) ? sanitize_key( $input['metabox_context'] ) : 'side';
+		$clean['metabox_context'] = in_array( $context, array( 'side', 'normal' ), true ) ? $context : 'side';
+
 		$clean['denied_title']   = isset( $input['denied_title'] ) ? sanitize_text_field( $input['denied_title'] ) : $defaults['denied_title'];
 		$clean['denied_message'] = isset( $input['denied_message'] ) ? wp_kses_post( $input['denied_message'] ) : $defaults['denied_message'];
 		$clean['redirect_url']   = isset( $input['redirect_url'] ) ? esc_url_raw( trim( $input['redirect_url'] ) ) : '';
 		$clean['login_url']      = isset( $input['login_url'] ) ? esc_url_raw( trim( $input['login_url'] ) ) : '';
 
-		foreach ( array( 'hide_from_menus', 'hide_from_queries', 'protect_rest', 'protect_feeds', 'close_comments', 'admin_bypass', 'inherit_default', 'show_toolbar', 'show_login_form' ) as $flag ) {
+		foreach ( array( 'hide_from_menus', 'hide_from_queries', 'protect_rest', 'protect_feeds', 'close_comments', 'admin_bypass', 'inherit_default', 'show_toolbar', 'show_login_form', 'show_credit' ) as $flag ) {
 			$clean[ $flag ] = empty( $input[ $flag ] ) ? 0 : 1;
 		}
 

@@ -287,7 +287,7 @@ class LRM_Access {
 		switch ( $check['reason'] ) {
 			case 'denied_role':
 				/* translators: %s: Liste der Rollennamen. */
-				return sprintf( __( 'Zugriff gesperrt über die Rolle: %s', 'loheide-rights-management' ), $roles );
+				return sprintf( __( 'Gesperrt über die Rolle: %s', 'loheide-rights-management' ), $roles );
 			case 'role_not_allowed':
 				return __( 'Die Rolle des Benutzers ist nicht freigegeben.', 'loheide-rights-management' );
 			case 'login_required':

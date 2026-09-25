@@ -1,12 +1,12 @@
 <?php
 /**
- * Plugin Name:       LOHEIDE Rechteverwaltung
+ * Plugin Name:       LOHEIDE.EU WP Rights Management
  * Plugin URI:        https://loheide.eu
- * Description:       Seitenbasierte Zugriffsrechte für WordPress: komplette Seiten nach Login und WordPress-Rollen freigeben oder sperren. Gesperrte Rollen haben immer Vorrang.
+ * Description:       Seitenbasierte Zugriffsrechte für WordPress: komplette Seiten nach Login und WordPress-Rollen freigeben oder sperren. Gesperrte Rollen haben immer Vorrang. Entwickelt von LOHEIDE.EU.
  * Version:           1.0.0
  * Requires at least: 5.8
  * Requires PHP:      7.4
- * Author:            loheide.eu
+ * Author:            LOHEIDE.EU
  * Author URI:        https://loheide.eu
  * License:           GPL-2.0-or-later
  * License URI:       https://www.gnu.org/licenses/gpl-2.0.html
@@ -23,6 +23,9 @@ define( 'LRM_FILE', __FILE__ );
 define( 'LRM_DIR', plugin_dir_path( __FILE__ ) );
 define( 'LRM_URL', plugin_dir_url( __FILE__ ) );
 define( 'LRM_BASENAME', plugin_basename( __FILE__ ) );
+define( 'LRM_NAME', 'LOHEIDE.EU WP Rights Management' );
+define( 'LRM_VENDOR', 'LOHEIDE.EU' );
+define( 'LRM_VENDOR_URL', 'https://loheide.eu' );
 
 require_once LRM_DIR . 'includes/class-lrm-roles.php';
 require_once LRM_DIR . 'includes/class-lrm-rule.php';

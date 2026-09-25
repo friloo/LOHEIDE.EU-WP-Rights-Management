@@ -33,6 +33,12 @@ class LRM_Frontend {
 		add_filter( 'get_pages', array( $this, 'filter_pages' ), 10, 2 );
 		add_action( 'pre_get_posts', array( $this, 'filter_queries' ) );
 
+		// Block-Themes: der Navigations-Block läuft nicht über wp_nav_menu_objects.
+		add_filter( 'render_block', array( $this, 'filter_navigation_block' ), 10, 2 );
+
+		// Gesperrte Inhalte gehören nicht in die XML-Sitemap.
+		add_filter( 'wp_sitemaps_posts_query_args', array( $this, 'filter_sitemap_query' ), 10, 2 );
+
 		add_filter( 'comments_open', array( $this, 'filter_comments_open' ), 10, 2 );
 		add_filter( 'the_content_feed', array( $this, 'filter_feed_content' ), 10, 2 );
 		add_filter( 'the_excerpt_rss', array( $this, 'filter_feed_excerpt' ) );
@@ -73,7 +79,7 @@ class LRM_Frontend {
 		 */
 		$action = apply_filters( 'lrm_denied_action', $action, $check, $post );
 
-		nocache_headers();
+		$this->prevent_caching();
 
 		switch ( $action ) {
 			case 'login':
@@ -181,6 +187,7 @@ class LRM_Frontend {
 		}
 
 		$this->enqueue_styles();
+		$this->prevent_caching();
 
 		return $this->render_notice( $check, $post );
 	}
@@ -468,6 +475,21 @@ class LRM_Frontend {
 			)
 		);
 
+		$bar->add_node(
+			array(
+				'id'     => 'lrm-status-vendor',
+				'parent' => 'lrm-status',
+				'title'  => esc_html(
+					sprintf(
+						/* translators: %s: Name des Herstellers. */
+						__( 'Entwickelt von %s', 'loheide-rights-management' ),
+						LRM_VENDOR
+					)
+				),
+				'href'   => LRM_VENDOR_URL,
+			)
+		);
+
 		if ( $rule->inherited ) {
 			$bar->add_node(
 				array(
@@ -483,6 +505,98 @@ class LRM_Frontend {
 					'href'   => (string) get_edit_post_link( $rule->source_id ),
 				)
 			);
+		}
+	}
+
+	/**
+	 * Einträge des Navigations-Blocks entfernen (Block-Themes).
+	 *
+	 * @param string $content Gerenderter Block.
+	 * @param array  $block   Blockdaten.
+	 * @return string
+	 */
+	public function filter_navigation_block( $content, $block ) {
+		if ( is_admin() || empty( $block['blockName'] ) ) {
+			return $content;
+		}
+
+		$supported = array( 'core/navigation-link', 'core/navigation-submenu', 'core/page-list-item' );
+
+		if ( ! in_array( $block['blockName'], $supported, true ) ) {
+			return $content;
+		}
+
+		$attrs = isset( $block['attrs'] ) ? $block['attrs'] : array();
+		$kind  = isset( $attrs['kind'] ) ? $attrs['kind'] : '';
+
+		if ( 'core/page-list-item' !== $block['blockName'] && 'post-type' !== $kind ) {
+			return $content;
+		}
+
+		$post_id = isset( $attrs['id'] ) ? (int) $attrs['id'] : 0;
+
+		if ( ! $post_id || ! LRM_Access::is_supported( $post_id ) || LRM_Access::can_view( $post_id ) ) {
+			return $content;
+		}
+
+		$rule = LRM_Access::get_effective_rule( $post_id );
+
+		return $rule->should_hide() ? '' : $content;
+	}
+
+	/**
+	 * Gesperrte Inhalte aus der XML-Sitemap entfernen.
+	 *
+	 * @param array  $args      Abfrageargumente.
+	 * @param string $post_type Inhaltstyp.
+	 * @return array
+	 */
+	public function filter_sitemap_query( $args, $post_type ) {
+		if ( ! in_array( $post_type, LRM_Settings::protected_post_types(), true ) ) {
+			return $args;
+		}
+
+		// Die Sitemap wird ohne Anmeldung ausgeliefert: als Gast prüfen.
+		$ruled   = LRM_Access::get_ruled_post_ids();
+		$exclude = array();
+
+		foreach ( $ruled as $post_id ) {
+			$check = LRM_Access::evaluate( $post_id, array( LRM_Roles::GUEST ), false, false );
+
+			if ( empty( $check['allowed'] ) ) {
+				$exclude[] = $post_id;
+			}
+		}
+
+		if ( empty( $exclude ) ) {
+			return $args;
+		}
+
+		$existing             = isset( $args['post__not_in'] ) ? (array) $args['post__not_in'] : array();
+		$args['post__not_in'] = array_values( array_unique( array_merge( $existing, $exclude ) ) );
+
+		return $args;
+	}
+
+	/**
+	 * Zwischenspeicherung gesperrter Seiten verhindern.
+	 *
+	 * Ohne diesen Schritt könnte ein Seiten-Cache den Hinweis an alle Besucher
+	 * ausliefern – oder umgekehrt den geschützten Inhalt.
+	 */
+	protected function prevent_caching() {
+		nocache_headers();
+
+		if ( ! defined( 'DONOTCACHEPAGE' ) ) {
+			define( 'DONOTCACHEPAGE', true );
+		}
+
+		if ( ! defined( 'DONOTCACHEOBJECT' ) ) {
+			define( 'DONOTCACHEOBJECT', true );
+		}
+
+		if ( ! defined( 'DONOTCACHEDB' ) ) {
+			define( 'DONOTCACHEDB', true );
 		}
 	}
 
@@ -558,6 +672,16 @@ class LRM_Frontend {
 
 		if ( current_user_can( LRM_Roles::CAP_MANAGE ) ) {
 			$html .= '<p class="lrm-gate__debug"><strong>' . esc_html__( 'Hinweis für Redaktionen:', 'loheide-rights-management' ) . '</strong> ' . esc_html( LRM_Access::reason_text( $check ) ) . ' ' . esc_html( $rule->describe() ) . '</p>';
+		}
+
+		if ( LRM_Settings::get( 'show_credit' ) ) {
+			$html .= '<p class="lrm-gate__credit">' . esc_html(
+				sprintf(
+					/* translators: %s: Name des Herstellers. */
+					__( 'Zugriffsschutz von %s', 'loheide-rights-management' ),
+					LRM_VENDOR
+				)
+			) . '</p>';
 		}
 
 		$html .= '</div>';

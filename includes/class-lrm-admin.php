@@ -39,7 +39,7 @@ class LRM_Admin {
 		$cap = LRM_Roles::CAP_MANAGE;
 
 		add_menu_page(
-			__( 'Rechteverwaltung', 'loheide-rights-management' ),
+			LRM_NAME,
 			__( 'Rechte', 'loheide-rights-management' ),
 			$cap,
 			self::PAGE,
@@ -89,7 +89,65 @@ class LRM_Admin {
 			esc_html__( 'Einstellungen', 'loheide-rights-management' )
 		);
 
+		$links[] = sprintf(
+			'<a href="%1$s" target="_blank" rel="noopener">%2$s</a>',
+			esc_url( LRM_VENDOR_URL ),
+			esc_html(
+				sprintf(
+					/* translators: %s: Name des Herstellers. */
+					__( 'Entwickelt von %s', 'loheide-rights-management' ),
+					LRM_VENDOR
+				)
+			)
+		);
+
 		return $links;
+	}
+
+	/**
+	 * Einheitlicher Entwicklerhinweis.
+	 *
+	 * @param bool $linked Mit Verweis auf die Herstellerseite.
+	 * @return string HTML.
+	 */
+	public static function credit( $linked = true ) {
+		$text = sprintf(
+			/* translators: %s: Name des Herstellers. */
+			__( 'Entwickelt von %s', 'loheide-rights-management' ),
+			LRM_VENDOR
+		);
+
+		if ( ! $linked ) {
+			return esc_html( $text );
+		}
+
+		return sprintf(
+			'<a href="%1$s" target="_blank" rel="noopener">%2$s</a>',
+			esc_url( LRM_VENDOR_URL ),
+			esc_html( $text )
+		);
+	}
+
+	/**
+	 * Fußzeile der Plugin-Seiten.
+	 */
+	public static function render_footer() {
+		?>
+		<div class="lrm-credit">
+			<span class="lrm-credit__mark">LOHEIDE<span>.EU</span></span>
+			<span class="lrm-credit__text">
+				<?php
+				printf(
+					/* translators: 1: Plugin-Name, 2: Version. */
+					esc_html__( '%1$s · Version %2$s', 'loheide-rights-management' ),
+					esc_html( LRM_NAME ),
+					esc_html( LRM_VERSION )
+				);
+				?>
+			</span>
+			<span class="lrm-credit__link"><?php echo self::credit(); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?></span>
+		</div>
+		<?php
 	}
 
 	/**
@@ -155,10 +213,21 @@ class LRM_Admin {
 			<div class="lrm-header__brand">
 				<span class="lrm-header__logo dashicons dashicons-lock"></span>
 				<div>
-					<h1><?php esc_html_e( 'Rechteverwaltung', 'loheide-rights-management' ); ?></h1>
+					<h1><?php echo esc_html( LRM_NAME ); ?></h1>
 					<p><?php esc_html_e( 'Seiten nach Anmeldung und WordPress-Rollen freigeben oder sperren.', 'loheide-rights-management' ); ?></p>
 				</div>
-				<span class="lrm-header__version">v<?php echo esc_html( LRM_VERSION ); ?></span>
+				<span class="lrm-header__meta">
+					<span class="lrm-header__version">v<?php echo esc_html( LRM_VERSION ); ?></span>
+					<a class="lrm-header__vendor" href="<?php echo esc_url( LRM_VENDOR_URL ); ?>" target="_blank" rel="noopener">
+						<?php
+						printf(
+							/* translators: %s: Name des Herstellers. */
+							esc_html__( 'Entwickelt von %s', 'loheide-rights-management' ),
+							esc_html( LRM_VENDOR )
+						);
+						?>
+					</a>
+				</span>
 			</div>
 			<nav class="lrm-tabs">
 				<?php foreach ( $tabs as $slug => $tab ) : ?>
@@ -408,6 +477,7 @@ class LRM_Admin {
 					<li><strong><?php esc_html_e( 'Vererbung', 'loheide-rights-management' ); ?></strong> – <?php esc_html_e( 'Unterseiten übernehmen die Regel der nächstgelegenen übergeordneten Seite. Sperren aus der gesamten Kette bleiben bestehen.', 'loheide-rights-management' ); ?></li>
 				</ol>
 			</div>
+			<?php self::render_footer(); ?>
 		</div>
 		<?php
 	}
@@ -574,6 +644,7 @@ class LRM_Admin {
 					</table>
 				<?php endif; ?>
 			</div>
+			<?php self::render_footer(); ?>
 		</div>
 		<?php
 	}
@@ -606,6 +677,34 @@ class LRM_Admin {
 								<label class="lrm-chip lrm-chip--allow">
 									<input type="checkbox" name="<?php echo esc_attr( $option ); ?>[post_types][]" value="<?php echo esc_attr( $slug ); ?>" <?php checked( in_array( $slug, (array) $settings['post_types'], true ) ); ?> />
 									<span class="lrm-chip__label"><?php echo esc_html( $label ); ?></span>
+								</label>
+							<?php endforeach; ?>
+						</div>
+					</div>
+				</div>
+
+				<div class="lrm-panel">
+					<div class="lrm-panel__head">
+						<h2><?php esc_html_e( 'Position im Editor', 'loheide-rights-management' ); ?></h2>
+						<p class="lrm-muted"><?php esc_html_e( 'Wo der Bereich „Zugriffsrechte“ beim Bearbeiten erscheint.', 'loheide-rights-management' ); ?></p>
+					</div>
+					<div class="lrm-panel__body">
+						<div class="lrm-modes lrm-modes--compact">
+							<?php
+							$contexts = array(
+								'side'   => array( 'dashicons-align-pull-right', __( 'Seitenleiste', 'loheide-rights-management' ), __( 'Sofort sichtbar – auch im Block-Editor. Empfohlen.', 'loheide-rights-management' ) ),
+								'normal' => array( 'dashicons-align-wide', __( 'Unter dem Inhalt', 'loheide-rights-management' ), __( 'Breites Layout mit zwei Rollenspalten. Im Block-Editor muss die untere Leiste aufgezogen werden.', 'loheide-rights-management' ) ),
+							);
+
+							foreach ( $contexts as $value => $data ) :
+								?>
+								<label class="lrm-mode">
+									<input type="radio" name="<?php echo esc_attr( $option ); ?>[metabox_context]" value="<?php echo esc_attr( $value ); ?>" <?php checked( $settings['metabox_context'], $value ); ?> />
+									<span class="lrm-mode__inner">
+										<span class="dashicons <?php echo esc_attr( $data[0] ); ?>"></span>
+										<span class="lrm-mode__title"><?php echo esc_html( $data[1] ); ?></span>
+										<span class="lrm-mode__desc"><?php echo esc_html( $data[2] ); ?></span>
+									</span>
 								</label>
 							<?php endforeach; ?>
 						</div>
@@ -677,6 +776,14 @@ class LRM_Admin {
 							'inherit_default'   => array( __( 'Vererbung standardmäßig aktiv', 'loheide-rights-management' ), __( 'Neue Inhalte übernehmen die Regeln übergeordneter Seiten.', 'loheide-rights-management' ) ),
 							'show_toolbar'      => array( __( 'Status in der Werkzeugleiste anzeigen', 'loheide-rights-management' ), __( 'Zeigt Redaktionen im Frontend, welche Regel gerade greift.', 'loheide-rights-management' ) ),
 							'show_login_form'   => array( __( 'Anmeldeformular im Hinweis anzeigen', 'loheide-rights-management' ), __( 'Nicht angemeldete Besucher können sich direkt auf der Seite anmelden.', 'loheide-rights-management' ) ),
+							'show_credit'       => array(
+								sprintf(
+									/* translators: %s: Name des Herstellers. */
+									__( 'Hinweis „Zugriffsschutz von %s“ im Frontend anzeigen', 'loheide-rights-management' ),
+									LRM_VENDOR
+								),
+								__( 'Erscheint als dezente Zeile unter dem Hinweistext auf gesperrten Seiten.', 'loheide-rights-management' ),
+							),
 						);
 
 						foreach ( $toggles as $key => $data ) :
@@ -707,6 +814,7 @@ class LRM_Admin {
 					<?php submit_button( __( 'Einstellungen speichern', 'loheide-rights-management' ), 'primary', 'submit', false ); ?>
 				</p>
 			</form>
+			<?php self::render_footer(); ?>
 		</div>
 		<?php
 	}

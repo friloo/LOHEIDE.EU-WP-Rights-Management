@@ -42,12 +42,17 @@ class LRM_Metabox {
 			return;
 		}
 
+		// Im Block-Editor klappt WordPress den unteren Metabox-Bereich auf eine
+		// schmale Leiste zusammen. In der Seitenleiste ist der Bereich sofort
+		// sichtbar, deshalb ist das die Voreinstellung.
+		$context = 'normal' === LRM_Settings::get( 'metabox_context' ) ? 'normal' : 'side';
+
 		add_meta_box(
 			'lrm-permissions',
-			__( 'Zugriffsrechte', 'loheide-rights-management' ),
+			__( 'Zugriffsrechte', 'loheide-rights-management' ) . ' · ' . LRM_VENDOR,
 			array( $this, 'render' ),
 			$post_type,
-			'normal',
+			$context,
 			'high'
 		);
 	}
@@ -74,7 +79,7 @@ class LRM_Metabox {
 
 		wp_nonce_field( 'lrm_save_meta', self::NONCE );
 		?>
-		<div class="lrm-box" id="lrm-box">
+		<div class="lrm-box lrm-box--<?php echo esc_attr( 'normal' === LRM_Settings::get( 'metabox_context' ) ? 'wide' : 'compact' ); ?>" id="lrm-box">
 			<div class="lrm-box__head">
 				<label class="lrm-switch">
 					<input type="checkbox" name="lrm[enabled]" value="1" id="lrm-enabled" <?php checked( $rule->enabled ); ?> />
@@ -98,6 +103,29 @@ class LRM_Metabox {
 								esc_html__( 'Von „%1$s“ wird übernommen: %2$s', 'loheide-rights-management' ),
 								esc_html( get_the_title( $effective->source_id ) ),
 								esc_html( $effective->describe() )
+							);
+							?>
+						</p>
+					</div>
+				</div>
+			<?php endif; ?>
+
+			<?php
+			// Sperren übergeordneter Seiten gelten zusätzlich und sind hier nicht abwählbar.
+			$inherited_denied = array_values( array_diff( $effective->denied, $rule->denied ) );
+
+			if ( ! empty( $inherited_denied ) ) :
+				?>
+				<div class="lrm-notice lrm-notice--deny">
+					<span class="dashicons dashicons-dismiss"></span>
+					<div>
+						<strong><?php esc_html_e( 'Zusätzliche Sperren aus übergeordneten Seiten', 'loheide-rights-management' ); ?></strong>
+						<p>
+							<?php
+							printf(
+								/* translators: %s: Liste der Rollennamen. */
+								esc_html__( 'Für diese Rollen bleibt der Zugriff gesperrt, unabhängig von der Auswahl unten: %s', 'loheide-rights-management' ),
+								esc_html( implode( ', ', LRM_Roles::labels( $inherited_denied ) ) )
 							);
 							?>
 						</p>
@@ -195,8 +223,8 @@ class LRM_Metabox {
 					<p class="lrm-summary" id="lrm-summary"></p>
 				</div>
 
-				<div class="lrm-section">
-					<h4 class="lrm-section__title"><?php esc_html_e( '3. Verhalten bei fehlendem Zugriff', 'loheide-rights-management' ); ?></h4>
+				<details class="lrm-section lrm-section--foldable">
+					<summary class="lrm-section__title"><?php esc_html_e( '3. Verhalten bei fehlendem Zugriff', 'loheide-rights-management' ); ?></summary>
 					<div class="lrm-fields">
 						<p class="lrm-field">
 							<label for="lrm-action"><?php esc_html_e( 'Reaktion', 'loheide-rights-management' ); ?></label>
@@ -232,8 +260,10 @@ class LRM_Metabox {
 					</div>
 				</div>
 
-				<div class="lrm-section">
-					<h4 class="lrm-section__title"><?php esc_html_e( '4. Weitere Optionen', 'loheide-rights-management' ); ?></h4>
+				</details>
+
+				<details class="lrm-section lrm-section--foldable">
+					<summary class="lrm-section__title"><?php esc_html_e( '4. Weitere Optionen', 'loheide-rights-management' ); ?></summary>
 					<div class="lrm-fields">
 						<p class="lrm-field">
 							<label for="lrm-hide"><?php esc_html_e( 'In Menüs und Listen verbergen', 'loheide-rights-management' ); ?></label>
@@ -262,7 +292,13 @@ class LRM_Metabox {
 							</label>
 						</p>
 					</div>
-				</div>
+				</details>
+			</div>
+
+			<div class="lrm-box__foot">
+				<span class="lrm-credit__mark">LOHEIDE<span>.EU</span></span>
+				<span><?php echo esc_html( LRM_NAME ); ?></span>
+				<span class="lrm-box__foot-link"><?php echo LRM_Admin::credit(); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?></span>
 			</div>
 		</div>
 		<?php

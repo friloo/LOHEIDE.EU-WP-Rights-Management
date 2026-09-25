@@ -78,15 +78,36 @@
 	color: rgba(255, 255, 255, .82);
 }
 
-.lrm-header__version {
+.lrm-header__meta {
 	margin-left: auto;
 	align-self: flex-start;
+	display: flex;
+	flex-direction: column;
+	align-items: flex-end;
+	gap: 6px;
+}
+
+.lrm-header__version {
 	font-size: 11px;
 	letter-spacing: .04em;
 	text-transform: uppercase;
 	padding: 4px 9px;
 	border-radius: 999px;
 	background: rgba(255, 255, 255, .16);
+}
+
+.lrm-header__vendor {
+	font-size: 11.5px;
+	color: rgba(255, 255, 255, .85);
+	text-decoration: none;
+	border-bottom: 1px dotted rgba(255, 255, 255, .45);
+	padding-bottom: 1px;
+}
+
+.lrm-header__vendor:hover,
+.lrm-header__vendor:focus {
+	color: #fff;
+	border-bottom-color: #fff;
 }
 
 /* ---------------------------------------------------------------------- Tabs */
@@ -991,4 +1012,199 @@
 		min-width: 0;
 		width: 100%;
 	}
+}
+
+/* ------------------------------------------------------- Herstellerhinweis */
+
+.lrm-credit {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	gap: 10px;
+	margin: 26px 0 30px;
+	padding: 14px 18px;
+	border: 1px solid var(--lrm-border);
+	border-radius: var(--lrm-radius);
+	background: var(--lrm-surface);
+	font-size: 12.5px;
+	color: var(--lrm-muted);
+}
+
+.lrm-credit__mark {
+	font-weight: 700;
+	letter-spacing: .06em;
+	font-size: 11.5px;
+	color: var(--lrm-text);
+}
+
+.lrm-credit__mark span {
+	color: var(--lrm-accent);
+}
+
+.lrm-credit__text {
+	padding-left: 10px;
+	border-left: 1px solid var(--lrm-border);
+}
+
+.lrm-credit__link {
+	margin-left: auto;
+}
+
+.lrm-credit__link a,
+.lrm-box__foot-link a {
+	color: var(--lrm-accent);
+	text-decoration: none;
+	font-weight: 500;
+}
+
+.lrm-credit__link a:hover,
+.lrm-box__foot-link a:hover {
+	text-decoration: underline;
+}
+
+.lrm-box__foot {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	gap: 10px;
+	padding: 11px 18px;
+	border-top: 1px solid var(--lrm-border);
+	background: var(--lrm-bg);
+	font-size: 11.5px;
+	color: var(--lrm-muted);
+}
+
+.lrm-box__foot-link {
+	margin-left: auto;
+}
+
+/* Hinweis auf geerbte Sperren. */
+
+.lrm-notice--deny {
+	background: var(--lrm-deny-soft);
+	border-color: var(--lrm-deny-border);
+	color: var(--lrm-deny);
+	margin: 14px 18px 0;
+}
+
+/* --------------------------------- Metabox in der Seitenleiste (kompakt) */
+
+.lrm-box--compact .lrm-box__head,
+.lrm-box--compact .lrm-box__body {
+	padding-left: 14px;
+	padding-right: 14px;
+}
+
+.lrm-box--compact .lrm-notice {
+	margin-left: 14px;
+	margin-right: 14px;
+}
+
+.lrm-box--compact .lrm-modes,
+.lrm-box--compact .lrm-grid,
+.lrm-box--compact .lrm-fields {
+	grid-template-columns: 1fr;
+}
+
+.lrm-box--compact .lrm-mode__inner {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	gap: 9px;
+	padding: 10px 12px;
+}
+
+.lrm-box--compact .lrm-mode__inner .dashicons {
+	margin-top: 1px;
+}
+
+.lrm-box--compact .lrm-mode__title {
+	margin: 0;
+}
+
+.lrm-box--compact .lrm-mode__desc {
+	display: none;
+}
+
+.lrm-box--compact .lrm-mode input:checked + .lrm-mode__inner .lrm-mode__desc {
+	display: block;
+	flex: 1 0 100%;
+	margin: 0;
+}
+
+.lrm-box--compact .lrm-switch__label em {
+	display: none;
+}
+
+.lrm-box--compact .lrm-card__head p {
+	display: none;
+}
+
+.lrm-box--compact .lrm-roles {
+	padding: 10px 12px;
+	gap: 5px;
+}
+
+.lrm-box--compact .lrm-chip__label {
+	padding: 4px 9px;
+	font-size: 12px;
+}
+
+.lrm-box--compact .lrm-section {
+	padding-top: 14px;
+}
+
+.lrm-box--compact .lrm-section + .lrm-section {
+	margin-top: 14px;
+}
+
+.lrm-box--compact .lrm-box__foot {
+	flex-direction: column;
+	align-items: flex-start;
+	gap: 4px;
+	padding: 10px 14px;
+}
+
+.lrm-box--compact .lrm-box__foot-link {
+	margin-left: 0;
+}
+
+/* ------------------------------------------------ Einklappbare Abschnitte */
+
+.lrm-section--foldable > summary {
+	cursor: pointer;
+	list-style: none;
+	display: flex;
+	align-items: center;
+	gap: 6px;
+	margin-bottom: 0;
+	padding: 2px 0;
+	user-select: none;
+}
+
+.lrm-section--foldable > summary::-webkit-details-marker {
+	display: none;
+}
+
+.lrm-section--foldable > summary::before {
+	content: "";
+	width: 0;
+	height: 0;
+	border-left: 5px solid currentColor;
+	border-top: 4px solid transparent;
+	border-bottom: 4px solid transparent;
+	opacity: .6;
+	transition: transform .15s ease;
+}
+
+.lrm-section--foldable[open] > summary::before {
+	transform: rotate(90deg);
+}
+
+.lrm-section--foldable > summary:hover {
+	color: var(--lrm-accent);
+}
+
+.lrm-section--foldable[open] > summary {
+	margin-bottom: 12px;
 }

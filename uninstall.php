@@ -9,6 +9,22 @@ defined( 'WP_UNINSTALL_PLUGIN' ) || exit;
 
 global $wpdb;
 
+// Serverregel im Uploads-Ordner entfernen. Bliebe sie stehen, wären nach dem
+// Löschen des Plugins sämtliche Dateien nicht mehr erreichbar.
+$lrm_uploads = wp_get_upload_dir();
+$lrm_file    = trailingslashit( $lrm_uploads['basedir'] ) . '.htaccess';
+
+if ( file_exists( $lrm_file ) && is_writable( $lrm_file ) ) {
+	if ( ! function_exists( 'insert_with_markers' ) ) {
+		require_once ABSPATH . 'wp-admin/includes/misc.php';
+	}
+
+	insert_with_markers( $lrm_file, 'LOHEIDE.EU WP Rights Management', array() );
+}
+
+// Zwischenspeicher der Selbstprüfung.
+delete_transient( 'lrm_self_test' );
+
 // Einstellungen entfernen.
 delete_option( 'lrm_settings' );
 

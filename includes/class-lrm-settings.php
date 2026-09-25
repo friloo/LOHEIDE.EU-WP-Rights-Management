@@ -53,6 +53,11 @@ class LRM_Settings {
 			'show_login_form'   => 1,
 			'show_credit'       => 1,
 			'metabox_context'   => 'side',
+			'protect_uploads'   => 0,
+			'uploads_mode'      => 'login',
+			'uploads_whitelist' => '',
+			'whitelist_branding' => 1,
+			'uploads_denied_action' => 'block',
 		);
 	}
 
@@ -157,6 +162,17 @@ class LRM_Settings {
 		$action                 = isset( $input['denied_action'] ) ? sanitize_key( $input['denied_action'] ) : 'message';
 		$clean['denied_action'] = in_array( $action, array( 'message', 'login', '404', 'redirect' ), true ) ? $action : 'message';
 
+		// Dateischutz.
+		$uploads_mode          = isset( $input['uploads_mode'] ) ? sanitize_key( $input['uploads_mode'] ) : 'login';
+		$clean['uploads_mode'] = in_array( $uploads_mode, array( 'login', 'rules' ), true ) ? $uploads_mode : 'login';
+
+		$uploads_action                 = isset( $input['uploads_denied_action'] ) ? sanitize_key( $input['uploads_denied_action'] ) : 'block';
+		$clean['uploads_denied_action'] = in_array( $uploads_action, array( 'block', 'login' ), true ) ? $uploads_action : 'block';
+
+		$clean['uploads_whitelist'] = isset( $input['uploads_whitelist'] )
+			? implode( "\n", LRM_Media::parse_patterns( $input['uploads_whitelist'] ) )
+			: '';
+
 		// Position der Metabox im Editor.
 		$context                  = isset( $input['metabox_context'] ) ? sanitize_key( $input['metabox_context'] ) : 'side';
 		$clean['metabox_context'] = in_array( $context, array( 'side', 'normal' ), true ) ? $context : 'side';
@@ -166,7 +182,7 @@ class LRM_Settings {
 		$clean['redirect_url']   = isset( $input['redirect_url'] ) ? esc_url_raw( trim( $input['redirect_url'] ) ) : '';
 		$clean['login_url']      = isset( $input['login_url'] ) ? esc_url_raw( trim( $input['login_url'] ) ) : '';
 
-		foreach ( array( 'hide_from_menus', 'hide_from_queries', 'protect_rest', 'protect_feeds', 'close_comments', 'admin_bypass', 'inherit_default', 'show_toolbar', 'show_login_form', 'show_credit' ) as $flag ) {
+		foreach ( array( 'hide_from_menus', 'hide_from_queries', 'protect_rest', 'protect_feeds', 'close_comments', 'admin_bypass', 'inherit_default', 'show_toolbar', 'show_login_form', 'show_credit', 'protect_uploads', 'whitelist_branding' ) as $flag ) {
 			$clean[ $flag ] = empty( $input[ $flag ] ) ? 0 : 1;
 		}
 

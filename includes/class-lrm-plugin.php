@@ -48,6 +48,13 @@ class LRM_Plugin {
 	public $shortcodes;
 
 	/**
+	 * Dateischutz.
+	 *
+	 * @var LRM_Media
+	 */
+	public $media;
+
+	/**
 	 * Singleton.
 	 *
 	 * @return LRM_Plugin
@@ -88,10 +95,12 @@ class LRM_Plugin {
 		$this->metabox    = new LRM_Metabox();
 		$this->frontend   = new LRM_Frontend();
 		$this->shortcodes = new LRM_Shortcodes();
+		$this->media      = new LRM_Media();
 
 		$this->metabox->hooks();
 		$this->frontend->hooks();
 		$this->shortcodes->hooks();
+		$this->media->hooks();
 
 		if ( is_admin() ) {
 			$this->admin = new LRM_Admin();
@@ -113,6 +122,10 @@ class LRM_Plugin {
 		LRM_Settings::install();
 		self::add_capabilities();
 
+		if ( LRM_Settings::get( 'protect_uploads' ) ) {
+			LRM_Media::write_htaccess();
+		}
+
 		flush_rewrite_rules();
 	}
 
@@ -120,6 +133,9 @@ class LRM_Plugin {
 	 * Deaktivierung.
 	 */
 	public static function deactivate() {
+		// Ohne aktives Plugin würde die Regel ins Leere greifen.
+		LRM_Media::remove_htaccess();
+
 		flush_rewrite_rules();
 	}
 

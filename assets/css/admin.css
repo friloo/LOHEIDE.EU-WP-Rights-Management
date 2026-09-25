@@ -1208,3 +1208,82 @@
 .lrm-section--foldable[open] > summary {
 	margin-bottom: 12px;
 }
+
+/* --------------------------------------------------------- Dateischutz */
+
+.lrm-subsection {
+	margin-top: 18px;
+	padding-top: 16px;
+	border-top: 1px solid #f0f0f1;
+}
+
+.lrm-subsection .lrm-section__title {
+	margin-bottom: 10px;
+}
+
+.lrm-serverstatus {
+	margin-top: 18px;
+	padding: 16px 18px;
+	background: var(--lrm-bg);
+	border: 1px solid var(--lrm-border);
+	border-radius: 9px;
+}
+
+.lrm-checklist {
+	margin: 0 0 12px;
+	font-size: 12.5px;
+}
+
+.lrm-checklist li {
+	display: flex;
+	align-items: flex-start;
+	gap: 7px;
+	margin: 0 0 6px;
+	color: var(--lrm-muted);
+}
+
+.lrm-checklist .dashicons {
+	font-size: 16px;
+	width: 16px;
+	height: 16px;
+	flex: 0 0 auto;
+	margin-top: 1px;
+}
+
+.lrm-checklist .is-ok,
+.lrm-checklist li.is-ok {
+	color: var(--lrm-allow);
+}
+
+.lrm-checklist li.is-warn {
+	color: var(--lrm-warn);
+}
+
+.lrm-checklist li.is-error {
+	color: var(--lrm-deny);
+	font-weight: 600;
+}
+
+.lrm-serverstatus__actions {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	gap: 8px;
+	margin: 0;
+}
+
+.lrm-serverstatus__actions .lrm-hint {
+	margin-top: 0;
+}
+
+.lrm-notice textarea.code {
+	margin-top: 8px;
+	font-family: Consolas, Monaco, monospace;
+	font-size: 12px;
+	background: #fff;
+}
+
+#lrm-uploads-whitelist {
+	font-family: Consolas, Monaco, monospace;
+	font-size: 12.5px;
+}

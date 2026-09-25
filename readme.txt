@@ -28,6 +28,9 @@ auch gegenüber dem Umgehungsrecht der Administratoren.
   Kommentaren und REST-API.
 * Übersicht mit Kennzahlen, Rollenmatrix und Zugriffssimulation je Rolle.
 * Sammelbearbeitung für mehrere Seiten.
+* Dateischutz für den Uploads-Ordner: genereller Block ohne Anmeldung,
+  Ausnahmeliste (Whitelist) und Regeln je Datei. Website-Logo und -Icon werden
+  automatisch freigegeben, damit die Anmeldeseite vollständig bleibt.
 * Shortcodes für einzelne Abschnitte.
 
 == Installation ==
@@ -54,7 +57,16 @@ Ja. Alle im System registrierten Rollen stehen automatisch zur Auswahl.
 
 = Schützt das Plugin auch Dateien im Uploads-Ordner? =
 
-Nein. Geschützt wird die Ausgabe der Seite, nicht die direkt aufgerufene Datei.
+Ja, sobald der Dateischutz eingeschaltet ist. Das Plugin schreibt dann eine
+Regel in die .htaccess des Uploads-Ordners, sodass jede Anfrage geprüft wird.
+Für nginx wird die passende Regel zum Eintragen angezeigt. Eine Schaltfläche
+prüft, ob der Schutz tatsächlich greift.
+
+= Bleibt das Logo auf der Anmeldeseite sichtbar? =
+
+Ja. Website-Logo und Website-Icon werden automatisch freigegeben. Weitere
+Ausnahmen lassen sich als Muster hinterlegen, etwa „briefkopf.png“ oder
+„branding/*“.
 
 == Screenshots ==
 
@@ -63,6 +75,7 @@ Nein. Geschützt wird die Ausgabe der Seite, nicht die direkt aufgerufene Datei.
 3. Einstellungen.
 4. Bereich „Zugriffsrechte“ im Editor.
 5. Hinweis im Frontend.
+6. Dateischutz mit Ausnahmeliste und Statusprüfung.
 
 == Changelog ==
 

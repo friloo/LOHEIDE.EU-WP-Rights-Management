@@ -8,7 +8,7 @@
 [![WordPress](https://img.shields.io/badge/WordPress-5.8%2B-21759b)](#)
 [![PHP](https://img.shields.io/badge/PHP-7.4%2B-777bb4)](#)
 [![Lizenz](https://img.shields.io/badge/Lizenz-GPL--2.0--or--later-green)](#lizenz)
-[![Tests](https://img.shields.io/badge/Logiktests-34%20Pr%C3%BCfungen-16a34a)](#tests)
+[![Tests](https://img.shields.io/badge/Logiktests-70%20Pr%C3%BCfungen-16a34a)](#tests)
 
 Entwickelt von [LOHEIDE.EU](https://loheide.eu)
 
@@ -46,6 +46,7 @@ Dieses Plugin dreht die Logik um: **Eine gesperrte Rolle beendet die Prüfung so
 - [Bedienung](#bedienung)
 - [Auswertungsreihenfolge](#auswertungsreihenfolge)
 - [Vererbung auf Unterseiten](#vererbung-auf-unterseiten)
+- [Dateien im Uploads-Ordner](#dateien-im-uploads-ordner)
 - [Einstellungen](#einstellungen)
 - [Shortcodes](#shortcodes)
 - [Für Entwickler](#für-entwickler)
@@ -69,6 +70,7 @@ Dieses Plugin dreht die Logik um: **Eine gesperrte Rolle beendet die Prüfung so
 | 👁️ **Konsequent versteckt** | Menüs, Seitenlisten, Suche, Archive, Feeds, XML-Sitemap, REST-API |
 | 📊 **Übersicht & Simulation** | Kennzahlen, Rollenmatrix und „Was sieht Rolle X?“ auf Knopfdruck |
 | ⚡ **Sammelbearbeitung** | Rechte für viele Seiten in einem Schritt setzen |
+| 📁 **Dateischutz** | Genereller Block für den Uploads-Ordner, Whitelist und Regeln je Datei |
 | 🧱 **Shortcodes** | Einzelne Abschnitte innerhalb einer Seite schützen |
 
 ---
@@ -101,9 +103,17 @@ Welche Rolle ist wo freigegeben, wo gesperrt? Und was sieht sie tatsächlich –
 
 <img src="docs/images/02-rollen.png" alt="Rollenmatrix und Zugriffssimulation für die Rolle Kunde" width="900">
 
+### Dateischutz mit Whitelist und Selbsttest
+
+<img src="docs/images/10-dateischutz.png" alt="Einstellungen für den Dateischutz mit Umfang, Ausnahmeliste und Statusprüfung" width="900">
+
 ### Einstellungen
 
 <img src="docs/images/03-einstellungen.png" alt="Einstellungsseite mit Inhaltstypen, Standardverhalten und Wirkungsbereich" width="900">
+
+### Zugriff je Datei in der Medienbibliothek
+
+<img src="docs/images/11-medienbibliothek.png" alt="Medienbibliothek mit Spalte Zugriff" width="900">
 
 ### Statusspalte in der Seitenliste
 
@@ -194,6 +204,78 @@ Intranet                    Regel: nur angemeldet · gesperrt: Gesperrtes Konto
 
 ---
 
+## Dateien im Uploads-Ordner
+
+Eine gesperrte Seite nützt wenig, wenn das PDF darauf weiterhin unter seiner
+Adresse abrufbar ist. Der Webserver liefert solche Dateien aus, ohne WordPress
+zu starten. Das Plugin schiebt deshalb eine Prüfung davor.
+
+### Einschalten
+
+**Rechte → Einstellungen → Dateien im Uploads-Ordner → „Dateien schützen"**
+
+Dabei schreibt das Plugin eine Regel in die `.htaccess` des Uploads-Ordners:
+Anfragen laufen über WordPress, freigegebene Dateien liefert der Server
+weiterhin direkt aus. Für nginx steht die passende Regel zum Kopieren bereit.
+
+### Zwei Betriebsarten
+
+| Umfang | Bedeutung |
+| --- | --- |
+| **Alles sperren ohne Anmeldung** | Genereller Block. Keine Datei ohne Anmeldung – außer den Ausnahmen. |
+| **Nur Dateien mit eigener Regel** | Eine Datei ist gesperrt, wenn sie selbst oder die Seite, an der sie hängt, eine Regel hat. |
+
+### Ausnahmen (Whitelist)
+
+Das Website-Logo und das Website-Icon werden auf Wunsch **automatisch**
+freigegeben – sie werden auf der Anmeldeseite gebraucht und dürfen nicht hinter
+dem Schutz liegen. Weitere Ausnahmen kommen als Muster dazu, eines je Zeile:
+
+```
+2026/01/logo.png      # genau diese Datei
+briefkopf.png         # diese Datei in jedem Ordner
+branding/*            # alles in diesem Ordner
+*.svg                 # alle Dateien dieses Typs
+```
+
+Ein Muster ohne Ordnerangabe passt in jedem Ordner – damit lassen sich auch die
+von WordPress erzeugten Bildgrößen mit einem Eintrag freigeben (`logo*.png`).
+
+### Rechte je Datei
+
+Dateien sind Inhalte wie jede Seite: In der Medienbibliothek steht das Feld
+**Zugriff**, im Bearbeitungsfenster der Datei der vollständige Bereich mit
+Rollen und Sperren. Zusätzlich gilt:
+
+> Eine Datei erbt die Regel der Seite, in die sie hochgeladen wurde. Das PDF auf
+> einer gesperrten Seite ist damit ohne weiteres Zutun ebenfalls gesperrt.
+
+Und wie überall: **Eine gesperrte Rolle erhält die Datei nicht**, auch wenn eine
+zweite Rolle sie freigeben würde.
+
+### Prüfen, ob es wirkt
+
+Der Knopf **„Schutz jetzt prüfen"** ruft eine geschützte Datei ohne Anmeldung ab
+und meldet das Ergebnis. So ist sofort erkennbar, ob die Serverregel greift –
+gerade bei nginx oder abweichenden Hosting-Konfigurationen.
+
+### Was geprüft wird
+
+Jede Anfrage durchläuft in dieser Reihenfolge:
+
+```text
+1. Liegt die Datei wirklich im Uploads-Ordner?   (sonst 404 – kein ../ Ausbruch)
+2. Ist es eine ausführbare Datei (.php & Co.)?   (dann niemals ausliefern)
+3. Steht sie auf der Ausnahmeliste?              → ✅ ausliefern
+4. Hat sie – oder ihre Seite – eine Regel?       → Sperren gewinnen
+5. Genereller Block und nicht angemeldet?        → ⛔ 403 oder Anmeldung
+```
+
+Ausgeliefert wird mit korrektem Dateityp, `nosniff`, `noindex` und Unterstützung
+für Teilabrufe (Videos, große PDFs).
+
+---
+
 ## Einstellungen
 
 | Einstellung | Standard | Wirkung |
@@ -213,6 +295,11 @@ Intranet                    Regel: nur angemeldet · gesperrt: Gesperrtes Konto
 | Status in der Werkzeugleiste | an | Zeigt Redaktionen die wirksame Regel im Frontend |
 | Anmeldeformular im Hinweis | an | Direkte Anmeldung auf der gesperrten Seite |
 | Hinweis „Zugriffsschutz von LOHEIDE.EU“ | an | Dezente Zeile unter dem Hinweistext |
+| Dateien schützen | aus | Prüfung für den Uploads-Ordner einschalten |
+| Umfang des Dateischutzes | Alles ohne Anmeldung | Genereller Block oder nur Dateien mit Regel |
+| Logo automatisch freigeben | an | Website-Logo und -Icon bleiben öffentlich |
+| Ausnahmen | – | Weitere freigegebene Dateien als Muster |
+| Abweisung bei Dateien | 403 | Abweisen oder zur Anmeldung leiten |
 
 ---
 
@@ -247,6 +334,10 @@ Auch hier schlägt `deny` jedes `roles`.
 | `lrm_protected_post_types` | Filter | Geschützte Inhaltstypen |
 | `lrm_denied_action` | Filter | Reaktion bei verweigertem Zugriff |
 | `lrm_denied_notice` | Filter | HTML der Hinweisbox |
+| `lrm_file_access` | Filter | Entscheidung über eine einzelne Datei |
+| `lrm_uploads_whitelist` | Filter | Ausnahmeliste des Dateischutzes |
+| `lrm_branding_attachments` | Filter | Anhänge, die immer öffentlich bleiben |
+| `lrm_file_denied` | Action | Eine Datei wurde abgewiesen |
 | `lrm_loaded` | Action | Plugin vollständig geladen |
 
 <details>
@@ -292,7 +383,8 @@ echo esc_html( LRM_Access::reason_text( $check ) );
 Die Zugriffslogik läuft ohne WordPress-Installation:
 
 ```bash
-php tests/test-access.php
+php tests/test-access.php   # Zugriffslogik
+php tests/test-media.php    # Dateischutz
 ```
 
 ```
@@ -303,7 +395,14 @@ php tests/test-access.php
 Alle 34 Prüfungen erfolgreich.
 ```
 
-Abgedeckt sind der Vorrang der Sperrliste, das Umgehungsrecht, die virtuelle Gast-Rolle, alle drei Sichtbarkeitsmodi, die Vererbung über mehrere Seitenebenen sowie die Bereinigung ungültiger Eingaben.
+Abgedeckt sind der Vorrang der Sperrliste, das Umgehungsrecht, die virtuelle
+Gast-Rolle, alle drei Sichtbarkeitsmodi, die Vererbung über mehrere Seitenebenen
+sowie die Bereinigung ungültiger Eingaben.
+
+Der zweite Satz (36 Prüfungen) deckt den Dateischutz ab: Mustervergleich der
+Ausnahmeliste, Vererbung vom übergeordneten Inhalt auf den Anhang und die Abwehr
+von Pfadmanipulationen – darunter `../`, URL-kodierte Varianten, Nullbytes und
+der Versuch, `wp-config.php` oder eine PHP-Datei ausliefern zu lassen.
 
 ---
 
@@ -321,7 +420,9 @@ Abgedeckt sind der Vorrang der Sperrliste, das Umgehungsrecht, die virtuelle Gas
 
 Damit klar ist, was das Plugin **nicht** leistet:
 
-- **Mediendateien** im Uploads-Ordner bleiben über ihre direkte URL erreichbar. Geschützt wird die Seitenausgabe, nicht die Datei. Für echten Dateischutz ist eine Auslieferung über PHP oder eine Server-Regel nötig.
+- **Dateischutz braucht die passende Serverregel.** Bei Apache schreibt das Plugin sie selbst; bei nginx muss sie einmalig von Hand eingetragen werden. Der Selbsttest zeigt, ob sie greift.
+- **Eine Datei erbt nur von der Seite, in die sie hochgeladen wurde** (`post_parent`). Wird dieselbe Datei später auf einer anderen, strenger geschützten Seite eingebunden, greift deren Regel nicht automatisch – dann braucht die Datei eine eigene Regel.
+- **Geschützte Dateien laufen über PHP.** Das kostet etwas Leistung. Freigegebene Dateien und alles außerhalb des Uploads-Ordners bleiben davon unberührt.
 - **Keine Zeitsteuerung** (Zugriff ab/bis Datum) und **keine Rechte für einzelne Benutzer** – ausschließlich Rollen.
 - **Sitemaps von SEO-Plugins** (Yoast, Rank Math) verwenden eigene Abfragen; nur die WordPress-eigene Sitemap wird gefiltert.
 - **Mehrsprachigkeit:** Übersetzte Seiten (WPML, Polylang) erben die Regel des Originals nicht automatisch.
@@ -339,7 +440,12 @@ _lrm_inherit  _lrm_propagate   _lrm_action         _lrm_redirect_url
 _lrm_message  _lrm_hide
 ```
 
-Global: Option `lrm_settings`. Bei der Deinstallation werden Meta-Felder, Option und die vergebenen Fähigkeiten vollständig entfernt.
+Global: Option `lrm_settings`. Bei aktivem Dateischutz zusätzlich ein
+Regelblock in `wp-content/uploads/.htaccess`, der beim Abschalten und beim
+Deaktivieren des Plugins wieder entfernt wird.
+
+Bei der Deinstallation werden Meta-Felder, Option und die vergebenen Fähigkeiten
+vollständig entfernt.
 
 ---
 

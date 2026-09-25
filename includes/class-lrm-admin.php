@@ -29,6 +29,8 @@ class LRM_Admin {
 		add_action( 'admin_menu', array( $this, 'menu' ) );
 		add_action( 'admin_init', array( 'LRM_Settings', 'register' ) );
 		add_action( 'admin_enqueue_scripts', array( $this, 'assets' ) );
+		add_action( 'admin_post_lrm_self_test', array( $this, 'handle_self_test' ) );
+		add_action( 'admin_post_lrm_write_rules', array( $this, 'handle_write_rules' ) );
 		add_filter( 'plugin_action_links_' . LRM_BASENAME, array( $this, 'action_links' ) );
 	}
 
@@ -760,6 +762,8 @@ class LRM_Admin {
 					</div>
 				</div>
 
+				<?php $this->render_media_panel( $settings, $option ); ?>
+
 				<div class="lrm-panel">
 					<div class="lrm-panel__head">
 						<h2><?php esc_html_e( 'Wirkungsbereich', 'loheide-rights-management' ); ?></h2>
@@ -817,6 +821,189 @@ class LRM_Admin {
 			<?php self::render_footer(); ?>
 		</div>
 		<?php
+	}
+
+	/**
+	 * Bereich für den Dateischutz.
+	 *
+	 * @param array  $settings Einstellungen.
+	 * @param string $option   Options-Schlüssel.
+	 */
+	protected function render_media_panel( $settings, $option ) {
+		$active      = ! empty( $settings['protect_uploads'] );
+		$server      = LRM_Media::server_type();
+		$htaccess    = LRM_Media::htaccess_active();
+		$test        = get_transient( 'lrm_self_test' );
+		$branding    = LRM_Media::branding_files();
+		?>
+		<div class="lrm-panel">
+			<div class="lrm-panel__head">
+				<h2><?php esc_html_e( 'Dateien im Uploads-Ordner', 'loheide-rights-management' ); ?></h2>
+				<p class="lrm-muted"><?php esc_html_e( 'Ohne diesen Schutz bleibt eine Datei unter ihrer Adresse abrufbar, auch wenn die Seite gesperrt ist.', 'loheide-rights-management' ); ?></p>
+			</div>
+			<div class="lrm-panel__body">
+				<label class="lrm-switch lrm-switch--row">
+					<input type="checkbox" name="<?php echo esc_attr( $option ); ?>[protect_uploads]" value="1" <?php checked( $active ); ?> />
+					<span class="lrm-switch__track"><span class="lrm-switch__knob"></span></span>
+					<span class="lrm-switch__label">
+						<strong><?php esc_html_e( 'Dateien schützen', 'loheide-rights-management' ); ?></strong>
+						<em><?php esc_html_e( 'Alle Anfragen an den Uploads-Ordner laufen über WordPress und werden geprüft. Freigegebene Dateien liefert der Server weiterhin direkt aus.', 'loheide-rights-management' ); ?></em>
+					</span>
+				</label>
+
+				<div class="lrm-subsection">
+					<h4 class="lrm-section__title"><?php esc_html_e( 'Umfang', 'loheide-rights-management' ); ?></h4>
+					<div class="lrm-modes lrm-modes--compact">
+						<?php
+						$modes = array(
+							'login' => array( 'dashicons-lock', __( 'Alles sperren ohne Anmeldung', 'loheide-rights-management' ), __( 'Genereller Block: keine Datei ohne Anmeldung – außer den Ausnahmen unten.', 'loheide-rights-management' ) ),
+							'rules' => array( 'dashicons-admin-page', __( 'Nur Dateien mit eigener Regel', 'loheide-rights-management' ), __( 'Eine Datei ist gesperrt, wenn sie selbst oder die Seite, an der sie hängt, eine Regel hat.', 'loheide-rights-management' ) ),
+						);
+
+						foreach ( $modes as $value => $data ) :
+							?>
+							<label class="lrm-mode">
+								<input type="radio" name="<?php echo esc_attr( $option ); ?>[uploads_mode]" value="<?php echo esc_attr( $value ); ?>" <?php checked( $settings['uploads_mode'], $value ); ?> />
+								<span class="lrm-mode__inner">
+									<span class="dashicons <?php echo esc_attr( $data[0] ); ?>"></span>
+									<span class="lrm-mode__title"><?php echo esc_html( $data[1] ); ?></span>
+									<span class="lrm-mode__desc"><?php echo esc_html( $data[2] ); ?></span>
+								</span>
+							</label>
+						<?php endforeach; ?>
+					</div>
+				</div>
+
+				<div class="lrm-subsection">
+					<h4 class="lrm-section__title"><?php esc_html_e( 'Ausnahmen (Whitelist)', 'loheide-rights-management' ); ?></h4>
+					<label class="lrm-switch lrm-switch--row">
+						<input type="checkbox" name="<?php echo esc_attr( $option ); ?>[whitelist_branding]" value="1" <?php checked( ! empty( $settings['whitelist_branding'] ) ); ?> />
+						<span class="lrm-switch__track"><span class="lrm-switch__knob"></span></span>
+						<span class="lrm-switch__label">
+							<strong><?php esc_html_e( 'Website-Logo und Website-Icon automatisch freigeben', 'loheide-rights-management' ); ?></strong>
+							<em>
+								<?php
+								if ( $branding ) {
+									printf(
+										/* translators: %s: Liste der Dateinamen. */
+										esc_html__( 'Erkannt: %s', 'loheide-rights-management' ),
+										esc_html( implode( ', ', array_map( 'basename', array_slice( $branding, 0, 4 ) ) ) )
+									);
+								} else {
+									esc_html_e( 'Zurzeit ist kein Logo und kein Website-Icon hinterlegt.', 'loheide-rights-management' );
+								}
+								?>
+							</em>
+						</span>
+					</label>
+
+					<p class="lrm-field lrm-field--full">
+						<label for="lrm-uploads-whitelist"><?php esc_html_e( 'Weitere freigegebene Dateien', 'loheide-rights-management' ); ?></label>
+						<textarea class="widefat code" rows="5" id="lrm-uploads-whitelist" name="<?php echo esc_attr( $option ); ?>[uploads_whitelist]" placeholder="2026/01/logo.png&#10;branding/*&#10;*.svg"><?php echo esc_textarea( $settings['uploads_whitelist'] ); ?></textarea>
+						<span class="lrm-hint">
+							<?php esc_html_e( 'Ein Eintrag je Zeile, relativ zum Uploads-Ordner. * steht für beliebige Zeichen, ? für ein einzelnes. Ein reiner Dateiname passt auf jeden Ordner. Vollständige Adressen werden automatisch gekürzt.', 'loheide-rights-management' ); ?>
+						</span>
+					</p>
+				</div>
+
+				<div class="lrm-subsection">
+					<h4 class="lrm-section__title"><?php esc_html_e( 'Abweisung', 'loheide-rights-management' ); ?></h4>
+					<p class="lrm-field">
+						<label for="lrm-uploads-action"><?php esc_html_e( 'Wenn kein Zugriff besteht', 'loheide-rights-management' ); ?></label>
+						<select name="<?php echo esc_attr( $option ); ?>[uploads_denied_action]" id="lrm-uploads-action">
+							<option value="block" <?php selected( $settings['uploads_denied_action'], 'block' ); ?>><?php esc_html_e( 'Abweisen (403)', 'loheide-rights-management' ); ?></option>
+							<option value="login" <?php selected( $settings['uploads_denied_action'], 'login' ); ?>><?php esc_html_e( 'Zur Anmeldung weiterleiten', 'loheide-rights-management' ); ?></option>
+						</select>
+					</p>
+				</div>
+
+				<?php if ( $active ) : ?>
+					<div class="lrm-serverstatus">
+						<h4 class="lrm-section__title"><?php esc_html_e( 'Status der Serverregel', 'loheide-rights-management' ); ?></h4>
+
+						<ul class="lrm-checklist">
+							<li class="<?php echo $htaccess ? 'is-ok' : 'is-warn'; ?>">
+								<span class="dashicons <?php echo $htaccess ? 'dashicons-yes-alt' : 'dashicons-warning'; ?>"></span>
+								<?php
+								if ( $htaccess ) {
+									esc_html_e( 'Die Regel steht in der .htaccess des Uploads-Ordners.', 'loheide-rights-management' );
+								} else {
+									esc_html_e( 'Die .htaccess konnte nicht geschrieben werden. Bei nginx ist das normal – siehe unten.', 'loheide-rights-management' );
+								}
+								?>
+							</li>
+							<li class="<?php echo 'apache' === $server ? 'is-ok' : 'is-warn'; ?>">
+								<span class="dashicons dashicons-admin-generic"></span>
+								<?php
+								printf(
+									/* translators: %s: Art des Webservers. */
+									esc_html__( 'Erkannter Webserver: %s', 'loheide-rights-management' ),
+									esc_html( $server )
+								);
+								?>
+							</li>
+							<?php if ( is_array( $test ) ) : ?>
+								<li class="<?php echo 'ok' === $test['status'] ? 'is-ok' : ( 'offen' === $test['status'] ? 'is-error' : 'is-warn' ); ?>">
+									<span class="dashicons <?php echo 'ok' === $test['status'] ? 'dashicons-yes-alt' : 'dashicons-warning'; ?>"></span>
+									<?php echo esc_html( $test['text'] ); ?>
+								</li>
+							<?php endif; ?>
+						</ul>
+
+						<p class="lrm-serverstatus__actions">
+							<a class="button" href="<?php echo esc_url( wp_nonce_url( admin_url( 'admin-post.php?action=lrm_self_test' ), 'lrm_self_test' ) ); ?>">
+								<?php esc_html_e( 'Schutz jetzt prüfen', 'loheide-rights-management' ); ?>
+							</a>
+							<a class="button" href="<?php echo esc_url( wp_nonce_url( admin_url( 'admin-post.php?action=lrm_write_rules' ), 'lrm_write_rules' ) ); ?>">
+								<?php esc_html_e( 'Regel neu schreiben', 'loheide-rights-management' ); ?>
+							</a>
+							<span class="lrm-hint"><?php esc_html_e( 'Die Prüfung ruft eine geschützte Datei ohne Anmeldung ab.', 'loheide-rights-management' ); ?></span>
+						</p>
+
+						<?php if ( 'nginx' === $server || ! $htaccess ) : ?>
+							<div class="lrm-notice lrm-notice--warning">
+								<span class="dashicons dashicons-info-outline"></span>
+								<div>
+									<strong><?php esc_html_e( 'Regel für nginx', 'loheide-rights-management' ); ?></strong>
+									<p><?php esc_html_e( 'nginx wertet keine .htaccess aus. Tragen Sie folgende Regel in die Server-Konfiguration ein:', 'loheide-rights-management' ); ?></p>
+									<textarea class="widefat code" rows="8" readonly onclick="this.select();"><?php echo esc_textarea( LRM_Media::nginx_rules() ); ?></textarea>
+								</div>
+							</div>
+						<?php endif; ?>
+					</div>
+				<?php endif; ?>
+			</div>
+		</div>
+		<?php
+	}
+
+	/**
+	 * Selbsttest ausführen.
+	 */
+	public function handle_self_test() {
+		if ( ! current_user_can( LRM_Roles::CAP_MANAGE ) || ! check_admin_referer( 'lrm_self_test' ) ) {
+			wp_die( esc_html__( 'Fehlende Berechtigung.', 'loheide-rights-management' ) );
+		}
+
+		set_transient( 'lrm_self_test', LRM_Media::self_test(), 15 * MINUTE_IN_SECONDS );
+
+		wp_safe_redirect( admin_url( 'admin.php?page=lrm-settings#dateien' ) );
+		exit;
+	}
+
+	/**
+	 * Serverregel neu schreiben.
+	 */
+	public function handle_write_rules() {
+		if ( ! current_user_can( LRM_Roles::CAP_MANAGE ) || ! check_admin_referer( 'lrm_write_rules' ) ) {
+			wp_die( esc_html__( 'Fehlende Berechtigung.', 'loheide-rights-management' ) );
+		}
+
+		LRM_Media::write_htaccess();
+		delete_transient( 'lrm_self_test' );
+
+		wp_safe_redirect( admin_url( 'admin.php?page=lrm-settings#dateien' ) );
+		exit;
 	}
 
 	/**

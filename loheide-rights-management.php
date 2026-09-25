@@ -34,6 +34,7 @@ require_once LRM_DIR . 'includes/class-lrm-access.php';
 require_once LRM_DIR . 'includes/class-lrm-metabox.php';
 require_once LRM_DIR . 'includes/class-lrm-admin.php';
 require_once LRM_DIR . 'includes/class-lrm-frontend.php';
+require_once LRM_DIR . 'includes/class-lrm-media.php';
 require_once LRM_DIR . 'includes/class-lrm-shortcodes.php';
 require_once LRM_DIR . 'includes/class-lrm-plugin.php';
 

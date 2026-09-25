@@ -136,7 +136,25 @@ class LRM_Access {
 	protected static function get_ancestors( $post_id ) {
 		$post = get_post( $post_id );
 
-		if ( ! $post || ! is_post_type_hierarchical( $post->post_type ) ) {
+		if ( ! $post ) {
+			return array();
+		}
+
+		// Anhänge hängen an dem Inhalt, in den sie hochgeladen wurden. Sie erben
+		// dessen Regel, damit eine Datei nicht offen bleibt, wenn die Seite es
+		// nicht ist. Die Kette wird ab dort weiterverfolgt.
+		if ( 'attachment' === $post->post_type ) {
+			if ( ! $post->post_parent ) {
+				return array();
+			}
+
+			$parent    = (int) $post->post_parent;
+			$ancestors = array( $parent );
+
+			return array_merge( $ancestors, array_map( 'intval', get_post_ancestors( $parent ) ) );
+		}
+
+		if ( ! is_post_type_hierarchical( $post->post_type ) ) {
 			return array();
 		}
 

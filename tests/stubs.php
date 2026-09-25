@@ -167,3 +167,173 @@ function wp_roles() {
 
 	return $roles;
 }
+
+// ------------------------------------------------- Attrappen für Dateien.
+
+$GLOBALS['lrm_test_uploads'] = sys_get_temp_dir() . '/lrm-uploads-test';
+
+function wp_get_upload_dir() {
+	return array(
+		'basedir' => $GLOBALS['lrm_test_uploads'],
+		'baseurl' => 'https://example.test/wp-content/uploads',
+	);
+}
+
+function get_theme_mod( $name, $default = false ) {
+	return isset( $GLOBALS['lrm_test_theme_mods'][ $name ] ) ? $GLOBALS['lrm_test_theme_mods'][ $name ] : $default;
+}
+
+function wp_get_attachment_metadata( $id ) {
+	return isset( $GLOBALS['lrm_test_attachment_meta'][ $id ] ) ? $GLOBALS['lrm_test_attachment_meta'][ $id ] : array();
+}
+
+function wp_cache_get( $key, $group = '' ) {
+	return isset( $GLOBALS['lrm_test_cache'][ $group ][ $key ] ) ? $GLOBALS['lrm_test_cache'][ $group ][ $key ] : false;
+}
+
+function wp_cache_set( $key, $value, $group = '', $expire = 0 ) {
+	$GLOBALS['lrm_test_cache'][ $group ][ $key ] = $value;
+
+	return true;
+}
+
+function wp_parse_url( $url, $component = -1 ) {
+	return parse_url( $url, $component );
+}
+
+function home_url( $path = '' ) {
+	return 'https://example.test' . $path;
+}
+
+function trailingslashit( $value ) {
+	return rtrim( (string) $value, '/\\' ) . '/';
+}
+
+function untrailingslashit( $value ) {
+	return rtrim( (string) $value, '/\\' );
+}
+
+function is_user_logged_in() {
+	return ! empty( $GLOBALS['lrm_test_logged_in'] );
+}
+
+function apply_filters_ref( $tag, $value ) {
+	return $value;
+}
+
+if ( ! defined( 'HOUR_IN_SECONDS' ) ) {
+	define( 'HOUR_IN_SECONDS', 3600 );
+}
+
+/**
+ * Minimale Datenbank-Attrappe für die Zuordnung Datei -> Anhang.
+ */
+class LRM_Test_WPDB {
+
+	/**
+	 * Tabellenname.
+	 *
+	 * @var string
+	 */
+	public $postmeta = 'wp_postmeta';
+
+	/**
+	 * Zuletzt übergebener Wert.
+	 *
+	 * @var string
+	 */
+	protected $last_value = '';
+
+	/**
+	 * Abfrage vorbereiten.
+	 *
+	 * @param string $query Abfrage.
+	 * @param mixed  ...$args Werte.
+	 * @return string
+	 */
+	public function prepare( $query, ...$args ) {
+		$this->last_value = isset( $args[0] ) ? (string) $args[0] : '';
+
+		return $query;
+	}
+
+	/**
+	 * Einzelwert lesen.
+	 *
+	 * @param string $query Abfrage.
+	 * @return int|null
+	 */
+	public function get_var( $query = '' ) {
+		$files = isset( $GLOBALS['lrm_test_attached_files'] ) ? $GLOBALS['lrm_test_attached_files'] : array();
+
+		return isset( $files[ $this->last_value ] ) ? (int) $files[ $this->last_value ] : null;
+	}
+}
+
+$GLOBALS['wpdb']                  = new LRM_Test_WPDB();
+$GLOBALS['lrm_test_attached_files'] = array();
+
+/**
+ * Benutzer-Attrappe.
+ */
+class WP_User {
+
+	/**
+	 * Benutzer-ID.
+	 *
+	 * @var int
+	 */
+	public $ID = 0;
+
+	/**
+	 * Rollen.
+	 *
+	 * @var array
+	 */
+	public $roles = array();
+
+	/**
+	 * Konstruktor.
+	 *
+	 * @param int   $id    Benutzer-ID.
+	 * @param array $roles Rollen.
+	 */
+	public function __construct( $id = 0, $roles = array() ) {
+		$this->ID    = (int) $id;
+		$this->roles = (array) $roles;
+	}
+
+	/**
+	 * Existiert der Benutzer?
+	 *
+	 * @return bool
+	 */
+	public function exists() {
+		return $this->ID > 0;
+	}
+}
+
+function wp_get_current_user() {
+	if ( isset( $GLOBALS['lrm_test_current_user'] ) ) {
+		return $GLOBALS['lrm_test_current_user'];
+	}
+
+	return new WP_User( 0 );
+}
+
+function user_can( $user, $capability ) {
+	$id = $user instanceof WP_User ? $user->ID : (int) $user;
+
+	return ! empty( $GLOBALS['lrm_test_caps'][ $id ][ $capability ] );
+}
+
+/**
+ * Aktuellen Benutzer für den Test setzen.
+ *
+ * @param int   $id    Benutzer-ID (0 = Gast).
+ * @param array $roles Rollen.
+ */
+function lrm_test_set_user( $id, $roles = array() ) {
+	$GLOBALS['lrm_test_current_user'] = new WP_User( $id, $roles );
+	LRM_Access::flush();
+}

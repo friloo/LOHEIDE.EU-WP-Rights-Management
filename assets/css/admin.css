@@ -940,9 +940,13 @@
 .lrm-submit {
 	position: sticky;
 	bottom: 0;
-	padding: 14px 0 18px;
-	background: linear-gradient(to top, var(--lrm-bg) 60%, rgba(246, 247, 248, 0));
-	margin: 0;
+	z-index: 10;
+	margin: 0 0 18px;
+	padding: 12px 18px;
+	background: var(--lrm-surface);
+	border: 1px solid var(--lrm-border);
+	border-radius: var(--lrm-radius);
+	box-shadow: 0 -2px 12px -6px rgba(16, 24, 40, .25);
 }
 
 /* ------------------------------------------------ Spalte in der Listenansicht */
@@ -1286,4 +1290,11 @@
 #lrm-uploads-whitelist {
 	font-family: Consolas, Monaco, monospace;
 	font-size: 12.5px;
+}
+
+/* Abstand zwischen Auswahlkarten und den Feldern darunter. */
+
+.lrm-modes + .lrm-fields,
+.lrm-modes + .lrm-notice {
+	margin-top: 16px;
 }

@@ -147,6 +147,8 @@ Alternativ das Verzeichnis als ZIP hochladen. Danach:
 1. Unter **Plugins** aktivieren.
 2. **Rechte → Einstellungen** öffnen und die Inhaltstypen wählen (Voreinstellung: Seiten).
 3. Eine Seite bearbeiten und im Bereich **Zugriffsrechte** die Regel setzen.
+4. Sollen auch Dateien geschützt sein: im selben Fenster **Dateien schützen**
+   einschalten und anschließend **„Schutz jetzt prüfen"** anklicken.
 
 Bei der Aktivierung erhält die Rolle *Administrator* die Fähigkeiten `lrm_manage_permissions` (Verwaltung) und `lrm_bypass_restrictions` (Umgehungsrecht).
 
@@ -165,6 +167,12 @@ Bei der Aktivierung erhält die Rolle *Administrator* die Fähigkeiten `lrm_mana
 </table>
 
 **Mehrere Seiten auf einmal:** In der Seitenliste mehrere Einträge markieren → *Aktion wählen → Bearbeiten → Übernehmen*. Dort lassen sich Modus und Rollen für alle markierten Seiten setzen.
+
+**Für Dateien** gilt dasselbe Fenster: In der Medienbibliothek steht das Feld
+**Zugriff**, im Bearbeitungsfenster einer Datei der vollständige Bereich mit
+Rollen und Sperren. Meist braucht es das gar nicht – eine Datei erbt die Regel
+der Seite, in die sie hochgeladen wurde. Näheres unter
+[Dateien im Uploads-Ordner](#dateien-im-uploads-ordner).
 
 ---
 

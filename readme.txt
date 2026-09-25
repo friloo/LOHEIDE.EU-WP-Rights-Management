@@ -8,7 +8,7 @@ Stable tag: 1.0.0
 License: GPL-2.0-or-later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
-Seitenbasierte Zugriffsrechte nach Anmeldung und WordPress-Rollen. Gesperrte Rollen haben immer Vorrang. Entwickelt von LOHEIDE.EU.
+Zugriffsrechte für Seiten, Dateien und den Verwaltungsbereich nach WordPress-Rollen. Gesperrte Rollen haben immer Vorrang. Entwickelt von LOHEIDE.EU.
 
 == Description ==
 
@@ -31,6 +31,9 @@ auch gegenüber dem Umgehungsrecht der Administratoren.
 * Dateischutz für den Uploads-Ordner: genereller Block ohne Anmeldung,
   Ausnahmeliste (Whitelist) und Regeln je Datei. Website-Logo und -Icon werden
   automatisch freigegeben, damit die Anmeldeseite vollständig bleibt.
+* Backend-Rechte je Rolle: nur zugewiesene Seiten bearbeiten, Beiträge auf
+  bestimmte Kategorien begrenzen, Menüpunkte ein- und ausblenden. Die nötigen
+  Fähigkeiten vergibt das Plugin selbst und nimmt sie beim Abschalten zurück.
 * Shortcodes für einzelne Abschnitte.
 
 == Installation ==
@@ -55,6 +58,12 @@ gesperrt. Das Umgehungsrecht kann in den Einstellungen abgeschaltet werden.
 
 Ja. Alle im System registrierten Rollen stehen automatisch zur Auswahl.
 
+= Kann eine Rolle nur eine einzelne Seite bearbeiten? =
+
+Ja. Unter „Rechte → Backend“ werden einer Rolle die Seiten zugewiesen, die sie
+bearbeiten darf. Alle anderen Seiten erscheinen nicht in der Liste und sind auch
+über die Adresszeile gesperrt. Dasselbe gilt für Beiträge über die Kategorie.
+
 = Schützt das Plugin auch Dateien im Uploads-Ordner? =
 
 Ja, sobald der Dateischutz eingeschaltet ist. Das Plugin schreibt dann eine
@@ -76,6 +85,7 @@ Ausnahmen lassen sich als Muster hinterlegen, etwa „briefkopf.png“ oder
 4. Bereich „Zugriffsrechte“ im Editor.
 5. Hinweis im Frontend.
 6. Dateischutz mit Ausnahmeliste und Statusprüfung.
+7. Backend-Rechte je Rolle.
 
 == Changelog ==
 

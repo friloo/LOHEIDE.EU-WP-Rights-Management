@@ -2,13 +2,13 @@
 
 # LOHEIDE.EU WP Rights Management
 
-**Komplette Seiten im Frontend nach Anmeldung und WordPress-Rollen freigeben oder sperren.**
+**Seiten, Dateien und den Verwaltungsbereich nach Anmeldung und WordPress-Rollen freigeben oder sperren.**
 
 [![Version](https://img.shields.io/badge/Version-1.0.0-3858e9)](#)
 [![WordPress](https://img.shields.io/badge/WordPress-5.8%2B-21759b)](#)
 [![PHP](https://img.shields.io/badge/PHP-7.4%2B-777bb4)](#)
 [![Lizenz](https://img.shields.io/badge/Lizenz-GPL--2.0--or--later-green)](#lizenz)
-[![Tests](https://img.shields.io/badge/Logiktests-70%20Pr%C3%BCfungen-16a34a)](#tests)
+[![Tests](https://img.shields.io/badge/Logiktests-102%20Pr%C3%BCfungen-16a34a)](#tests)
 
 Entwickelt von [LOHEIDE.EU](https://loheide.eu)
 
@@ -47,6 +47,7 @@ Dieses Plugin dreht die Logik um: **Eine gesperrte Rolle beendet die Prüfung so
 - [Auswertungsreihenfolge](#auswertungsreihenfolge)
 - [Vererbung auf Unterseiten](#vererbung-auf-unterseiten)
 - [Dateien im Uploads-Ordner](#dateien-im-uploads-ordner)
+- [Rechte im Verwaltungsbereich](#rechte-im-verwaltungsbereich)
 - [Einstellungen](#einstellungen)
 - [Shortcodes](#shortcodes)
 - [Für Entwickler](#für-entwickler)
@@ -72,6 +73,7 @@ Dieses Plugin dreht die Logik um: **Eine gesperrte Rolle beendet die Prüfung so
 | 📊 **Übersicht & Simulation** | Kennzahlen, Rollenmatrix und „Was sieht Rolle X?“ auf Knopfdruck |
 | ⚡ **Sammelbearbeitung** | Rechte für viele Seiten in einem Schritt setzen |
 | 📁 **Dateischutz** | Genereller Block für den Uploads-Ordner, Whitelist und Regeln je Datei |
+| 🛠️ **Backend-Rechte** | Rollen nur bestimmte Seiten und Kategorien bearbeiten lassen, Menüpunkte je Rolle |
 | 🧱 **Shortcodes** | Einzelne Abschnitte innerhalb einer Seite schützen |
 
 ---
@@ -103,6 +105,10 @@ Standardmäßig sitzt der Bereich in der Seitenleiste – dort ist er auch im Bl
 Welche Rolle ist wo freigegeben, wo gesperrt? Und was sieht sie tatsächlich – inklusive Begründung je Seite:
 
 <img src="docs/images/02-rollen.png" alt="Rollenmatrix und Zugriffssimulation für die Rolle Kunde" width="900">
+
+### Backend-Rechte je Rolle
+
+<img src="docs/images/13-backend-rechte.png" alt="Zuweisung von Seiten, Kategorien und Menüpunkten für eine Rolle" width="900">
 
 ### Dateischutz mit Whitelist und Selbsttest
 
@@ -167,6 +173,10 @@ Bei der Aktivierung erhält die Rolle *Administrator* die Fähigkeiten `lrm_mana
 </table>
 
 **Mehrere Seiten auf einmal:** In der Seitenliste mehrere Einträge markieren → *Aktion wählen → Bearbeiten → Übernehmen*. Dort lassen sich Modus und Rollen für alle markierten Seiten setzen.
+
+**Wer darf bearbeiten?** Das steht unter
+[Rechte im Verwaltungsbereich](#rechte-im-verwaltungsbereich) – dort wird je Rolle
+festgelegt, welche Seiten und Kategorien im Backend zugänglich sind.
 
 **Für Dateien** gilt dasselbe Fenster: In der Medienbibliothek steht das Feld
 **Zugriff**, im Bearbeitungsfenster einer Datei der vollständige Bereich mit
@@ -285,6 +295,83 @@ für Teilabrufe (Videos, große PDFs).
 
 ---
 
+## Rechte im Verwaltungsbereich
+
+Die bisherigen Regeln bestimmen, wer etwas **sehen** darf. Dieser Teil bestimmt,
+wer etwas **bearbeiten** darf – und was er dabei überhaupt zu Gesicht bekommt.
+
+Der Anlass aus der Praxis: Die Mitarbeitervertretung pflegt ihre eigene Seite und
+schreibt Berichte in ihrer eigenen Kategorie. Sie soll genau das tun können –
+und sonst nichts sehen.
+
+**Rechte → Backend**, dort die Rolle wählen:
+
+| Einstellung | Wirkung |
+| --- | --- |
+| **Bearbeitbare Seiten** | Nur diese Seiten darf die Rolle öffnen. Alle anderen erscheinen nicht einmal in der Liste. |
+| **Kategorien** | Die Rolle sieht und bearbeitet ausschließlich Beiträge dieser Kategorien. Andere Kategorien stehen nicht zur Auswahl – auch nicht im Block-Editor. |
+| **Neue Inhalte anlegen** | Getrennt für Seiten und Beiträge. Ein neuer Beitrag erhält automatisch die freigegebene Kategorie. |
+| **Nur selbst verfasste Beiträge** | Schränkt zusätzlich auf die eigenen Beiträge ein. |
+| **Mediathek** | Zugriff ganz abschalten oder auf die eigenen Uploads begrenzen. |
+| **Sichtbare Menüpunkte** | Je Rolle festlegen, welche Menüs und Untermenüs erscheinen – auch die anderer Plugins. |
+
+<img src="docs/images/12-backend-rollen.png" alt="Rollenübersicht der Backend-Rechte" width="900">
+
+### So sieht es die beschränkte Rolle
+
+Links das gewohnte Menü, hier auf das Nötige zusammengeschrumpft – und in der
+Seitenliste steht genau eine Seite:
+
+<img src="docs/images/14-backend-sicht-mav.png" alt="Backend aus Sicht der Mitarbeitervertretung" width="800">
+
+### Zwei Beispiele
+
+**Mitarbeitervertretung:** Seite „Mitarbeitervertretung" zugewiesen, Kategorie
+„Mitarbeitervertretung" freigegeben, neue Beiträge erlaubt, neue Seiten nicht.
+Menüs auf Dashboard, Beiträge, Medien und Seiten reduziert.
+
+**Künstlerteam:** Keine Seiten, keine Kategorien – dafür bleibt als einziger
+inhaltlicher Menüpunkt das Verleihsystem stehen. Alle anderen Rollen sehen es
+nicht, Administratoren schon.
+
+### Fähigkeiten werden mitgeführt
+
+Damit eine Rolle eine fremde Seite bearbeiten kann, braucht sie in WordPress
+zunächst das allgemeine Recht dazu (`edit_others_pages`). Das Plugin vergibt
+solche Fähigkeiten automatisch und begrenzt sie anschließend auf die
+zugewiesenen Inhalte. Endet die Beschränkung, nimmt es sie wieder zurück –
+Fähigkeiten, welche die Rolle schon vorher besaß, bleiben unangetastet.
+
+> [!IMPORTANT]
+> Aus demselben Grund entzieht das Plugin diese Fähigkeiten auch beim
+> **Deaktivieren**. Andernfalls dürfte die Rolle ohne die begrenzende Prüfung
+> plötzlich alle Seiten bearbeiten.
+
+### Nicht nur ausgeblendet, sondern gesperrt
+
+Ein verborgener Menüpunkt allein ist kein Schutz. Jede Beschränkung wird
+zusätzlich serverseitig geprüft:
+
+```text
+Bearbeiten eines Inhalts  → map_meta_cap gibt „do_not_allow" zurück
+Listen im Backend         → auf die zugewiesenen Inhalte eingegrenzt
+Aufruf per Adresszeile    → gesperrte Verwaltungsseiten antworten mit 403
+REST-Schnittstelle        → Bearbeiten fremder Inhalte wird abgewiesen,
+                            Neuanlage ohne Erlaubnis ebenso,
+                            Kategorien werden beim Speichern zurückgesetzt
+```
+
+Der letzte Punkt ist wichtig: Der Block-Editor arbeitet über die REST-Schnittstelle.
+Prüfungen, die nur im Verwaltungsbereich greifen, wären dort wirkungslos.
+
+### Mehrere Rollen
+
+Hat jemand zwei beschränkte Rollen, werden deren Freigaben zusammengeführt.
+Sobald **eine** Rolle beschränkt ist, gilt die Beschränkung – nur das
+Umgehungsrecht (im Regelfall Administratoren) hebt sie auf.
+
+---
+
 ## Einstellungen
 
 | Einstellung | Standard | Wirkung |
@@ -347,6 +434,10 @@ Auch hier schlägt `deny` jedes `roles`.
 | `lrm_uploads_whitelist` | Filter | Ausnahmeliste des Dateischutzes |
 | `lrm_branding_attachments` | Filter | Anhänge, die immer öffentlich bleiben |
 | `lrm_file_denied` | Action | Eine Datei wurde abgewiesen |
+| `lrm_backend_user_config` | Filter | Wirksame Backend-Regel eines Benutzers |
+| `lrm_backend_allowed_pages` | Filter | Bearbeitbare Seiten einer Rolle |
+| `lrm_backend_can_edit_post` | Filter | Entscheidung für weitere Inhaltstypen |
+| `lrm_backend_required_caps` | Filter | Fähigkeiten, die eine beschränkte Rolle erhält |
 | `lrm_loaded` | Action | Plugin vollständig geladen |
 
 <details>
@@ -394,6 +485,7 @@ Die Zugriffslogik läuft ohne WordPress-Installation:
 ```bash
 php tests/test-access.php   # Zugriffslogik
 php tests/test-media.php    # Dateischutz
+php tests/test-backend.php  # Backend-Rechte
 ```
 
 ```
@@ -412,6 +504,10 @@ Der zweite Satz (36 Prüfungen) deckt den Dateischutz ab: Mustervergleich der
 Ausnahmeliste, Vererbung vom übergeordneten Inhalt auf den Anhang und die Abwehr
 von Pfadmanipulationen – darunter `../`, URL-kodierte Varianten, Nullbytes und
 der Versuch, `wp-config.php` oder eine PHP-Datei ausliefern zu lassen.
+
+Der dritte Satz (32 Prüfungen) deckt die Backend-Rechte ab: Zuweisung von Seiten,
+Kategoriebindung bei Beiträgen, Mediathek, das Vergeben und Zurücknehmen der
+Fähigkeiten sowie die Zusammenführung mehrerer Rollen.
 
 ---
 
@@ -487,6 +583,9 @@ _lrm_enabled  _lrm_visibility  _lrm_allowed_roles  _lrm_denied_roles
 _lrm_inherit  _lrm_propagate   _lrm_action         _lrm_redirect_url
 _lrm_message  _lrm_hide
 ```
+
+Die Backend-Rechte liegen in der Option `lrm_backend`, je Rolle mit den
+zugewiesenen Seiten, Kategorien, Menüpunkten und den vergebenen Fähigkeiten.
 
 Global: Option `lrm_settings`. Bei aktivem Dateischutz zusätzlich ein
 Regelblock in `wp-content/uploads/.htaccess`, der beim Abschalten und beim

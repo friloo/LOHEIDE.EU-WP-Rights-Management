@@ -70,6 +70,15 @@ class LRM_Admin {
 
 		add_submenu_page(
 			self::PAGE,
+			__( 'Backend-Rechte', 'loheide-rights-management' ),
+			__( 'Backend', 'loheide-rights-management' ),
+			$cap,
+			LRM_Backend_Admin::PAGE,
+			array( $this, 'render_backend' )
+		);
+
+		add_submenu_page(
+			self::PAGE,
 			__( 'Einstellungen', 'loheide-rights-management' ),
 			__( 'Einstellungen', 'loheide-rights-management' ),
 			$cap,
@@ -195,6 +204,22 @@ class LRM_Admin {
 	 *
 	 * @param string $current Aktive Seite.
 	 */
+	public function page_header( $current ) {
+		$this->header( $current );
+	}
+
+	/**
+	 * Fußzeile für andere Seiten des Plugins.
+	 */
+	public function page_footer() {
+		self::render_footer();
+	}
+
+	/**
+	 * Gemeinsamer Seitenkopf.
+	 *
+	 * @param string $current Aktive Seite.
+	 */
 	protected function header( $current ) {
 		$tabs = array(
 			self::PAGE     => array(
@@ -204,6 +229,10 @@ class LRM_Admin {
 			'lrm-roles'    => array(
 				'label' => __( 'Rollen', 'loheide-rights-management' ),
 				'icon'  => 'dashicons-groups',
+			),
+			LRM_Backend_Admin::PAGE => array(
+				'label' => __( 'Backend', 'loheide-rights-management' ),
+				'icon'  => 'dashicons-admin-network',
 			),
 			'lrm-settings' => array(
 				'label' => __( 'Einstellungen', 'loheide-rights-management' ),
@@ -482,6 +511,17 @@ class LRM_Admin {
 			<?php self::render_footer(); ?>
 		</div>
 		<?php
+	}
+
+	/**
+	 * Seite der Backend-Rechte ausgeben.
+	 */
+	public function render_backend() {
+		if ( ! lrm()->backend_admin ) {
+			return;
+		}
+
+		lrm()->backend_admin->render();
 	}
 
 	/**

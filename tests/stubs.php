@@ -337,3 +337,95 @@ function lrm_test_set_user( $id, $roles = array() ) {
 	$GLOBALS['lrm_test_current_user'] = new WP_User( $id, $roles );
 	LRM_Access::flush();
 }
+
+// ------------------------------------------- Attrappen für Backend-Rechte.
+
+/**
+ * Rollen-Attrappe.
+ */
+class LRM_Test_Role {
+
+	/**
+	 * Rollenschlüssel.
+	 *
+	 * @var string
+	 */
+	public $name = '';
+
+	/**
+	 * Fähigkeiten.
+	 *
+	 * @var array
+	 */
+	public $capabilities = array();
+
+	/**
+	 * Konstruktor.
+	 *
+	 * @param string $name Rollenschlüssel.
+	 * @param array  $caps Fähigkeiten.
+	 */
+	public function __construct( $name, $caps = array() ) {
+		$this->name         = $name;
+		$this->capabilities = $caps;
+	}
+
+	/**
+	 * Fähigkeit vorhanden?
+	 *
+	 * @param string $cap Fähigkeit.
+	 * @return bool
+	 */
+	public function has_cap( $cap ) {
+		return ! empty( $this->capabilities[ $cap ] );
+	}
+
+	/**
+	 * Fähigkeit vergeben.
+	 *
+	 * @param string $cap Fähigkeit.
+	 */
+	public function add_cap( $cap ) {
+		$this->capabilities[ $cap ] = true;
+	}
+
+	/**
+	 * Fähigkeit zurücknehmen.
+	 *
+	 * @param string $cap Fähigkeit.
+	 */
+	public function remove_cap( $cap ) {
+		unset( $this->capabilities[ $cap ] );
+	}
+}
+
+function get_role( $role ) {
+	if ( ! isset( $GLOBALS['lrm_test_roles'][ $role ] ) ) {
+		$GLOBALS['lrm_test_roles'][ $role ] = new LRM_Test_Role( $role );
+	}
+
+	return $GLOBALS['lrm_test_roles'][ $role ];
+}
+
+function update_option( $name, $value ) {
+	$GLOBALS['lrm_test_options'][ $name ] = $value;
+
+	return true;
+}
+
+function wp_get_post_categories( $post_id, $args = array() ) {
+	return isset( $GLOBALS['lrm_test_post_categories'][ $post_id ] )
+		? $GLOBALS['lrm_test_post_categories'][ $post_id ]
+		: array();
+}
+
+function absint( $value ) {
+	return abs( (int) $value );
+}
+
+function get_user_by( $field, $value ) {
+	return wp_get_current_user();
+}
+
+$GLOBALS['lrm_test_roles']            = array();
+$GLOBALS['lrm_test_post_categories']  = array();

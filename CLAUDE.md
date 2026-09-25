@@ -19,6 +19,7 @@ Administratoren. Die Reihenfolge in `LRM_Access::evaluate()` ist verbindlich.
    ```bash
    php tests/test-access.php   # Zugriffslogik
    php tests/test-media.php    # Dateischutz
+   php tests/test-backend.php  # Backend-Rechte
    ```
    Neue Logik braucht neue Zusicherungen. Beide Sätze müssen grün sein.
 3. **Syntax prüfen:** `for f in $(find . -name '*.php' -not -path './.git/*'); do php -l "$f"; done`
@@ -33,6 +34,10 @@ Administratoren. Die Reihenfolge in `LRM_Access::evaluate()` ist verbindlich.
 - **Sicherheit:** Eingaben bereinigen, Ausgaben maskieren, Nonces und
   Fähigkeitsprüfungen (`LRM_Roles::CAP_MANAGE`) bei jeder Schreiboperation.
   Dateipfade immer über `realpath` gegen den Uploads-Ordner prüfen.
+- **Backend-Rechte:** Verborgene Menüpunkte sind kein Schutz. Jede Beschränkung
+  muss zusätzlich serverseitig greifen – über `map_meta_cap`, gefilterte Listen,
+  eine Sperre beim Direktaufruf und die REST-Schnittstelle. Der Block-Editor
+  arbeitet über REST, wo `is_admin()` nicht greift.
 - **Branding:** Der Hinweis „Entwickelt von LOHEIDE.EU“ erscheint im Kopf und
   Fuß der Plugin-Seiten, im Editor-Bereich, in der Plugin-Liste und in der
   Werkzeugleiste. Im Frontend ist er abschaltbar.
@@ -51,6 +56,9 @@ auf höchstens 1500 Pixel Breite zu verkleinern.
 | `includes/class-lrm-rule.php` | Regel eines Inhalts |
 | `includes/class-lrm-roles.php` | Rollen inklusive virtueller Gast-Rolle |
 | `includes/class-lrm-media.php` | Dateischutz im Uploads-Ordner |
+| `includes/class-lrm-backend.php` | Datenmodell der Backend-Rechte |
+| `includes/class-lrm-backend-guard.php` | Durchsetzung im Verwaltungsbereich |
+| `includes/class-lrm-backend-admin.php` | Oberfläche der Backend-Rechte |
 | `includes/class-lrm-frontend.php` | Durchsetzung im Frontend |
 | `includes/class-lrm-metabox.php` | Bereich im Editor, Sammelbearbeitung |
 | `includes/class-lrm-admin.php` | Verwaltungsseiten |

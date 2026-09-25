@@ -25,8 +25,26 @@ if ( file_exists( $lrm_file ) && is_writable( $lrm_file ) ) {
 // Zwischenspeicher der Selbstprüfung.
 delete_transient( 'lrm_self_test' );
 
+// Fähigkeiten zurücknehmen, die für die Backend-Rechte vergeben wurden.
+$lrm_backend = get_option( 'lrm_backend', array() );
+
+if ( is_array( $lrm_backend ) ) {
+	foreach ( $lrm_backend as $lrm_role_key => $lrm_role_config ) {
+		$lrm_role = get_role( $lrm_role_key );
+
+		if ( ! $lrm_role || empty( $lrm_role_config['granted_caps'] ) ) {
+			continue;
+		}
+
+		foreach ( (array) $lrm_role_config['granted_caps'] as $lrm_cap ) {
+			$lrm_role->remove_cap( $lrm_cap );
+		}
+	}
+}
+
 // Einstellungen entfernen.
 delete_option( 'lrm_settings' );
+delete_option( 'lrm_backend' );
 
 // Regeln an den Inhalten entfernen.
 $meta_keys = array(

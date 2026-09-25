@@ -191,11 +191,74 @@
 		}
 	}
 
+	/**
+	 * Suchfelder verdrahten, die eine Liste filtern.
+	 */
+	function initFilters() {
+		document.querySelectorAll( '[data-lrm-filter]' ).forEach( function ( input ) {
+			var target = document.querySelector( input.getAttribute( 'data-lrm-filter' ) );
+
+			if ( ! target ) {
+				return;
+			}
+
+			input.addEventListener( 'input', function () {
+				var term = input.value.trim().toLowerCase();
+
+				target.querySelectorAll( '.lrm-listitem' ).forEach( function ( item ) {
+					var text = item.textContent.toLowerCase();
+					item.classList.toggle( 'is-hidden', '' !== term && -1 === text.indexOf( term ) );
+				} );
+			} );
+
+			// Absenden des Formulars durch die Eingabetaste im Suchfeld verhindern.
+			input.addEventListener( 'keydown', function ( event ) {
+				if ( 'Enter' === event.key ) {
+					event.preventDefault();
+				}
+			} );
+		} );
+	}
+
+	/**
+	 * Menüauswahl: Ein abgeschaltetes Hauptmenü nimmt seine Unterpunkte mit.
+	 */
+	function initMenuList() {
+		document.querySelectorAll( '.lrm-menuitem' ).forEach( function ( item ) {
+			var parent = item.querySelector( '.lrm-switch input[type="checkbox"]' );
+			var children = item.querySelectorAll( '.lrm-menuitem__children input[type="checkbox"]' );
+
+			if ( ! parent || ! children.length ) {
+				return;
+			}
+
+			var sync = function ( propagate ) {
+				children.forEach( function ( child ) {
+					if ( propagate ) {
+						child.checked = parent.checked;
+					}
+
+					child.disabled = ! parent.checked;
+					child.closest( '.lrm-check' ).classList.toggle( 'is-muted', ! parent.checked );
+				} );
+			};
+
+			parent.addEventListener( 'change', function () {
+				sync( true );
+			} );
+
+			sync( false );
+		} );
+	}
+
 	document.addEventListener( 'DOMContentLoaded', function () {
 		var box = document.getElementById( 'lrm-box' );
 
 		if ( box ) {
 			initBox( box );
 		}
+
+		initFilters();
+		initMenuList();
 	} );
 }() );

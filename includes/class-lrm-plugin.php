@@ -55,6 +55,20 @@ class LRM_Plugin {
 	public $media;
 
 	/**
+	 * Durchsetzung der Backend-Rechte.
+	 *
+	 * @var LRM_Backend_Guard
+	 */
+	public $backend;
+
+	/**
+	 * Verwaltung der Backend-Rechte.
+	 *
+	 * @var LRM_Backend_Admin
+	 */
+	public $backend_admin;
+
+	/**
 	 * Singleton.
 	 *
 	 * @return LRM_Plugin
@@ -102,9 +116,15 @@ class LRM_Plugin {
 		$this->shortcodes->hooks();
 		$this->media->hooks();
 
+		$this->backend = new LRM_Backend_Guard();
+		$this->backend->hooks();
+
 		if ( is_admin() ) {
 			$this->admin = new LRM_Admin();
 			$this->admin->hooks();
+
+			$this->backend_admin = new LRM_Backend_Admin();
+			$this->backend_admin->hooks();
 		}
 
 		/**
@@ -135,6 +155,11 @@ class LRM_Plugin {
 	public static function deactivate() {
 		// Ohne aktives Plugin würde die Regel ins Leere greifen.
 		LRM_Media::remove_htaccess();
+
+		// Wichtig: Für die Backend-Rechte erhalten Rollen Fähigkeiten wie
+		// edit_others_pages, die erst das Plugin auf die zugewiesenen Inhalte
+		// begrenzt. Ohne aktives Plugin dürften sie sonst alles bearbeiten.
+		LRM_Backend::revoke_all_capabilities();
 
 		flush_rewrite_rules();
 	}

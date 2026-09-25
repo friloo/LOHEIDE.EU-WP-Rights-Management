@@ -53,6 +53,7 @@ Dieses Plugin dreht die Logik um: **Eine gesperrte Rolle beendet die Prüfung so
 - [Tests](#tests)
 - [Betrieb](#betrieb)
 - [Grenzen](#grenzen)
+- [Mögliche Erweiterungen](#mögliche-erweiterungen)
 - [Datenhaltung](#datenhaltung)
 
 ---
@@ -427,6 +428,45 @@ Damit klar ist, was das Plugin **nicht** leistet:
 - **Sitemaps von SEO-Plugins** (Yoast, Rank Math) verwenden eigene Abfragen; nur die WordPress-eigene Sitemap wird gefiltert.
 - **Mehrsprachigkeit:** Übersetzte Seiten (WPML, Polylang) erben die Regel des Originals nicht automatisch.
 - Die Übersicht wertet bis zu **500 Regeln** aus; das reicht für typische Websites, nicht für sehr große Portale.
+
+---
+
+## Mögliche Erweiterungen
+
+Was das Plugin heute nicht kann, aber sinnvoll ergänzen würde – nach Nutzen
+geordnet, damit die Reihenfolge nachvollziehbar bleibt.
+
+### Naheliegend
+
+| Funktion | Warum | Umfang |
+| --- | --- | --- |
+| **Zeitsteuerung** | Zugriff ab/bis Datum: Preisliste erst zum Stichtag, Schulungsunterlagen nur während des Kurses. Passend zum Vorrang-Prinzip auch eine Sperre, die von selbst endet. | klein |
+| **Rechte für einzelne Personen** | „Diese eine Person darf ausnahmsweise rein" – heute braucht es dafür eine eigene Rolle. Eine gesperrte Person würde wie eine gesperrte Rolle gegen jede Freigabe gewinnen. | mittel |
+| **Zugriffsprotokoll** | Wer hat wann worauf zugegriffen, wer wurde abgewiesen – mit Aufbewahrungsfrist und automatischem Löschen. Bei vertraulichen Unterlagen kaum verzichtbar. | größer |
+| **Zugangslinks für Externe** | Zeitlich begrenzter Link auf Seite oder Datei, ohne Benutzerkonto. Praktisch, um ein Angebot zu verschicken, das nach sieben Tagen verfällt. | mittel |
+
+### Handwerk
+
+| Funktion | Warum | Umfang |
+| --- | --- | --- |
+| **Tests bei jedem Push** | Die Prüfungen laufen bisher nur auf Zuruf. Als GitHub Action sichern sie jede Änderung ab. | sehr klein |
+| **Export und Import der Regeln** | Konfiguration sichern und auf eine andere Installation übertragen, etwa von Test auf Produktiv. | klein |
+| **Übersetzbarkeit** | Die Texte sind deutsch hinterlegt; für ein mehrsprachiges Backend fehlt eine `.pot`-Datei. | klein |
+| **Skalierung** | Die Übersicht wertet bis zu 500 Regeln aus. Für größere Bestände wäre ein Zwischenspeicher nötig. | mittel |
+
+### Nur bei Bedarf
+
+- **Sitemaps von SEO-Plugins** (Yoast, Rank Math) – bisher wird nur die WordPress-eigene Sitemap gefiltert.
+- **Gezielte Ausnahmen für Caching-Plugins** – die üblichen Signale werden gesetzt, eine direkte Anbindung wäre genauer.
+- **Übersetzungs-Plugins** (WPML, Polylang) – Übersetzungen erben die Regel des Originals nicht automatisch.
+- **WooCommerce** – Produkte und Downloads nach Rolle freigeben.
+
+### Bewusst nicht vorgesehen
+
+Ein eigenes Rollensystem würde dem Grundsatz widersprechen, die von WordPress
+bereitgestellten Rollen zu verwenden. Mitgliederverwaltung mit Zahlungsabwicklung
+und ein eigenes Frontend-Dashboard gehören in spezialisierte Plugins – sie würden
+dieses Plugin vergrößern, ohne seine eine Aufgabe besser zu erfüllen.
 
 ---
 

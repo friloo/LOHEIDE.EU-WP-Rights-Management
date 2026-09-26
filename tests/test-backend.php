@@ -338,6 +338,58 @@ lrm_assert( null === LRM_Backend::for_user( wp_get_current_user() ), 'Eine Rolle
 lrm_test_set_user( 14, array( 'qm_editor', 'subscriber' ) );
 lrm_assert( null === LRM_Backend::for_user( wp_get_current_user() ), 'Die Reihenfolge der Rollen spielt dabei keine Rolle' );
 
+// Gemeldeter Fall: Der Abonnent ist vollständig gesperrt, hat aber keinen
+// einzigen Menüpunkt abgewählt – wozu auch, er soll gar nicht hinein. Die
+// Zweitrolle öffnet den Zugang. „Kein Zugang" muss trotzdem heißen: von dieser
+// Rolle bleibt nichts sichtbar.
+$GLOBALS['lrm_test_options']['lrm_backend']['subscriber'] = array_merge(
+	LRM_Backend::defaults(),
+	array(
+		'enabled'        => 1,
+		'block_admin'    => 1,
+		'types'          => array(),
+		'hidden_menus'   => array(),
+		'known_menus'    => array( 'index.php', 'profile.php', 'tools.php' ),
+		'hide_new_menus' => 0,
+		'hidden_widgets' => array(),
+	)
+);
+$GLOBALS['lrm_test_options']['lrm_backend']['mav']['hidden_menus']   = array();
+$GLOBALS['lrm_test_options']['lrm_backend']['mav']['known_menus']    = array( 'index.php', 'profile.php', 'tools.php' );
+$GLOBALS['lrm_test_options']['lrm_backend']['mav']['hide_new_menus'] = 0;
+LRM_Backend::flush();
+
+lrm_test_set_user( 15, array( 'subscriber', 'mav' ) );
+$dicht = LRM_Backend::for_user( wp_get_current_user() );
+
+lrm_assert( 0 === $dicht['block_admin'], 'Die Zweitrolle öffnet den Zugang weiterhin' );
+lrm_assert( 1 === $dicht['hide_new_menus'], 'Eine Rolle ohne Zugang verbirgt alle Menüpunkte' );
+lrm_assert( array() === $dicht['known_menus'], 'Ihr ist kein Menüpunkt bekannt – auch nicht das Profil' );
+lrm_assert( in_array( 'dashboard_activity', $dicht['hidden_widgets'], true ), 'Ebenso die Bereiche auf dem Dashboard' );
+
+// Umgekehrt: Lässt die gesperrte Rolle nichts sperren, weil eine Rolle neue
+// Menüs ausdrücklich zulässt, bleibt die Schranke der strengeren Rolle stehen.
+$GLOBALS['lrm_test_options']['lrm_backend']['subscriber']['block_admin']    = 0;
+$GLOBALS['lrm_test_options']['lrm_backend']['subscriber']['hide_new_menus'] = 1;
+$GLOBALS['lrm_test_options']['lrm_backend']['subscriber']['known_menus']    = array( 'index.php', 'tools.php' );
+$GLOBALS['lrm_test_options']['lrm_backend']['mav']['hide_new_menus']        = 1;
+$GLOBALS['lrm_test_options']['lrm_backend']['mav']['known_menus']           = array( 'index.php', 'profile.php' );
+LRM_Backend::flush();
+
+lrm_test_set_user( 16, array( 'subscriber', 'mav' ) );
+$schnitt = LRM_Backend::for_user( wp_get_current_user() );
+
+lrm_assert( array( 'index.php' ) === array_values( $schnitt['known_menus'] ), 'Bekannt bleibt nur, was allen strengen Rollen bekannt war' );
+
+$GLOBALS['lrm_test_options']['lrm_backend']['mav']['hide_new_menus'] = 0;
+$GLOBALS['lrm_test_options']['lrm_backend']['mav']['known_menus']    = array();
+LRM_Backend::flush();
+
+lrm_test_set_user( 17, array( 'subscriber', 'mav' ) );
+$eine = LRM_Backend::for_user( wp_get_current_user() );
+
+lrm_assert( array( 'index.php', 'tools.php' ) === array_values( $eine['known_menus'] ), 'Eine Rolle, die neue Menüs zulässt, engt die Liste nicht ein' );
+
 lrm_test_set_user( 1, array( 'administrator', 'mav' ) );
 $GLOBALS['lrm_test_caps'][1][ LRM_Roles::CAP_BYPASS ] = true;
 LRM_Backend::flush();

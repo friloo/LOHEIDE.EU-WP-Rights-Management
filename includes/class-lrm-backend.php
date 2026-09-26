@@ -507,7 +507,7 @@ class LRM_Backend {
 					break;
 				}
 
-				$config = self::get( $role );
+				$config = self::locked_out( self::get( $role ) );
 
 				if ( null === $merged ) {
 					$merged          = $config;
@@ -539,11 +539,21 @@ class LRM_Backend {
 				// Was ausgeblendet ist, bleibt ausgeblendet, sobald es eine Rolle
 				// ausblendet – wie im Frontend gewinnt die Sperre. Menüs
 				// freigegebener Inhaltstypen nimmt LRM_Backend_Guard davon aus.
+				// Nur Rollen, die neue Menüpunkte verbergen, bringen eine Schranke
+				// mit: Was einer solchen Rolle unbekannt war, gilt als neu und
+				// bleibt verborgen. Deshalb die Schnittmenge – eine Union wäre
+				// eine Freigabe und würde die Sperre der strengeren Rolle
+				// aufheben. Rollen, die neue Menüs zulassen, reden nicht mit.
+				if ( ! empty( $config['hide_new_menus'] ) ) {
+					$merged['known_menus'] = empty( $merged['hide_new_menus'] )
+						? $config['known_menus']
+						: array_values( array_intersect( $merged['known_menus'], $config['known_menus'] ) );
+				}
+
 				$merged['hide_new_menus'] = ( $merged['hide_new_menus'] || $config['hide_new_menus'] ) ? 1 : 0;
 
 				$merged['hidden_menus']   = array_values( array_unique( array_merge( $merged['hidden_menus'], $config['hidden_menus'] ) ) );
 				$merged['hidden_widgets'] = array_values( array_unique( array_merge( $merged['hidden_widgets'], $config['hidden_widgets'] ) ) );
-				$merged['known_menus']    = array_values( array_unique( array_merge( $merged['known_menus'], $config['known_menus'] ) ) );
 			}
 
 			$result = $unrestricted ? null : $merged;
@@ -569,6 +579,33 @@ class LRM_Backend {
 	 * @param array $b Zweite Regel.
 	 * @return array
 	 */
+	/**
+	 * Eine Rolle ohne Zugang zum Verwaltungsbereich gibt nichts frei.
+	 *
+	 * „Kein Zugang" heißt: Diese Rolle soll im Backend nichts zu sehen bekommen.
+	 * Öffnet eine zweite Rolle den Zugang, darf von der gesperrten Rolle deshalb
+	 * kein Menüpunkt und kein Dashboard-Bereich übrig bleiben – sonst wäre eine
+	 * vollständige Sperre großzügiger als eine teilweise. Sichtbar bleibt nur,
+	 * was LRM_Backend_Guard schützt: das Dashboard und die Menüs der
+	 * Inhaltstypen, die eine andere Rolle freigibt.
+	 *
+	 * @param array $config Regel einer Rolle.
+	 * @return array
+	 */
+	protected static function locked_out( $config ) {
+		if ( empty( $config['block_admin'] ) ) {
+			return $config;
+		}
+
+		$config['hide_new_menus'] = 1;
+		$config['known_menus']    = array();
+		$config['hidden_widgets'] = array_values(
+			array_unique( array_merge( (array) $config['hidden_widgets'], array_keys( self::known_widgets() ) ) )
+		);
+
+		return $config;
+	}
+
 	protected static function merge_types( $a, $b ) {
 		foreach ( $b as $slug => $type ) {
 			if ( ! isset( $a[ $slug ] ) ) {

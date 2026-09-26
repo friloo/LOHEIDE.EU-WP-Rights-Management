@@ -61,8 +61,13 @@ aller Demo-Benutzer: `demo1234`). Danach als Administrator anmelden und unter
   Zweitrolle zur Totalsperre zu machen. Im Backend gilt zusätzlich: Eine Rolle
   **ohne** eingeschaltete Regel ist die weitestgehende Freigabe und hebt die
   Beschränkung der übrigen Rollen auf – sonst legt eine Nebenrolle wie
-  „Abonnent“ jede noch nicht konfigurierte Arbeitsrolle lahm. Im Frontend bleibt
-  es beim harten Vorrang der Sperre.
+  „Abonnent“ jede noch nicht konfigurierte Arbeitsrolle lahm. Umgekehrt gibt eine
+  Rolle mit „Kein Zugang zum Verwaltungsbereich“ nichts frei: Öffnet eine zweite
+  Rolle den Zugang, bleibt von ihr kein Menüpunkt und kein Dashboard-Bereich
+  übrig – sonst wäre eine vollständige Sperre großzügiger als eine teilweise.
+  Deshalb ist `known_menus` beim Zusammenführen die Schnittmenge der Rollen, die
+  neue Menüs verbergen, nie ihre Vereinigung. Im Frontend bleibt es beim harten
+  Vorrang der Sperre.
 - **Branding:** Der Hinweis „Entwickelt von LOHEIDE.EU“ erscheint im Kopf und
   Fuß der Plugin-Seiten, im Editor-Bereich, in der Plugin-Liste und in der
   Werkzeugleiste. Im Frontend ist er abschaltbar.

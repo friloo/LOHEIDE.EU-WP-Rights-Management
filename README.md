@@ -427,6 +427,7 @@ Hat jemand mehrere beschränkte Rollen, gilt beides gleichzeitig:
 | **Freigaben addieren sich** | Wer über eine Rolle eine Seite bearbeiten darf, darf das auch, wenn eine zweite Rolle strenger ist. |
 | **Sperren addieren sich auch** | Was eine Rolle ausblendet, bleibt ausgeblendet – selbst wenn eine andere Rolle es zeigen würde. |
 | **Einschränkungen bleiben** | „Nur eigene Inhalte“ und „nur eigene Dateien“ gelten, sobald eine Rolle sie verlangt. Rollen ohne Zugriff auf die Mediathek reden dabei nicht mit. |
+| **Kein Zugang gibt nichts frei** | Eine Rolle mit „Kein Zugang zum Verwaltungsbereich" lässt nichts sichtbar – auch dann nicht, wenn für sie kein einzelner Menüpunkt abgewählt ist. |
 
 Der typische Fall: Jemand hat *Abonnent* und *Mitarbeitervertretung*. Der
 Abonnent ist vollständig gesperrt – inklusive „Kein Zugang zum
@@ -441,6 +442,27 @@ Aufruf einer Seite ab, die in keinem Menü steht.
 
 Der Zugang selbst zählt dabei als Freigabe: Lässt **eine** Rolle ins Backend,
 kommt die Person hinein.
+
+### „Kein Zugang" heißt: nichts sichtbar
+
+Eine Rolle mit **Kein Zugang zum Verwaltungsbereich** soll dort nichts zu sehen
+bekommen. Öffnet eine zweite Rolle den Zugang, bleibt von der gesperrten Rolle
+deshalb kein Menüpunkt und kein Dashboard-Bereich übrig – unabhängig davon, ob
+ihre Menüliste ausgefüllt ist. Wer den Zugang ganz zumacht, wählt sonst keine
+einzelnen Punkte mehr ab; eine vollständige Sperre wäre großzügiger als eine
+teilweise.
+
+Übrig bleibt allein, was erreichbar bleiben **muss**: das Dashboard, die Menüs
+der freigegebenen Inhaltstypen samt Unterpunkten und die Mediathek, sofern eine
+Rolle sie erlaubt. Im Beispiel *Abonnent (dicht) + Mitarbeitervertretung* sind
+das Dashboard, Beiträge, Seiten und Medien – „Profil", „Werkzeuge" und
+„Kommentare" verschwinden.
+
+> [!TIP]
+> Sollen einzelne Punkte doch bleiben, nehmen Sie der gesperrten Rolle den
+> Haken bei „Kein Zugang zum Verwaltungsbereich" und wählen stattdessen ihre
+> Menüpunkte ab. Dann zählt ihre Liste, und was sie sichtbar lässt, bleibt
+> sichtbar.
 
 ### Eine Rolle ohne Regel hebt die Beschränkung auf
 

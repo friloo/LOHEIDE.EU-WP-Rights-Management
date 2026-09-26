@@ -560,6 +560,13 @@ Demo-Benutzer `demo.mav`, `demo.kunst`, `demo.kunde`, `demo.partner` und
 `demo.gesperrt` – alle mit dem Passwort `demo1234`. Das Skript lässt sich
 mehrfach ausführen und verwendet Vorhandenes weiter.
 
+### Umstieg von eigenem Code
+
+Wer die Rechte bisher in der `functions.php` des Themes geregelt hat, findet
+unter [`docs/migration/`](docs/migration/) ein reales Beispiel: eine bereinigte
+Theme-Datei und eine Tabelle, welcher Codeblock durch welche Einstellung
+ersetzt wird.
+
 ### Automatische Prüfung
 
 `.github/workflows/tests.yml` führt bei jedem Push die Syntaxprüfung aller

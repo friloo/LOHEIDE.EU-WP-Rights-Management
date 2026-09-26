@@ -28,12 +28,12 @@ class LRM_Backend_Guard {
 	 */
 	public function hooks() {
 		// Rechte an einzelnen Inhalten – gelten in jedem Kontext.
-		add_filter( 'map_meta_cap', array( $this, 'map_meta_cap' ), 10, 4 );
+		add_filter( 'map_meta_cap', array( $this, 'map_meta_cap' ), 9999, 4 );
 
 		// Begriffe: Der Block-Editor lädt sie über die REST-Schnittstelle, wo
 		// is_admin() nicht greift. Die Filter laufen deshalb immer und prüfen
 		// den Kontext selbst.
-		add_filter( 'get_terms_args', array( $this, 'filter_term_args' ), 10, 2 );
+		add_filter( 'get_terms_args', array( $this, 'filter_term_args' ), 9999, 2 );
 		add_action( 'wp_after_insert_post', array( $this, 'enforce_terms' ), 99, 2 );
 		add_action( 'save_post', array( $this, 'enforce_terms' ), 99, 2 );
 
@@ -43,7 +43,7 @@ class LRM_Backend_Guard {
 		}
 
 		foreach ( get_taxonomies( array( 'show_in_rest' => true ) ) as $taxonomy ) {
-			add_filter( "rest_{$taxonomy}_query", array( $this, 'filter_rest_terms' ), 10, 2 );
+			add_filter( "rest_{$taxonomy}_query", array( $this, 'filter_rest_terms' ), 9999, 2 );
 		}
 
 		if ( ! is_admin() ) {
@@ -51,8 +51,8 @@ class LRM_Backend_Guard {
 		}
 
 		// Listen im Verwaltungsbereich.
-		add_action( 'pre_get_posts', array( $this, 'filter_admin_queries' ) );
-		add_filter( 'ajax_query_attachments_args', array( $this, 'filter_attachment_query' ) );
+		add_action( 'pre_get_posts', array( $this, 'filter_admin_queries' ), 9999 );
+		add_filter( 'ajax_query_attachments_args', array( $this, 'filter_attachment_query' ), 9999 );
 		add_filter( 'wp_count_posts', array( $this, 'filter_counts' ), 10, 2 );
 
 		// Menüpunkte, Dashboard und Direktaufrufe.

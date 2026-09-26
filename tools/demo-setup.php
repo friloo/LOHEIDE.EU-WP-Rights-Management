@@ -229,7 +229,8 @@ LRM_Backend::save(
 			'page' => array( 'mode' => 'selected', 'items' => array( $mav_page ), 'create' => 0, 'delete' => 0, 'own_only' => 0 ),
 			'post' => array( 'mode' => 'terms', 'taxonomy' => 'category', 'terms' => array( $cat_mav ), 'create' => 1, 'delete' => 1, 'own_only' => 0, 'force_term' => 1 ),
 		),
-		'hidden_menus'   => array( 'edit-comments.php', 'themes.php', 'plugins.php', 'users.php', 'tools.php', 'options-general.php', 'lrm-overview' ),
+		// Das Verleihsystem bleibt dem Künstlerteam vorbehalten.
+		'hidden_menus'   => array( 'edit-comments.php', 'themes.php', 'plugins.php', 'users.php', 'tools.php', 'options-general.php', 'lrm-overview', 'verleihsystem' ),
 		'hide_new_menus' => 1,
 		'hidden_widgets' => array( 'dashboard_right_now', 'dashboard_activity', 'dashboard_primary' ),
 	)

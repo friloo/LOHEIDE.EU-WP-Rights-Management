@@ -305,6 +305,33 @@
 	}
 
 	/**
+	 * Schaltflächen, die eine ganze Liste an- oder abschalten.
+	 */
+	function initBulkToggles() {
+		document.querySelectorAll( '[data-lrm-toggle-all-in]' ).forEach( function ( button ) {
+			button.addEventListener( 'click', function () {
+				var target = document.querySelector( button.getAttribute( 'data-lrm-toggle-all-in' ) );
+
+				if ( ! target ) {
+					return;
+				}
+
+				var on = 'on' === button.getAttribute( 'data-lrm-state' );
+
+				target.querySelectorAll( 'input[type="checkbox"]' ).forEach( function ( input ) {
+					input.disabled = false;
+					input.checked = on;
+				} );
+
+				// Untermenüs richten sich nach ihrem Hauptmenü.
+				target.querySelectorAll( '.lrm-menuitem > .lrm-switch input[type="checkbox"]' ).forEach( function ( input ) {
+					input.dispatchEvent( new Event( 'change' ) );
+				} );
+			} );
+		} );
+	}
+
+	/**
 	 * Suche für große Bestände: Treffer anklicken, Auswahl als Marke behalten.
 	 */
 	function initItemPickers() {
@@ -433,5 +460,6 @@
 		initMenuList();
 		initTypePanels();
 		initItemPickers();
+		initBulkToggles();
 	} );
 }() );

@@ -95,6 +95,8 @@ class LRM_Backend_Admin {
 			</div>
 
 			<?php
+			$this->render_user_check();
+
 			if ( ! $selected ) {
 				$this->render_intro();
 				lrm()->admin->page_footer();
@@ -205,6 +207,8 @@ class LRM_Backend_Admin {
 					</h2>
 				</div>
 				<div class="lrm-panel__body">
+					<?php $this->render_status( $role, $config ); ?>
+
 					<label class="lrm-switch lrm-switch--row">
 						<input type="checkbox" name="lrm_backend[enabled]" value="1" <?php checked( ! empty( $config['enabled'] ) ); ?> />
 						<span class="lrm-switch__track"><span class="lrm-switch__knob"></span></span>
@@ -252,6 +256,336 @@ class LRM_Backend_Admin {
 			</p>
 		</form>
 		<?php
+	}
+
+	/**
+	 * Prüfung für einen einzelnen Benutzer.
+	 *
+	 * Beantwortet die Frage, warum eine Beschränkung bei jemandem nicht greift.
+	 */
+	protected function render_user_check() {
+		$user_id = isset( $_GET['lrm_check_user'] ) ? absint( $_GET['lrm_check_user'] ) : 0; // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+		$user    = $user_id ? get_user_by( 'id', $user_id ) : null;
+		?>
+		<div class="lrm-panel">
+			<div class="lrm-panel__head">
+				<h2><?php esc_html_e( 'Einrichtung prüfen', 'loheide-rights-management' ); ?></h2>
+				<p class="lrm-muted"><?php esc_html_e( 'Greift eine Beschränkung nicht, zeigt die Prüfung eines Benutzers die Ursache.', 'loheide-rights-management' ); ?></p>
+				<form method="get" class="lrm-filterbar">
+					<input type="hidden" name="page" value="<?php echo esc_attr( self::PAGE ); ?>" />
+					<?php if ( isset( $_GET['lrm_role'] ) ) : // phpcs:ignore WordPress.Security.NonceVerification.Recommended ?>
+						<input type="hidden" name="lrm_role" value="<?php echo esc_attr( sanitize_key( wp_unslash( $_GET['lrm_role'] ) ) ); ?>" />
+					<?php endif; ?>
+					<?php
+					wp_dropdown_users(
+						array(
+							'name'             => 'lrm_check_user',
+							'selected'         => $user_id,
+							'show_option_none' => __( '— Benutzer wählen —', 'loheide-rights-management' ),
+							'option_none_value' => 0,
+							'number'           => 200,
+						)
+					);
+					?>
+					<button type="submit" class="button button-primary"><?php esc_html_e( 'Prüfen', 'loheide-rights-management' ); ?></button>
+				</form>
+			</div>
+
+			<?php if ( $user instanceof WP_User && $user->exists() ) : ?>
+				<div class="lrm-panel__body">
+					<?php $this->render_user_result( $user ); ?>
+				</div>
+			<?php endif; ?>
+		</div>
+		<?php
+	}
+
+	/**
+	 * Ergebnis der Benutzerprüfung.
+	 *
+	 * @param WP_User $user Benutzer.
+	 */
+	protected function render_user_result( $user ) {
+		$config     = LRM_Backend::for_user( $user );
+		$has_bypass = user_can( $user, LRM_Roles::CAP_BYPASS );
+		$roles      = array();
+
+		foreach ( (array) $user->roles as $role ) {
+			$roles[ $role ] = LRM_Roles::label( $role );
+		}
+		?>
+		<ul class="lrm-checklist">
+			<li class="is-ok">
+				<span class="dashicons dashicons-admin-users"></span>
+				<?php
+				printf(
+					/* translators: 1: Anzeigename, 2: Liste der Rollen. */
+					esc_html__( '%1$s – Rollen: %2$s', 'loheide-rights-management' ),
+					esc_html( $user->display_name ),
+					esc_html( $roles ? implode( ', ', $roles ) : __( 'keine', 'loheide-rights-management' ) )
+				);
+				?>
+			</li>
+
+			<?php if ( $has_bypass ) : ?>
+				<li class="is-error">
+					<span class="dashicons dashicons-warning"></span>
+					<?php
+					printf(
+						/* translators: %s: Name der Fähigkeit. */
+						esc_html__( 'Dieser Benutzer darf alle Beschränkungen umgehen (Fähigkeit „%s“). Deshalb sieht und bearbeitet er alles. Das ist bei Administratoren gewollt – bei anderen Rollen entziehen Sie die Fähigkeit oder schalten das Umgehungsrecht unter „Einstellungen“ ganz ab.', 'loheide-rights-management' ),
+						esc_html( LRM_Roles::CAP_BYPASS )
+					);
+					?>
+				</li>
+			<?php endif; ?>
+
+			<?php
+			$restricted_roles = array();
+
+			foreach ( array_keys( $roles ) as $role ) {
+				if ( LRM_Backend::is_restricted( $role ) ) {
+					$restricted_roles[] = $roles[ $role ];
+				}
+			}
+
+			if ( empty( $restricted_roles ) ) :
+				?>
+				<li class="is-error">
+					<span class="dashicons dashicons-warning"></span>
+					<?php esc_html_e( 'Für keine seiner Rollen ist eine Beschränkung eingeschaltet. Wählen Sie oben die Rolle und setzen Sie den Schalter „Backend-Rechte dieser Rolle beschränken“.', 'loheide-rights-management' ); ?>
+				</li>
+			<?php else : ?>
+				<li class="is-ok">
+					<span class="dashicons dashicons-yes-alt"></span>
+					<?php
+					printf(
+						/* translators: %s: Liste der Rollen. */
+						esc_html__( 'Beschränkung eingeschaltet für: %s', 'loheide-rights-management' ),
+						esc_html( implode( ', ', $restricted_roles ) )
+					);
+					?>
+				</li>
+			<?php endif; ?>
+
+			<?php if ( null === $config ) : ?>
+				<li class="is-error">
+					<span class="dashicons dashicons-dismiss"></span>
+					<?php esc_html_e( 'Ergebnis: Für diesen Benutzer gilt keine Beschränkung – er sieht und bearbeitet alles, was seine WordPress-Rechte zulassen.', 'loheide-rights-management' ); ?>
+				</li>
+			<?php else : ?>
+				<li class="is-ok">
+					<span class="dashicons dashicons-lock"></span>
+					<?php esc_html_e( 'Ergebnis: Die Beschränkung greift. Im Einzelnen:', 'loheide-rights-management' ); ?>
+				</li>
+				<?php
+				foreach ( LRM_Backend::managed_post_types() as $slug => $label ) :
+					$type = LRM_Backend::type_config( $config, $slug );
+
+					switch ( $type['mode'] ) {
+						case 'all':
+							$text = sprintf(
+								/* translators: %s: Bezeichnung des Inhaltstyps. */
+								__( '%s: alle Inhalte', 'loheide-rights-management' ),
+								$label
+							);
+							break;
+
+						case 'selected':
+							$text = sprintf(
+								/* translators: 1: Bezeichnung des Inhaltstyps, 2: Anzahl. */
+								__( '%1$s: %2$s einzeln zugewiesen', 'loheide-rights-management' ),
+								$label,
+								number_format_i18n( count( $type['items'] ) )
+							);
+							break;
+
+						case 'terms':
+							$text = sprintf(
+								/* translators: 1: Bezeichnung des Inhaltstyps, 2: Anzahl der Begriffe. */
+								__( '%1$s: nur in %2$s Begriffen', 'loheide-rights-management' ),
+								$label,
+								number_format_i18n( count( $type['terms'] ) )
+							);
+							break;
+
+						default:
+							$text = sprintf(
+								/* translators: %s: Bezeichnung des Inhaltstyps. */
+								__( '%s: nicht freigegeben', 'loheide-rights-management' ),
+								$label
+							);
+							break;
+					}
+					?>
+					<li class="<?php echo 'none' === $type['mode'] ? 'is-warn' : 'is-ok'; ?>">
+						<span class="dashicons dashicons-media-default"></span>
+						<?php echo esc_html( $text ); ?>
+					</li>
+					<?php
+				endforeach;
+				?>
+				<li class="<?php echo empty( $config['allow_media'] ) ? 'is-warn' : 'is-ok'; ?>">
+					<span class="dashicons dashicons-admin-media"></span>
+					<?php
+					if ( empty( $config['allow_media'] ) ) {
+						esc_html_e( 'Mediathek: kein Zugriff', 'loheide-rights-management' );
+					} elseif ( ! empty( $config['own_media_only'] ) ) {
+						esc_html_e( 'Mediathek: nur eigene Dateien', 'loheide-rights-management' );
+					} else {
+						esc_html_e( 'Mediathek: alle Dateien', 'loheide-rights-management' );
+					}
+					?>
+				</li>
+			<?php endif; ?>
+		</ul>
+		<?php
+	}
+
+	/**
+	 * Zeigt, was für diese Rolle tatsächlich gilt.
+	 *
+	 * Hilft beim Einrichten: Die häufigsten Ursachen dafür, dass eine
+	 * Beschränkung nicht greift, sind ein abgeschalteter Hauptschalter und das
+	 * Umgehungsrecht der Rolle.
+	 *
+	 * @param string $role   Rollenschlüssel.
+	 * @param array  $config Regel.
+	 */
+	protected function render_status( $role, $config ) {
+		$role_object = get_role( $role );
+		$has_bypass  = $role_object && $role_object->has_cap( LRM_Roles::CAP_BYPASS );
+		$user_count  = LRM_Roles::user_count( $role );
+		$active      = ! empty( $config['enabled'] );
+		$has_rules   = ! empty( $config['types'] ) || ! empty( $config['hidden_menus'] ) || ! empty( $config['hidden_widgets'] );
+
+		if ( $has_bypass ) {
+			?>
+			<div class="lrm-notice lrm-notice--warning">
+				<span class="dashicons dashicons-warning"></span>
+				<div>
+					<strong><?php esc_html_e( 'Diese Rolle darf alle Beschränkungen umgehen', 'loheide-rights-management' ); ?></strong>
+					<p>
+						<?php
+						printf(
+							/* translators: %s: Name der Fähigkeit. */
+							esc_html__( 'Solange die Rolle die Fähigkeit „%s“ besitzt, sieht und bearbeitet sie alles – die Angaben unten bleiben wirkungslos. Das Umgehungsrecht lässt sich unter „Einstellungen“ ganz abschalten oder der Rolle mit einem Rollen-Plugin entziehen.', 'loheide-rights-management' ),
+							esc_html( LRM_Roles::CAP_BYPASS )
+						);
+						?>
+					</p>
+				</div>
+			</div>
+			<?php
+		}
+
+		if ( ! $active && $has_rules ) {
+			?>
+			<div class="lrm-notice lrm-notice--warning">
+				<span class="dashicons dashicons-warning"></span>
+				<div>
+					<strong><?php esc_html_e( 'Die Beschränkung ist nicht eingeschaltet', 'loheide-rights-management' ); ?></strong>
+					<p><?php esc_html_e( 'Es sind Angaben hinterlegt, aber der Schalter unten ist aus. Solange er aus ist, gelten die gewohnten WordPress-Rechte der Rolle.', 'loheide-rights-management' ); ?></p>
+				</div>
+			</div>
+			<?php
+		}
+
+		if ( ! $active ) {
+			return;
+		}
+		?>
+		<div class="lrm-status">
+			<h4 class="lrm-section__title"><?php esc_html_e( 'Das gilt zurzeit', 'loheide-rights-management' ); ?></h4>
+			<ul class="lrm-checklist">
+				<li class="is-ok">
+					<span class="dashicons dashicons-groups"></span>
+					<?php
+					printf(
+						/* translators: %s: Anzahl der Benutzer. */
+						esc_html__( 'Benutzer mit dieser Rolle: %s', 'loheide-rights-management' ),
+						esc_html( null === $user_count ? '—' : number_format_i18n( $user_count ) )
+					);
+					?>
+				</li>
+				<?php
+				foreach ( LRM_Backend::managed_post_types() as $slug => $label ) :
+					$type  = LRM_Backend::type_config( $config, $slug );
+					$total = $this->count_posts( $slug );
+
+					switch ( $type['mode'] ) {
+						case 'all':
+							$text  = sprintf(
+								/* translators: 1: Bezeichnung des Inhaltstyps, 2: Anzahl. */
+								__( '%1$s: alle %2$s Inhalte bearbeitbar', 'loheide-rights-management' ),
+								$label,
+								number_format_i18n( $total )
+							);
+							$state = 'is-warn';
+							break;
+
+						case 'selected':
+							$text  = sprintf(
+								/* translators: 1: Bezeichnung des Inhaltstyps, 2: Anzahl zugewiesener, 3: Gesamtzahl. */
+								__( '%1$s: %2$s von %3$s zugewiesen', 'loheide-rights-management' ),
+								$label,
+								number_format_i18n( count( $type['items'] ) ),
+								number_format_i18n( $total )
+							);
+							$state = count( $type['items'] ) ? 'is-ok' : 'is-warn';
+							break;
+
+						case 'terms':
+							$text  = sprintf(
+								/* translators: 1: Bezeichnung des Inhaltstyps, 2: Anzahl der Begriffe. */
+								__( '%1$s: begrenzt auf %2$s Begriffe', 'loheide-rights-management' ),
+								$label,
+								number_format_i18n( count( $type['terms'] ) )
+							);
+							$state = count( $type['terms'] ) ? 'is-ok' : 'is-warn';
+							break;
+
+						default:
+							continue 2;
+					}
+					?>
+					<li class="<?php echo esc_attr( $state ); ?>">
+						<span class="dashicons dashicons-media-default"></span>
+						<?php echo esc_html( $text ); ?>
+					</li>
+				<?php endforeach; ?>
+				<li class="is-ok">
+					<span class="dashicons dashicons-menu"></span>
+					<?php
+					printf(
+						/* translators: %s: Anzahl der verborgenen Menüpunkte. */
+						esc_html__( 'Verborgene Menüpunkte: %s', 'loheide-rights-management' ),
+						esc_html( number_format_i18n( count( (array) $config['hidden_menus'] ) ) )
+					);
+					?>
+				</li>
+			</ul>
+		</div>
+		<?php
+	}
+
+	/**
+	 * Anzahl vorhandener Inhalte eines Typs.
+	 *
+	 * @param string $post_type Inhaltstyp.
+	 * @return int
+	 */
+	protected function count_posts( $post_type ) {
+		$counts = wp_count_posts( $post_type );
+		$total  = 0;
+
+		foreach ( array( 'publish', 'draft', 'private', 'pending', 'future' ) as $status ) {
+			if ( isset( $counts->$status ) ) {
+				$total += (int) $counts->$status;
+			}
+		}
+
+		return $total;
 	}
 
 	/**
@@ -479,6 +813,10 @@ class LRM_Backend_Admin {
 			<div class="lrm-panel__head">
 				<h2><?php esc_html_e( 'Sichtbare Menüpunkte', 'loheide-rights-management' ); ?></h2>
 				<p class="lrm-muted"><?php esc_html_e( 'Abgeschaltete Punkte verschwinden aus dem Menü und sind auch über die Adresszeile gesperrt.', 'loheide-rights-management' ); ?></p>
+				<span class="lrm-bulkactions">
+					<button type="button" class="lrm-linkbtn" data-lrm-toggle-all-in="#lrm-menulist" data-lrm-state="on"><?php esc_html_e( 'Alle anzeigen', 'loheide-rights-management' ); ?></button>
+					<button type="button" class="lrm-linkbtn" data-lrm-toggle-all-in="#lrm-menulist" data-lrm-state="off"><?php esc_html_e( 'Alle ausblenden', 'loheide-rights-management' ); ?></button>
+				</span>
 			</div>
 			<div class="lrm-panel__body">
 				<label class="lrm-switch lrm-switch--row">
@@ -490,7 +828,7 @@ class LRM_Backend_Admin {
 					</span>
 				</label>
 
-				<div class="lrm-menulist">
+				<div class="lrm-menulist" id="lrm-menulist">
 					<?php foreach ( LRM_Backend_Guard::collect_menus() as $menu ) : ?>
 						<div class="lrm-menuitem">
 							<label class="lrm-switch lrm-switch--compact">
@@ -531,9 +869,13 @@ class LRM_Backend_Admin {
 			<div class="lrm-panel__head">
 				<h2><?php esc_html_e( 'Bereiche auf dem Dashboard', 'loheide-rights-management' ); ?></h2>
 				<p class="lrm-muted"><?php esc_html_e( 'Abgeschaltete Bereiche erscheinen für diese Rolle nicht mehr auf der Startseite des Backends.', 'loheide-rights-management' ); ?></p>
+				<span class="lrm-bulkactions">
+					<button type="button" class="lrm-linkbtn" data-lrm-toggle-all-in="#lrm-widgetlist" data-lrm-state="on"><?php esc_html_e( 'Alle anzeigen', 'loheide-rights-management' ); ?></button>
+					<button type="button" class="lrm-linkbtn" data-lrm-toggle-all-in="#lrm-widgetlist" data-lrm-state="off"><?php esc_html_e( 'Alle ausblenden', 'loheide-rights-management' ); ?></button>
+				</span>
 			</div>
 			<div class="lrm-panel__body">
-				<div class="lrm-roles">
+				<div class="lrm-roles" id="lrm-widgetlist">
 					<?php foreach ( $widgets as $key => $title ) : ?>
 						<label class="lrm-chip lrm-chip--allow">
 							<input type="checkbox" name="lrm_backend[visible_widgets][]" value="<?php echo esc_attr( $key ); ?>" <?php checked( ! in_array( $key, $hidden, true ) ); ?> />

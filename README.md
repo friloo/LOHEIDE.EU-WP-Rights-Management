@@ -330,11 +330,16 @@ automatisch; das lässt sich abschalten.
 
 | Einstellung | Wirkung |
 | --- | --- |
-| **Sichtbare Menüpunkte** | Je Rolle ein- und ausschaltbar, einschließlich der Menüs anderer Plugins. Damit lässt sich ein Plugin einer Rolle vorbehalten. |
+| **Sichtbare Menüpunkte** | Je Rolle ein- und ausschaltbar, einschließlich der Menüs anderer Plugins. Damit lässt sich ein Plugin einer Rolle vorbehalten. Mit „Alle ausblenden“ lässt sich bei null beginnen und gezielt freigeben. |
 | **Später hinzukommende Menüpunkte ausblenden** | Wird ein neues Plugin installiert, bleibt dessen Menü verborgen, bis es freigegeben wird. Menüs freigegebener Inhaltstypen bleiben davon unberührt. |
 | **Was immer bleibt** | Nur das Dashboard – WordPress leitet nach der Anmeldung dorthin. Alles andere, auch „Profil“, lässt sich abschalten. |
 | **Bereiche auf dem Dashboard** | „Auf einen Blick", „Aktivität" und alles andere lässt sich je Rolle abschalten. |
 | **Mediathek** | Zugriff ganz abschalten oder auf die eigenen Uploads begrenzen. |
+
+<img src="docs/images/16-backend-menues.png" alt="Auswahl der sichtbaren Menüpunkte mit Schaltflächen für alles an oder aus" width="900">
+
+Ein abgeschaltetes Hauptmenü nimmt seine Unterpunkte mit; die Dashboard-Bereiche
+haben dieselben Schaltflächen.
 
 <img src="docs/images/12-backend-rollen.png" alt="Rollenübersicht der Backend-Rechte" width="900">
 
@@ -388,6 +393,29 @@ REST-Schnittstelle        → Bearbeiten und Löschen fremder Inhalte wird
 
 Der letzte Punkt ist wichtig: Der Block-Editor arbeitet über die REST-Schnittstelle.
 Prüfungen, die nur im Verwaltungsbereich greifen, wären dort wirkungslos.
+
+### Wenn eine Beschränkung nicht greift
+
+Auf der Seite **Rechte → Backend** steht oben die Prüfung **Einrichtung prüfen**:
+Benutzer auswählen, und es erscheint im Klartext, was für ihn gilt und warum.
+
+<img src="docs/images/17-backend-pruefung.png" alt="Prüfung eines Benutzers mit Ergebnis im Klartext" width="820">
+
+Die drei üblichen Ursachen:
+
+1. **Der Schalter „Backend-Rechte dieser Rolle beschränken" ist aus.** Die
+   Angaben werden gespeichert, wirken aber nicht. Ein Hinweis im Formular weist
+   darauf hin, sobald Angaben ohne eingeschalteten Schalter vorliegen.
+2. **Der Benutzer darf Beschränkungen umgehen.** Bei Administratoren ist das
+   gewollt. Hat eine andere Rolle die Fähigkeit `lrm_bypass_restrictions` – etwa
+   weil sie von einem Rollen-Plugin kopiert wurde –, sieht sie ebenfalls alles.
+   Das Umgehungsrecht lässt sich unter **Einstellungen** ganz abschalten.
+3. **Der Modus steht auf „Alle Inhalte".** Dann ist alles von diesem Typ
+   bearbeitbar. Für eine Begrenzung ist „Nur ausgewählte" oder „Nach Kategorie"
+   nötig.
+
+Merkregel: Sieht jemand **alles**, greift die Regel gar nicht – Ursache 1 oder 2.
+Sieht er **nichts**, greift sie, aber der Inhaltstyp ist nicht freigegeben.
 
 ### Mehrere Rollen
 

@@ -1515,3 +1515,27 @@
 .lrm-termgroup {
 	margin-top: 10px;
 }
+
+.lrm-bulkactions {
+	display: inline-flex;
+	align-items: center;
+	gap: 12px;
+	margin-left: auto;
+	white-space: nowrap;
+}
+
+.lrm-status {
+	margin: 4px 0 16px;
+	padding: 14px 16px;
+	background: var(--lrm-bg);
+	border: 1px solid var(--lrm-border);
+	border-radius: 9px;
+}
+
+.lrm-status .lrm-section__title {
+	margin-bottom: 8px;
+}
+
+.lrm-status .lrm-checklist {
+	margin-bottom: 0;
+}

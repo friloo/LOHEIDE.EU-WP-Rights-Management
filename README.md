@@ -426,6 +426,7 @@ Hat jemand mehrere beschränkte Rollen, gilt beides gleichzeitig:
 | --- | --- |
 | **Freigaben addieren sich** | Wer über eine Rolle eine Seite bearbeiten darf, darf das auch, wenn eine zweite Rolle strenger ist. |
 | **Sperren addieren sich auch** | Was eine Rolle ausblendet, bleibt ausgeblendet – selbst wenn eine andere Rolle es zeigen würde. |
+| **Einschränkungen bleiben** | „Nur eigene Inhalte“ und „nur eigene Dateien“ gelten, sobald eine Rolle sie verlangt. Rollen ohne Zugriff auf die Mediathek reden dabei nicht mit. |
 
 Der typische Fall: Jemand hat *Abonnent* und *Mitarbeitervertretung*. Der
 Abonnent ist vollständig gesperrt – inklusive „Kein Zugang zum

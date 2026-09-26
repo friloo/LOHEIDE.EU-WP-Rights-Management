@@ -19,6 +19,8 @@ defined( 'ABSPATH' ) || exit;
  *     ausgeblendet – auch wenn eine andere Rolle es zeigen würde. Menüs
  *     freigegebener Inhaltstypen bleiben davon unberührt, sonst wären die
  *     zugewiesenen Inhalte nicht erreichbar.
+ *   - Einschränkungen innerhalb einer Freigabe – „nur eigene Inhalte“, „nur
+ *     eigene Dateien“ – bleiben bestehen, sobald eine Rolle sie verlangt.
  *
  * Nur das Umgehungsrecht (Standard: Administrator) hebt die Beschränkung auf.
  */
@@ -501,11 +503,21 @@ class LRM_Backend {
 
 				// Was jemand bearbeiten darf, addiert sich über seine Rollen:
 				// Die weiter gefasste Freigabe gewinnt.
-				$merged['allow_media']    = ( $merged['allow_media'] || $config['allow_media'] ) ? 1 : 0;
+				//
+				// Einschränkungen innerhalb einer Freigabe gehen den umgekehrten
+				// Weg: „nur eigene Dateien“ bleibt bestehen, sobald eine Rolle es
+				// verlangt. Rollen ohne Zugriff auf die Mediathek reden dabei
+				// nicht mit.
+				if ( ! empty( $config['allow_media'] ) ) {
+					$merged['own_media_only'] = empty( $merged['allow_media'] )
+						? $config['own_media_only']
+						: ( ( $merged['own_media_only'] || $config['own_media_only'] ) ? 1 : 0 );
+				}
+
+				$merged['allow_media'] = ( $merged['allow_media'] || $config['allow_media'] ) ? 1 : 0;
 
 				// Zugang ist eine Freigabe: Lässt eine Rolle ins Backend, gilt das.
 				$merged['block_admin'] = ( $merged['block_admin'] && $config['block_admin'] ) ? 1 : 0;
-				$merged['own_media_only'] = ( $merged['own_media_only'] && $config['own_media_only'] ) ? 1 : 0;
 
 				// Was ausgeblendet ist, bleibt ausgeblendet, sobald es eine Rolle
 				// ausblendet – wie im Frontend gewinnt die Sperre. Menüs
@@ -565,7 +577,9 @@ class LRM_Backend {
 				$first[ $flag ] = ( $first[ $flag ] || $second[ $flag ] ) ? 1 : 0;
 			}
 
-			$first['own_only'] = ( $first['own_only'] && $second['own_only'] ) ? 1 : 0;
+			// „Nur selbst verfasste Inhalte“ ist eine Einschränkung: Verlangt sie
+			// eine der Rollen, bleibt sie bestehen.
+			$first['own_only'] = ( $first['own_only'] || $second['own_only'] ) ? 1 : 0;
 
 			$a[ $slug ] = $first;
 		}

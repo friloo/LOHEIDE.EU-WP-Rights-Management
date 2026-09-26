@@ -43,6 +43,17 @@ Zwei Dinge gehören dazu:
    vorhandenen Inhalte zwar noch da, aber für niemanden mehr erreichbar. Das
    Beispiel vergibt sie bei der Aktivierung und einmalig über eine gespeicherte
    Versionsnummer, damit es auch bei einer Aktualisierung greift.
+
+   > [!WARNING]
+   > **Der Zeitpunkt entscheidet.** Die Vergabe muss an `init` hängen, nicht an
+   > `admin_init`: Das Verwaltungsmenü wird vor `admin_init` gebaut, die Rechte
+   > kämen für den laufenden Aufruf zu spät und der Menüpunkt fehlte. Wird die
+   > Versionsnummer dabei gespeichert, obwohl die Vergabe nicht griff, bleibt er
+   > dauerhaft weg. Deshalb speichert das Beispiel die Nummer erst nach
+   > erfolgreicher Vergabe, frischt die Rechte des angemeldeten Benutzers sofort
+   > auf (`WP_User::for_site()` – er trägt seine Rechte als Kopie mit sich) und
+   > hält über `user_has_cap` als Sicherheitsnetz fest: Wer die Website verwalten
+   > darf (`manage_options`), behält die Objekt-Rechte in jedem Fall.
 2. **An den Daten ändert sich nichts.** Inhalte, Bilder und Metafelder bleiben
    unverändert – die Umstellung betrifft nur die Rechteprüfung.
 

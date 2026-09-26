@@ -2,9 +2,18 @@
 /**
  * Plugin Name: FL-Verleihsystem
  * Description: Ein System zum Verleihen von Objekten im Unternehmen.
- * Version:     1.1
+ * Version:     1.2
  * Author:      Friederich Loheide
  * Author URI:  http://loheide.eu
+ *
+ * Geändert gegenüber Fassung 1.1:
+ *
+ * Die Rechtevergabe lief bei „admin_init" – da steht das Verwaltungsmenü
+ * bereits. Beim ersten Aufruf nach der Umstellung fehlte der Punkt „Objekte"
+ * deshalb, und war die Versionsnummer einmal gespeichert, wurde es nicht mehr
+ * nachgeholt. Jetzt läuft die Vergabe früh bei „init", die Versionsnummer wird
+ * nur nach erfolgreicher Vergabe gesetzt, der angemeldete Benutzer erhält seine
+ * Rechte sofort – und Administratoren behalten die Objekt-Rechte in jedem Fall.
  *
  * Geändert gegenüber Fassung 1.0:
  *
@@ -27,7 +36,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-define( 'BV_CAPS_VERSION', '1.1' );
+define( 'BV_CAPS_VERSION', '1.2' );
 
 /* -------------------------------------------------------------------------
  * Rechte des Inhaltstyps
@@ -68,12 +77,23 @@ function bv_grant_capabilities() {
 	$role = get_role( 'administrator' );
 
 	if ( ! $role ) {
-		return;
+		return false;
 	}
 
 	foreach ( bv_get_capabilities() as $cap ) {
 		$role->add_cap( $cap );
 	}
+
+	// Der angemeldete Benutzer trägt seine Rechte als Kopie mit sich. Ohne
+	// diesen Schritt griffe die Vergabe erst beim nächsten Seitenaufruf – das
+	// Menü „Objekte" wäre einmal verschwunden.
+	$user = wp_get_current_user();
+
+	if ( $user && $user->ID && method_exists( $user, 'for_site' ) ) {
+		$user->for_site( get_current_blog_id() );
+	}
+
+	return true;
 }
 
 /**
@@ -84,18 +104,49 @@ register_activation_hook( __FILE__, 'bv_grant_capabilities' );
 /**
  * Rechte auch dann vergeben, wenn das Plugin bereits aktiv war.
  *
- * Bei einer Aktualisierung läuft der Aktivierungs-Hook nicht. Die gespeicherte
- * Version sorgt dafür, dass der Schritt genau einmal ausgeführt wird.
+ * Bei einer Aktualisierung über FTP läuft der Aktivierungs-Hook nicht. Die
+ * gespeicherte Version sorgt dafür, dass der Schritt genau einmal ausgeführt
+ * wird – aber erst dann, wenn er auch geglückt ist. Der Aufruf hängt an „init"
+ * und nicht an „admin_init": Das Verwaltungsmenü ist zu diesem Zeitpunkt noch
+ * nicht gebaut, sonst käme die Vergabe für den laufenden Aufruf zu spät.
  */
 function bv_maybe_upgrade() {
 	if ( get_option( 'bv_caps_version' ) === BV_CAPS_VERSION ) {
 		return;
 	}
 
-	bv_grant_capabilities();
-	update_option( 'bv_caps_version', BV_CAPS_VERSION );
+	if ( bv_grant_capabilities() ) {
+		update_option( 'bv_caps_version', BV_CAPS_VERSION );
+	}
 }
-add_action( 'admin_init', 'bv_maybe_upgrade' );
+add_action( 'init', 'bv_maybe_upgrade', 0 );
+
+/**
+ * Administratoren behalten die Objekt-Rechte in jedem Fall.
+ *
+ * Ein Sicherheitsnetz gegen den Fall, dass die Rollenvergabe einmal nicht
+ * greift – etwa weil die Rolle „administrator" umbenannt oder von einem
+ * anderen Plugin überschrieben wurde. Wer die Website verwalten darf
+ * (manage_options), sieht und bearbeitet auch die Objekte. Damit lässt sich
+ * niemand versehentlich selbst aussperren.
+ *
+ * @param array $allcaps Rechte des Benutzers.
+ * @return array
+ */
+function bv_admin_capabilities( $allcaps ) {
+	if ( empty( $allcaps['manage_options'] ) ) {
+		return $allcaps;
+	}
+
+	foreach ( bv_get_capabilities() as $cap ) {
+		if ( empty( $allcaps[ $cap ] ) ) {
+			$allcaps[ $cap ] = true;
+		}
+	}
+
+	return $allcaps;
+}
+add_filter( 'user_has_cap', 'bv_admin_capabilities' );
 
 /* -------------------------------------------------------------------------
  * Inhaltstyp

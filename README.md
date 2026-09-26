@@ -442,8 +442,25 @@ Aufruf einer Seite ab, die in keinem Menü steht.
 Der Zugang selbst zählt dabei als Freigabe: Lässt **eine** Rolle ins Backend,
 kommt die Person hinein.
 
-Sobald **eine** Rolle beschränkt ist, gilt die Beschränkung; nur das
-Umgehungsrecht (im Regelfall Administratoren) hebt sie auf.
+### Eine Rolle ohne Regel hebt die Beschränkung auf
+
+Beschränkungen greifen nur, wenn für **alle** Rollen des Benutzers eine Regel
+eingeschaltet ist. Hat jemand daneben eine Rolle, für die keine Beschränkung
+gesetzt ist, darf er arbeiten wie gewohnt.
+
+Der Grund: Eine Rolle ohne Regel ist die weitestgehende Freigabe – sie sagt
+„diese Rolle arbeitet normal". Andernfalls würde eine Nebenrolle wie *Abonnent*
+jede Arbeitsrolle lahmlegen, für die noch keine Regel angelegt ist. Genau das
+passierte sonst bei einer Rolle wie *QM-Redaktion*: Der vollständig gesperrte
+Abonnent hätte sie zur Startseite geschickt.
+
+> [!IMPORTANT]
+> Soll eine Beschränkung greifen, muss sie für jede Rolle des Benutzers
+> eingeschaltet sein. Die **Benutzerprüfung** nennt die Rollen ohne Regel
+> ausdrücklich, wenn ein Benutzer beides hat.
+
+Nur das Umgehungsrecht (im Regelfall Administratoren) hebt die Beschränkung
+darüber hinaus auf.
 
 ---
 

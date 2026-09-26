@@ -352,10 +352,13 @@ class LRM_Backend_Admin {
 
 			<?php
 			$restricted_roles = array();
+			$free_roles       = array();
 
 			foreach ( array_keys( $roles ) as $role ) {
 				if ( LRM_Backend::is_restricted( $role ) ) {
 					$restricted_roles[] = $roles[ $role ];
+				} else {
+					$free_roles[] = $roles[ $role ];
 				}
 			}
 
@@ -373,6 +376,19 @@ class LRM_Backend_Admin {
 						/* translators: %s: Liste der Rollen. */
 						esc_html__( 'Beschränkung eingeschaltet für: %s', 'loheide-rights-management' ),
 						esc_html( implode( ', ', $restricted_roles ) )
+					);
+					?>
+				</li>
+			<?php endif; ?>
+
+			<?php if ( ! empty( $restricted_roles ) && ! empty( $free_roles ) ) : ?>
+				<li class="is-warn">
+					<span class="dashicons dashicons-unlock"></span>
+					<?php
+					printf(
+						/* translators: %s: Liste der Rollen ohne Beschränkung. */
+						esc_html__( 'Ohne Beschränkung: %s. Eine solche Rolle darf arbeiten wie gewohnt und hebt die Beschränkung der übrigen Rollen auf – sonst würde eine Nebenrolle wie „Abonnent“ die Arbeitsrolle lahmlegen. Soll die Beschränkung greifen, schalten Sie sie auch für diese Rolle ein.', 'loheide-rights-management' ),
+						esc_html( implode( ', ', $free_roles ) )
 					);
 					?>
 				</li>

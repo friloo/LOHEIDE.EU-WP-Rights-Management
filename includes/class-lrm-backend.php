@@ -10,8 +10,10 @@ defined( 'ABSPATH' ) || exit;
 /**
  * Verwaltet, was eine Rolle im Backend bearbeiten und sehen darf.
  *
- * Die Beschränkung greift, sobald für eine Rolle des Benutzers eine Regel
- * aktiv ist. Bei mehreren beschränkten Rollen gilt:
+ * Eine Beschränkung greift nur, wenn für *alle* Rollen des Benutzers eine
+ * Regel aktiv ist. Hat er daneben eine Rolle ohne Regel, darf er arbeiten wie
+ * gewohnt – sonst würde eine Nebenrolle wie „Abonnent" seine Arbeitsrolle
+ * lahmlegen. Bei mehreren beschränkten Rollen gilt:
  *
  *   - Freigaben addieren sich. Wer über eine Rolle eine Seite bearbeiten darf,
  *     darf das auch mit einer zweiten, strengeren Rolle.
@@ -492,11 +494,17 @@ class LRM_Backend {
 		$result = null;
 
 		if ( ! user_can( $user, LRM_Roles::CAP_BYPASS ) ) {
-			$merged = null;
+			$merged      = null;
+			$unrestricted = false;
 
 			foreach ( (array) $user->roles as $role ) {
 				if ( ! self::is_restricted( $role ) ) {
-					continue;
+					// Eine Rolle ohne eigene Beschränkung ist die weitestgehende
+					// Freigabe: Sie soll normal arbeiten dürfen. Dann bleibt der
+					// Benutzer insgesamt unbeschränkt – sonst würde eine
+					// Nebenrolle wie „Abonnent" die Arbeitsrolle lahmlegen.
+					$unrestricted = true;
+					break;
 				}
 
 				$config = self::get( $role );
@@ -538,7 +546,7 @@ class LRM_Backend {
 				$merged['known_menus']    = array_values( array_unique( array_merge( $merged['known_menus'], $config['known_menus'] ) ) );
 			}
 
-			$result = $merged;
+			$result = $unrestricted ? null : $merged;
 		}
 
 		/**

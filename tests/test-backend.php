@@ -330,6 +330,14 @@ lrm_assert( 1 === $nur_abo['block_admin'], 'Für die gesperrte Rolle allein blei
 lrm_test_set_user( 3, array( 'editor' ) );
 lrm_assert( null === LRM_Backend::for_user( wp_get_current_user() ), 'Eine Rolle ohne Regel bleibt unbeschränkt' );
 
+// Gemeldeter Fall: Eine Arbeitsrolle ohne eigene Regel neben einem vollständig
+// gesperrten Abonnenten. Die Nebenrolle darf die Arbeitsrolle nicht aussperren.
+lrm_test_set_user( 13, array( 'subscriber', 'qm_editor' ) );
+lrm_assert( null === LRM_Backend::for_user( wp_get_current_user() ), 'Eine Rolle ohne Regel hebt die Sperre der Nebenrolle auf' );
+
+lrm_test_set_user( 14, array( 'qm_editor', 'subscriber' ) );
+lrm_assert( null === LRM_Backend::for_user( wp_get_current_user() ), 'Die Reihenfolge der Rollen spielt dabei keine Rolle' );
+
 lrm_test_set_user( 1, array( 'administrator', 'mav' ) );
 $GLOBALS['lrm_test_caps'][1][ LRM_Roles::CAP_BYPASS ] = true;
 LRM_Backend::flush();

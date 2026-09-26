@@ -58,7 +58,11 @@ aller Demo-Benutzer: `demo1234`). Danach als Administrator anmelden und unter
 - **Mehrere Rollen:** Freigaben addieren sich (die weiter gefasste gewinnt),
   Sperren ebenfalls (was eine Rolle ausblendet, bleibt ausgeblendet). Das hält
   den Grundsatz „Sperre gewinnt“ auch im Backend ein, ohne eine strenge
-  Zweitrolle zur Totalsperre zu machen.
+  Zweitrolle zur Totalsperre zu machen. Im Backend gilt zusätzlich: Eine Rolle
+  **ohne** eingeschaltete Regel ist die weitestgehende Freigabe und hebt die
+  Beschränkung der übrigen Rollen auf – sonst legt eine Nebenrolle wie
+  „Abonnent“ jede noch nicht konfigurierte Arbeitsrolle lahm. Im Frontend bleibt
+  es beim harten Vorrang der Sperre.
 - **Branding:** Der Hinweis „Entwickelt von LOHEIDE.EU“ erscheint im Kopf und
   Fuß der Plugin-Seiten, im Editor-Bereich, in der Plugin-Liste und in der
   Werkzeugleiste. Im Frontend ist er abschaltbar.

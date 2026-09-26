@@ -93,6 +93,8 @@ class LRM_Plugin {
 		add_action( 'deleted_post', array( 'LRM_Access', 'flush' ) );
 		add_action( 'update_option_' . LRM_Settings::OPTION, array( 'LRM_Settings', 'flush' ) );
 		add_action( 'set_current_user', array( 'LRM_Access', 'flush' ) );
+
+		add_filter( 'user_has_cap', array( __CLASS__, 'ensure_manage_capability' ) );
 	}
 
 	/**
@@ -142,6 +144,12 @@ class LRM_Plugin {
 		LRM_Settings::install();
 		self::add_capabilities();
 
+		// Beim Deaktivieren werden die Fähigkeiten der beschränkten Rollen
+		// zurückgenommen – sonst dürften sie ohne das Plugin alles bearbeiten.
+		// Beim Aktivieren gehören sie deshalb wieder vergeben, sonst stünden die
+		// gespeicherten Regeln zwar noch da, blieben aber wirkungslos.
+		LRM_Backend::restore_capabilities();
+
 		if ( LRM_Settings::get( 'protect_uploads' ) ) {
 			LRM_Media::write_htaccess();
 		}
@@ -162,6 +170,28 @@ class LRM_Plugin {
 		LRM_Backend::revoke_all_capabilities();
 
 		flush_rewrite_rules();
+	}
+
+	/**
+	 * Wer die Website verwaltet, erreicht auch die Rechteverwaltung.
+	 *
+	 * Die Fähigkeit wird bei der Aktivierung vergeben. Wird das Plugin über FTP
+	 * aktualisiert, läuft dieser Schritt nicht – und ein Rollen-Plugin oder eine
+	 * zurückgesetzte Rolle kann sie ebenso verlieren. Dann stünde das Menü nicht
+	 * mehr da und die Seiten wiesen den Aufruf ab, ausgerechnet dem
+	 * Administrator gegenüber. Dieses Netz fängt das ab, ohne jemandem sonst
+	 * etwas zu erlauben: „manage_options“ hat nur, wer die Website ohnehin
+	 * verwaltet.
+	 *
+	 * @param array $allcaps Fähigkeiten des Benutzers.
+	 * @return array
+	 */
+	public static function ensure_manage_capability( $allcaps ) {
+		if ( ! empty( $allcaps['manage_options'] ) && empty( $allcaps[ LRM_Roles::CAP_MANAGE ] ) ) {
+			$allcaps[ LRM_Roles::CAP_MANAGE ] = true;
+		}
+
+		return $allcaps;
 	}
 
 	/**

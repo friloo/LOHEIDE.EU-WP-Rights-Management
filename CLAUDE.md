@@ -58,8 +58,16 @@ aller Demo-Benutzer: `demo1234`). Danach als Administrator anmelden und unter
   Ausblenden. Verborgen wird zweimal (`admin_menu` und `admin_head`), weil
   Plugins ihre Menüpunkte teils sehr spät einhängen; ein stehengebliebener
   Unterpunkt wird sonst zum Ziel des übergeordneten Menüs.
-  Fest geschützt ist nur das Dashboard
-  (`index.php`); alles andere muss abschaltbar bleiben.
+  Fest geschützt sind das Dashboard (`index.php`) und die eigenen Seiten des
+  Plugins für Benutzer mit `LRM_Roles::CAP_MANAGE` – ein Werkzeug, das seinen
+  eigenen Zugang sperren kann, lässt sich nicht mehr zurücknehmen. Alles andere
+  muss abschaltbar bleiben.
+- **Fähigkeiten:** Die Deaktivierung nimmt den Rollen ihre Fähigkeiten
+  (`revoke_all_capabilities`), die Aktivierung gibt sie zurück
+  (`restore_capabilities`) – sonst stünden die Regeln da und blieben wirkungslos.
+  Fähigkeiten, die nur bei der Aktivierung vergeben werden, fehlen nach einem
+  Upload über FTP: `CAP_MANAGE` hat deshalb ein Netz über `user_has_cap` für
+  alle mit `manage_options`.
 - **Mehrere Rollen:** Freigaben addieren sich (die weiter gefasste gewinnt),
   Sperren ebenfalls (was eine Rolle ausblendet, bleibt ausgeblendet). Das hält
   den Grundsatz „Sperre gewinnt“ auch im Backend ein, ohne eine strenge

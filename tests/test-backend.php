@@ -459,9 +459,45 @@ lrm_assert( $probe->matches( 'edit.php', 'edit.php', '' ), 'Auf die Beitragslist
 unset( $_GET['post_type'] );
 
 /* -------------------------------------------------------------------------
- * 11. Bereinigung
+ * 11. Fähigkeiten über das Abschalten hinweg
  * ---------------------------------------------------------------------- */
-echo PHP_EOL . '11) Bereinigung' . PHP_EOL;
+echo PHP_EOL . '11) Fähigkeiten über das Abschalten hinweg' . PHP_EOL;
+
+$GLOBALS['lrm_test_options']['lrm_backend']['redaktion'] = array_merge(
+	LRM_Backend::defaults(),
+	array(
+		'enabled' => 1,
+		'types'   => array( 'page' => array( 'mode' => 'selected', 'items' => array( 10 ), 'create' => 0, 'delete' => 0 ) ),
+	)
+);
+LRM_Backend::flush();
+LRM_Backend::sync_capabilities( 'redaktion' );
+
+$rolle = get_role( 'redaktion' );
+lrm_assert( $rolle->has_cap( 'edit_others_pages' ), 'Die eingerichtete Rolle erhält ihre Fähigkeiten' );
+
+// Deaktivieren nimmt sie zurück – ohne das Plugin dürfte die Rolle sonst alles
+// bearbeiten, weil erst das Plugin sie auf die zugewiesenen Inhalte begrenzt.
+LRM_Backend::revoke_all_capabilities();
+$rolle = get_role( 'redaktion' );
+lrm_assert( ! $rolle->has_cap( 'edit_others_pages' ), 'Beim Deaktivieren werden sie zurückgenommen' );
+
+$gespeichert = LRM_Backend::get( 'redaktion' );
+lrm_assert( ! empty( $gespeichert['enabled'] ), 'Die Regel selbst bleibt dabei erhalten' );
+
+// Und beim Aktivieren gehören sie wieder vergeben: Sonst stünde die Regel da,
+// bliebe aber wirkungslos – für den Betrachter wären „die Einstellungen weg“.
+LRM_Backend::restore_capabilities();
+$rolle = get_role( 'redaktion' );
+lrm_assert( $rolle->has_cap( 'edit_others_pages' ), 'Beim Aktivieren erhält die Rolle sie zurück' );
+
+lrm_assert( in_array( 'lrm-backend', LRM_Backend_Guard::own_pages(), true ), 'Die Rechteverwaltung zählt zu den eigenen Seiten' );
+lrm_assert( in_array( 'lrm-settings', LRM_Backend_Guard::own_pages(), true ), 'Die Einstellungen ebenfalls' );
+
+/* -------------------------------------------------------------------------
+ * 12. Bereinigung
+ * ---------------------------------------------------------------------- */
+echo PHP_EOL . '12) Bereinigung' . PHP_EOL;
 
 $schmutzig = LRM_Backend::sanitize(
 	array(

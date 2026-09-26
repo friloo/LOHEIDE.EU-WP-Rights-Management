@@ -701,12 +701,53 @@ class LRM_Backend_Guard {
 	 * @param array $config Regel.
 	 * @return array
 	 */
+	/**
+	 * Die eigenen Seiten des Plugins.
+	 *
+	 * @return array
+	 */
+	public static function own_pages() {
+		// Die Namen stehen fest verdrahtet in der Menüanmeldung. Die Konstanten
+		// kommen nur dazu, falls sie einmal abweichen – ohne harte Abhängigkeit
+		// zu den Verwaltungsklassen, die im Frontend nicht geladen sind.
+		$pages = array( 'lrm-overview', 'lrm-roles', 'lrm-backend', 'lrm-settings' );
+
+		if ( class_exists( 'LRM_Admin' ) ) {
+			$pages[] = LRM_Admin::PAGE;
+		}
+
+		if ( class_exists( 'LRM_Backend_Admin' ) ) {
+			$pages[] = LRM_Backend_Admin::PAGE;
+		}
+
+		return array_values( array_unique( $pages ) );
+	}
+
+	/**
+	 * Der Menüpunkt, unter dem die eigenen Seiten hängen.
+	 *
+	 * @return string
+	 */
+	protected static function own_menu() {
+		return class_exists( 'LRM_Admin' ) ? LRM_Admin::PAGE : 'lrm-overview';
+	}
+
 	protected function protected_menu_keys( $config ) {
 		// Das Dashboard bleibt erreichbar: WordPress leitet nach der Anmeldung
 		// dorthin. Das eigene Profil lässt sich dagegen bewusst abschalten.
 		$keys = array( 'index.php' );
 
 		$keys[] = 'index.php|index.php';
+
+		// Die Rechteverwaltung selbst bleibt erreichbar, sonst sperrt sich das
+		// Plugin aus: Wer die Regeln bedienen darf, muss sie auch öffnen können,
+		// um eine zu weit gefasste Sperre wieder zurückzunehmen.
+		if ( current_user_can( LRM_Roles::CAP_MANAGE ) ) {
+			foreach ( self::own_pages() as $slug ) {
+				$keys[] = $slug;
+				$keys[] = self::own_menu() . '|' . $slug;
+			}
+		}
 
 		foreach ( (array) $config['types'] as $slug => $type ) {
 			$type = wp_parse_args( (array) $type, LRM_Backend::type_defaults() );

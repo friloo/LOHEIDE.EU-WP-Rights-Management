@@ -454,6 +454,22 @@ class LRM_Backend {
 	/**
 	 * Alle vom Plugin vergebenen Fähigkeiten zurücknehmen.
 	 */
+	/**
+	 * Die Fähigkeiten aller gespeicherten Regeln neu vergeben.
+	 *
+	 * Gegenstück zu revoke_all_capabilities(): Nach einer Deaktivierung stehen
+	 * die Regeln noch, die dazugehörigen Fähigkeiten aber nicht mehr. Ohne
+	 * diesen Schritt bliebe eine eingerichtete Rolle nach dem Aktivieren ohne
+	 * Rechte – die Einstellungen sähen aus, als wären sie verloren.
+	 */
+	public static function restore_capabilities() {
+		self::flush();
+
+		foreach ( array_keys( self::all() ) as $role ) {
+			self::sync_capabilities( $role );
+		}
+	}
+
 	public static function revoke_all_capabilities() {
 		foreach ( self::all() as $role => $config ) {
 			$role_object = get_role( $role );

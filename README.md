@@ -472,8 +472,11 @@ einzelnen Punkte mehr ab; eine vollständige Sperre wäre großzügiger als eine
 teilweise.
 
 Übrig bleibt allein, was erreichbar bleiben **muss**: das Dashboard, die Menüs
-der freigegebenen Inhaltstypen samt Unterpunkten und die Mediathek, sofern eine
-Rolle sie erlaubt. Hängt ein Inhaltstyp im Menü eines Plugins – etwa ein
+der freigegebenen Inhaltstypen samt Unterpunkten, die Mediathek, sofern eine
+Rolle sie erlaubt – und die Rechteverwaltung selbst für alle, die sie bedienen
+dürfen. Letzteres ist keine Bequemlichkeit: Ohne diese Ausnahme könnte eine zu
+weit gefasste Regel den eigenen Zugang sperren, und dann ließe sie sich nicht
+mehr zurücknehmen. Hängt ein Inhaltstyp im Menü eines Plugins – etwa ein
 Handbuch mit eigenem Menüpunkt –, bleibt dieses Menü samt seiner Übersichtsseite
 erreichbar; sonst stünde der freigegebene Inhalt in einem Menü, das sich nicht
 öffnen lässt. Im Beispiel *Abonnent (dicht) + Mitarbeitervertretung* sind

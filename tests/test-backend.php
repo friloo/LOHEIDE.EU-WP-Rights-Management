@@ -13,6 +13,35 @@ require_once __DIR__ . '/../includes/class-lrm-rule.php';
 require_once __DIR__ . '/../includes/class-lrm-settings.php';
 require_once __DIR__ . '/../includes/class-lrm-access.php';
 require_once __DIR__ . '/../includes/class-lrm-backend.php';
+require_once __DIR__ . '/../includes/class-lrm-backend-guard.php';
+
+/**
+ * Legt die geschützten Methoden des Wächters für den Test frei.
+ */
+class LRM_Guard_Probe extends LRM_Backend_Guard {
+	/**
+	 * Ohne Hooks: Der Test prüft nur den Abgleich.
+	 */
+	public function __construct() {}
+
+	/**
+	 * @param string $entry Menüeintrag.
+	 * @return string
+	 */
+	public function target( $entry ) {
+		return self::menu_target( $entry );
+	}
+
+	/**
+	 * @param string $entry   Menüeintrag.
+	 * @param string $pagenow Aufgerufene Datei.
+	 * @param string $page    Wert von ?page=.
+	 * @return bool
+	 */
+	public function matches( $entry, $pagenow, $page ) {
+		return $this->screen_matches( self::menu_target( $entry ), $pagenow, $page );
+	}
+}
 
 $GLOBALS['lrm_failures'] = 0;
 $GLOBALS['lrm_checks']   = 0;
@@ -397,9 +426,42 @@ LRM_Backend::flush();
 lrm_assert( null === LRM_Backend::for_user( wp_get_current_user() ), 'Das Umgehungsrecht hebt die Beschränkung auf' );
 
 /* -------------------------------------------------------------------------
- * 10. Bereinigung
+ * 10. Abgleich der Verwaltungsseiten
  * ---------------------------------------------------------------------- */
-echo PHP_EOL . '10) Bereinigung' . PHP_EOL;
+echo PHP_EOL . '10) Abgleich der Verwaltungsseiten' . PHP_EOL;
+
+$probe = new LRM_Guard_Probe();
+
+lrm_assert( 'edit.php?post_type=qm_document' === $probe->target( 'qm-handbuch|edit.php?post_type=qm_document' ), 'Für den Abgleich zählt der Unterpunkt, nicht sein Menü' );
+lrm_assert( 'tools.php' === $probe->target( 'tools.php' ), 'Ein Eintrag ohne Unterpunkt bleibt unverändert' );
+
+// Ein Plugin-Menü wird über ?page= aufgerufen.
+lrm_assert( $probe->matches( 'qm-handbuch', 'admin.php', 'qm-handbuch' ), 'Das Menü eines Plugins wird erkannt' );
+lrm_assert( ! $probe->matches( 'qm-handbuch', 'admin.php', 'anderes-plugin' ), 'Ein fremdes Plugin-Menü nicht' );
+
+// Unterseiten, die sich mit ?page= über eine Liste legen: Der Eintrag der
+// Liste darf sie weder sperren noch freigeben – sie haben einen eigenen.
+$_GET['post_type'] = 'page';
+
+lrm_assert( $probe->matches( 'edit.php?post_type=page', 'edit.php', '' ), 'Die Seitenliste passt auf ihren eigenen Eintrag' );
+lrm_assert( ! $probe->matches( 'edit.php?post_type=page', 'edit.php', 'royal-layouts' ), 'Nicht aber auf eine Unterseite, die sich darüberlegt' );
+lrm_assert( $probe->matches( 'edit.php?post_type=page|royal-layouts', 'edit.php', 'royal-layouts' ), 'Die Unterseite trifft ihren eigenen Eintrag' );
+
+// Der alte Fehler: „Beiträge“ sperrte die Listen eigener Inhaltstypen mit.
+$_GET['post_type'] = 'qm_document';
+
+lrm_assert( ! $probe->matches( 'edit.php', 'edit.php', '' ), 'Der Eintrag „Beiträge“ passt nicht auf einen eigenen Inhaltstyp' );
+
+$_GET['post_type'] = 'post';
+
+lrm_assert( $probe->matches( 'edit.php', 'edit.php', '' ), 'Auf die Beitragsliste schon' );
+
+unset( $_GET['post_type'] );
+
+/* -------------------------------------------------------------------------
+ * 11. Bereinigung
+ * ---------------------------------------------------------------------- */
+echo PHP_EOL . '11) Bereinigung' . PHP_EOL;
 
 $schmutzig = LRM_Backend::sanitize(
 	array(

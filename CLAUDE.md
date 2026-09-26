@@ -53,7 +53,12 @@ aller Demo-Benutzer: `demo1234`). Danach als Administrator anmelden und unter
   eine Sperre beim Direktaufruf und die REST-Schnittstelle. Der Block-Editor
   arbeitet über REST, wo `is_admin()` nicht greift. Menüs freigegebener
   Inhaltstypen dürfen nie automatisch verborgen werden: WordPress sperrt
-  Seiten, die in keinem Menü stehen. Fest geschützt ist nur das Dashboard
+  Seiten, die in keinem Menü stehen. Was im Menü stehen bleibt, muss auch
+  aufrufbar sein – der Direktaufruf-Schutz prüft dieselbe Schutzliste wie das
+  Ausblenden. Verborgen wird zweimal (`admin_menu` und `admin_head`), weil
+  Plugins ihre Menüpunkte teils sehr spät einhängen; ein stehengebliebener
+  Unterpunkt wird sonst zum Ziel des übergeordneten Menüs.
+  Fest geschützt ist nur das Dashboard
   (`index.php`); alles andere muss abschaltbar bleiben.
 - **Mehrere Rollen:** Freigaben addieren sich (die weiter gefasste gewinnt),
   Sperren ebenfalls (was eine Rolle ausblendet, bleibt ausgeblendet). Das hält

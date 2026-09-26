@@ -452,6 +452,13 @@ einschließlich ihrer Unterpunkte. Sonst würde eine vollständig gesperrte
 Zweitrolle die zugewiesenen Inhalte unerreichbar machen – WordPress weist den
 Aufruf einer Seite ab, die in keinem Menü steht.
 
+Aus demselben Grund werden verborgene Menüpunkte zweimal entfernt: einmal beim
+Aufbau des Menüs und ein zweites Mal unmittelbar vor der Ausgabe. Manche Plugins
+hängen ihre Punkte sehr spät ein. Bliebe ein solcher Punkt als erster unter einem
+freigegebenen Menü stehen, verlinkte WordPress das Menü darauf – der Klick auf
+„Seiten" landete dann auf einer gesperrten Unterseite und endete mit „Du bist
+leider nicht berechtigt, auf diese Seite zuzugreifen".
+
 Der Zugang selbst zählt dabei als Freigabe: Lässt **eine** Rolle ins Backend,
 kommt die Person hinein.
 
@@ -466,7 +473,10 @@ teilweise.
 
 Übrig bleibt allein, was erreichbar bleiben **muss**: das Dashboard, die Menüs
 der freigegebenen Inhaltstypen samt Unterpunkten und die Mediathek, sofern eine
-Rolle sie erlaubt. Im Beispiel *Abonnent (dicht) + Mitarbeitervertretung* sind
+Rolle sie erlaubt. Hängt ein Inhaltstyp im Menü eines Plugins – etwa ein
+Handbuch mit eigenem Menüpunkt –, bleibt dieses Menü samt seiner Übersichtsseite
+erreichbar; sonst stünde der freigegebene Inhalt in einem Menü, das sich nicht
+öffnen lässt. Im Beispiel *Abonnent (dicht) + Mitarbeitervertretung* sind
 das Dashboard, Beiträge, Seiten und Medien – „Profil", „Werkzeuge" und
 „Kommentare" verschwinden.
 

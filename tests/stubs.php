@@ -91,6 +91,10 @@ function apply_filters( $tag, $value ) {
 	return $value;
 }
 
+function wp_unslash( $value ) {
+	return is_string( $value ) ? stripslashes( $value ) : $value;
+}
+
 function sanitize_key( $key ) {
 	return strtolower( preg_replace( '/[^a-zA-Z0-9_\-]/', '', (string) $key ) );
 }

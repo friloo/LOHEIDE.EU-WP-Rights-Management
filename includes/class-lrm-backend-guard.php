@@ -57,6 +57,12 @@ class LRM_Backend_Guard {
 
 		// Menüpunkte, Dashboard und Direktaufrufe.
 		add_action( 'admin_menu', array( $this, 'hide_menus' ), 9999 );
+
+		// Ein zweiter Durchlauf unmittelbar vor der Ausgabe: Plugins hängen ihre
+		// Menüpunkte teils mit sehr später Priorität ein. Bliebe ein solcher
+		// Punkt stehen, verlinkte WordPress das Hauptmenü darauf – der Klick auf
+		// ein freigegebenes Menü landete dann auf einer gesperrten Seite.
+		add_action( 'admin_head', array( $this, 'hide_menus' ), 0 );
 		add_action( 'admin_init', array( $this, 'block_admin_access' ), 0 );
 		add_action( 'admin_init', array( $this, 'block_forbidden_screens' ), 1 );
 		add_action( 'admin_bar_menu', array( $this, 'clean_admin_bar' ), 999 );
@@ -859,11 +865,14 @@ class LRM_Backend_Guard {
 		$hidden    = array_diff( (array) $config['hidden_menus'], $protected );
 
 		if ( ! empty( $config['hide_new_menus'] ) && $page ) {
-			$known = (array) $config['known_menus'];
+			// Geschützte Seiten zählen wie bekannte: Was im Menü stehen bleiben
+			// muss, muss auch aufrufbar sein. Sonst sperrte eine Rolle ohne
+			// Zugang – der kein Menüpunkt bekannt ist – das Menü des
+			// freigegebenen Inhaltstyps gleich mit aus.
 			$found = false;
 
-			foreach ( $known as $entry ) {
-				if ( $this->screen_matches( str_replace( '|', '', $entry ), $pagenow, $page ) ) {
+			foreach ( array_merge( (array) $config['known_menus'], $protected ) as $entry ) {
+				if ( $this->screen_matches( self::menu_target( $entry ), $pagenow, $page ) ) {
 					$found = true;
 					break;
 				}
@@ -875,7 +884,7 @@ class LRM_Backend_Guard {
 		}
 
 		foreach ( $hidden as $entry ) {
-			if ( $this->screen_matches( str_replace( '|', '', $entry ), $pagenow, $page ) ) {
+			if ( $this->screen_matches( self::menu_target( $entry ), $pagenow, $page ) ) {
 				$this->deny();
 			}
 		}
@@ -889,6 +898,21 @@ class LRM_Backend_Guard {
 	 * @param string $page    Wert von ?page=.
 	 * @return bool
 	 */
+	/**
+	 * Der Teil eines Menüeintrags, der die aufgerufene Seite benennt.
+	 *
+	 * Einträge für Unterpunkte lauten „eltern|kind“. Für den Abgleich zählt das
+	 * Kind: Es benennt die Seite, das Elternteil nur ihren Platz im Menü.
+	 *
+	 * @param string $entry Menüeintrag.
+	 * @return string
+	 */
+	protected static function menu_target( $entry ) {
+		$position = strrpos( $entry, '|' );
+
+		return false === $position ? $entry : substr( $entry, $position + 1 );
+	}
+
 	protected function screen_matches( $entry, $pagenow, $page ) {
 		if ( '' === $entry ) {
 			return false;
@@ -905,6 +929,13 @@ class LRM_Backend_Guard {
 			$file = strtok( $entry, '?' );
 
 			if ( $file !== $pagenow ) {
+				return false;
+			}
+
+			// Ein Eintrag ohne „page=“ meint die Liste selbst. Eine Unterseite,
+			// die sich mit ?page= darüberlegt, hat einen eigenen Eintrag und
+			// wird darüber geprüft.
+			if ( '' !== $page ) {
 				return false;
 			}
 

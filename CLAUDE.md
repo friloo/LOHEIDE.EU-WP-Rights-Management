@@ -53,7 +53,8 @@ aller Demo-Benutzer: `demo1234`). Danach als Administrator anmelden und unter
   eine Sperre beim Direktaufruf und die REST-Schnittstelle. Der Block-Editor
   arbeitet über REST, wo `is_admin()` nicht greift. Menüs freigegebener
   Inhaltstypen dürfen nie automatisch verborgen werden: WordPress sperrt
-  Seiten, die in keinem Menü stehen.
+  Seiten, die in keinem Menü stehen. Fest geschützt ist nur das Dashboard
+  (`index.php`); alles andere muss abschaltbar bleiben.
 - **Branding:** Der Hinweis „Entwickelt von LOHEIDE.EU“ erscheint im Kopf und
   Fuß der Plugin-Seiten, im Editor-Bereich, in der Plugin-Liste und in der
   Werkzeugleiste. Im Frontend ist er abschaltbar.

@@ -332,6 +332,7 @@ automatisch; das lässt sich abschalten.
 | --- | --- |
 | **Sichtbare Menüpunkte** | Je Rolle ein- und ausschaltbar, einschließlich der Menüs anderer Plugins. Damit lässt sich ein Plugin einer Rolle vorbehalten. |
 | **Später hinzukommende Menüpunkte ausblenden** | Wird ein neues Plugin installiert, bleibt dessen Menü verborgen, bis es freigegeben wird. Menüs freigegebener Inhaltstypen bleiben davon unberührt. |
+| **Was immer bleibt** | Nur das Dashboard – WordPress leitet nach der Anmeldung dorthin. Alles andere, auch „Profil“, lässt sich abschalten. |
 | **Bereiche auf dem Dashboard** | „Auf einen Blick", „Aktivität" und alles andere lässt sich je Rolle abschalten. |
 | **Mediathek** | Zugriff ganz abschalten oder auf die eigenen Uploads begrenzen. |
 

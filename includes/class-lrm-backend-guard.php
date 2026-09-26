@@ -661,7 +661,9 @@ class LRM_Backend_Guard {
 	 * @return array
 	 */
 	protected function protected_menu_keys( $config ) {
-		$keys = array( 'index.php', 'profile.php' );
+		// Das Dashboard bleibt erreichbar: WordPress leitet nach der Anmeldung
+		// dorthin. Das eigene Profil lässt sich dagegen bewusst abschalten.
+		$keys = array( 'index.php' );
 
 		foreach ( (array) $config['types'] as $slug => $type ) {
 			$type = wp_parse_args( (array) $type, LRM_Backend::type_defaults() );

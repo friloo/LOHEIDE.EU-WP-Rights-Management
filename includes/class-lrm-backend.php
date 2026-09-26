@@ -628,6 +628,17 @@ class LRM_Backend {
 
 		$config['hide_new_menus'] = 1;
 		$config['known_menus']    = array();
+
+		// Auch ihre Menüauswahl zählt nicht – weder das, was sie zeigt, noch das,
+		// was sie verbirgt. Wer nie hineinkommt, trifft über Menüpunkte keine
+		// Entscheidung; gespeichert ist dort nur, was ein Sammelschalter einmal
+		// gesetzt hat. Sonst nähme diese Liste der arbeitenden Rolle ihre
+		// Freigabe wieder weg. Verborgen bleibt trotzdem alles, was keine Rolle
+		// mit Zugang ausdrücklich zeigt – dafür sorgt „hide_new_menus“.
+		$config['hidden_menus'] = array();
+		// Die Bereiche auf dem Dashboard bleiben dagegen verborgen: Anders als ein
+		// Menüpunkt sperrt ein fehlender Bereich niemanden aus, und das Dashboard
+		// einer Rolle ohne Zugang soll leer sein.
 		$config['hidden_widgets'] = array_values(
 			array_unique( array_merge( (array) $config['hidden_widgets'], array_keys( self::known_widgets() ) ) )
 		);

@@ -505,11 +505,15 @@ erreichbar; sonst stünde der freigegebene Inhalt in einem Menü, das sich nicht
 das Dashboard, Beiträge, Seiten und Medien – „Profil", „Werkzeuge" und
 „Kommentare" verschwinden.
 
-Was die **arbeitende** Rolle ausdrücklich sichtbar lässt, bleibt jedoch
-sichtbar. Eine Rolle ohne Zugang hat nichts ausgewählt – sie soll ja nicht
-hinein –, und diese leere Auswahl darf die getroffene Entscheidung der anderen
-Rolle nicht überstimmen. Das Menü eines Plugins, das Sie für die Arbeitsrolle
-angehakt haben, verschwindet also nicht, nur weil eine Nebenrolle gesperrt ist.
+Die Menüauswahl einer Rolle ohne Zugang zählt dabei **gar nicht** – weder was
+sie zeigt noch was sie verbirgt. Wer nie hineinkommt, trifft über Menüpunkte
+keine Entscheidung; gespeichert ist dort nur, was ein Sammelschalter einmal
+gesetzt hat. Entschieden wird allein in den Rollen, die hineindürfen: Was eine
+von ihnen ausdrücklich sichtbar lässt, bleibt sichtbar; was eine von ihnen
+abwählt, bleibt verborgen. Alles Übrige verbirgt die gesperrte Rolle weiterhin.
+
+Die Bereiche auf dem Dashboard bleiben dagegen verborgen: Anders als ein
+Menüpunkt sperrt ein fehlender Bereich niemanden aus.
 
 > [!TIP]
 > Sollen einzelne Punkte doch bleiben, haken Sie sie in der arbeitenden Rolle

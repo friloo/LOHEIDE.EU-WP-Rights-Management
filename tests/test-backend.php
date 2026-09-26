@@ -362,7 +362,8 @@ lrm_assert( array( 10 ) === $doppel['types']['page']['items'], 'Die zugewiesene 
 lrm_assert( 1 === $doppel['allow_media'], 'Erlaubt eine Rolle die Mediathek, bleibt sie erlaubt' );
 lrm_assert( 1 === $doppel['own_media_only'], 'Die Einschränkung auf eigene Dateien bleibt erhalten' );
 lrm_assert( in_array( 'profile.php', $doppel['hidden_menus'], true ), 'Ein Menüpunkt bleibt verborgen, den eine Rolle verbirgt' );
-lrm_assert( in_array( 'tools.php', $doppel['hidden_menus'], true ), 'Auch die Sperren der strengeren Rolle gelten' );
+lrm_assert( ! in_array( 'tools.php', $doppel['hidden_menus'], true ), 'Die Menüauswahl einer Rolle ohne Zugang zählt nicht mit' );
+lrm_assert( 1 === $doppel['hide_new_menus'] && array() === $doppel['known_menus'], 'Sie verbirgt stattdessen alles, was keine Rolle mit Zugang zeigt' );
 lrm_assert( 1 === $doppel['hide_new_menus'], 'Die strengere Angabe zu neuen Menüs gewinnt' );
 lrm_assert( 0 === $doppel['block_admin'], 'Lässt eine Rolle ins Backend, bleibt der Zugang offen' );
 

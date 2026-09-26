@@ -17,13 +17,17 @@ Administratoren. Die Reihenfolge in `LRM_Access::evaluate()` ist verbindlich.
    `readme.txt` (WordPress-Format) aktuell halten.
 2. **Tests ausführen und erweitern:**
    ```bash
-   php tests/test-access.php   # Zugriffslogik
-   php tests/test-media.php    # Dateischutz
-   php tests/test-backend.php  # Backend-Rechte
+   php tests/test-access.php     # Zugriffslogik
+   php tests/test-media.php      # Dateischutz
+   php tests/test-backend.php    # Backend-Rechte
+   php tests/test-bootstrap.php  # Laden, Kopfdaten, Deinstallation
    ```
    Neue Logik braucht neue Zusicherungen. Beide Sätze müssen grün sein.
-3. **Syntax prüfen:** `for f in $(find . -name '*.php' -not -path './.git/*'); do php -l "$f"; done`
-4. **In den Hauptbranch mergen** und beide Branches pushen.
+3. **Texte übersetzbar halten:** Neue Zeichenketten in `__( '…', 'loheide-rights-management' )`
+   kapseln und danach `php tools/make-pot.php` ausführen – die CI prüft, ob
+   `languages/*.pot` zum Quelltext passt.
+4. **Syntax prüfen:** `for f in $(find . -name '*.php' -not -path './.git/*'); do php -l "$f"; done`
+5. **In den Hauptbranch mergen** und beide Branches pushen.
 
 Die GitHub Action `.github/workflows/tests.yml` führt dasselbe bei jedem Push
 gegen PHP 7.4, 8.1 und 8.3 aus.

@@ -47,9 +47,16 @@ class LRM_Metabox {
 		// sichtbar, deshalb ist das die Voreinstellung.
 		$context = 'normal' === LRM_Settings::get( 'metabox_context' ) ? 'normal' : 'side';
 
+		// In der Seitenleiste ist nur wenig Platz: Dort bricht ein langer Titel um
+		// und drängt die Schaltflächen der Metabox aus der Zeile. Der Hinweis auf
+		// den Hersteller steht im Kasten selbst.
+		$title = 'side' === $context
+			? __( 'Zugriffsrechte', 'loheide-rights-management' )
+			: __( 'Zugriffsrechte', 'loheide-rights-management' ) . ' · ' . LRM_VENDOR;
+
 		add_meta_box(
 			'lrm-permissions',
-			__( 'Zugriffsrechte', 'loheide-rights-management' ) . ' · ' . LRM_VENDOR,
+			$title,
 			array( $this, 'render' ),
 			$post_type,
 			$context,

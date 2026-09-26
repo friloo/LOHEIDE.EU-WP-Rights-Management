@@ -834,6 +834,9 @@ class LRM_Admin {
 							),
 						);
 
+						?>
+						<div class="lrm-switches">
+						<?php
 						foreach ( $toggles as $key => $data ) :
 							?>
 							<label class="lrm-switch lrm-switch--row">
@@ -845,6 +848,7 @@ class LRM_Admin {
 								</span>
 							</label>
 						<?php endforeach; ?>
+						</div>
 					</div>
 				</div>
 

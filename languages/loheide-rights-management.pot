@@ -1,0 +1,1413 @@
+# Copyright (C) 2026 LOHEIDE.EU
+# This file is distributed under the GPL-2.0-or-later license.
+msgid ""
+msgstr ""
+"Project-Id-Version: LOHEIDE.EU WP Rights Management\n"
+"Report-Msgid-Bugs-To: https://loheide.eu\n"
+"POT-Creation-Date: 2026-09-26 19:20+0000\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Domain: loheide-rights-management\n"
+
+#. translators: 1: Anzahl, 2: Bezeichnung des Inhaltstyps.
+#: includes/class-lrm-backend-admin.php:142
+msgid "%1$d %2$s"
+msgstr ""
+
+#. translators: 1: Bezeichnung des Inhaltstyps, 2: Anzahl der Begriffe.
+#: includes/class-lrm-backend-admin.php:151
+msgid "%1$s in %2$d Kategorien"
+msgstr ""
+
+#. translators: 1: Plugin-Name, 2: Version.
+#: includes/class-lrm-admin.php:153
+msgid "%1$s · Version %2$s"
+msgstr ""
+
+#. translators: 1: Anzeigename, 2: Liste der Rollen.
+#: includes/class-lrm-backend-admin.php:335
+msgid "%1$s – Rollen: %2$s"
+msgstr ""
+
+#. translators: 1: Bezeichnung des Inhaltstyps, 2: Anzahl.
+#: includes/class-lrm-backend-admin.php:445
+msgid "%1$s: %2$s einzeln zugewiesen"
+msgstr ""
+
+#. translators: 1: Bezeichnung des Inhaltstyps, 2: Anzahl zugewiesener, 3: Gesamtzahl.
+#: includes/class-lrm-backend-admin.php:723
+msgid "%1$s: %2$s von %3$s zugewiesen"
+msgstr ""
+
+#. translators: 1: Bezeichnung des Inhaltstyps, 2: Anzahl.
+#: includes/class-lrm-backend-admin.php:713
+msgid "%1$s: alle %2$s Inhalte bearbeitbar"
+msgstr ""
+
+#. translators: 1: Bezeichnung des Inhaltstyps, 2: Anzahl der Begriffe.
+#: includes/class-lrm-backend-admin.php:734
+msgid "%1$s: begrenzt auf %2$s Begriffe"
+msgstr ""
+
+#. translators: 1: Bezeichnung des Inhaltstyps, 2: Anzahl der Begriffe.
+#: includes/class-lrm-backend-admin.php:454
+msgid "%1$s: nur in %2$s Begriffen"
+msgstr ""
+
+#. translators: %d: Anzahl vorhandener Inhalte.
+#: includes/class-lrm-backend-admin.php:804
+msgid "%d Inhalte vorhanden"
+msgstr ""
+
+#. translators: %s: Bezeichnung des Inhaltstyps.
+#: includes/class-lrm-backend-admin.php:437
+msgid "%s: alle Inhalte"
+msgstr ""
+
+#. translators: %s: Bezeichnung des Inhaltstyps.
+#: includes/class-lrm-backend-admin.php:463
+msgid "%s: nicht freigegeben"
+msgstr ""
+
+#: includes/class-lrm-backend-admin.php:949
+msgid "(ohne Titel)"
+msgstr ""
+
+#: includes/class-lrm-metabox.php:145
+msgid "1. Grundsichtbarkeit"
+msgstr ""
+
+#: includes/class-lrm-metabox.php:181
+msgid "2. Rollen"
+msgstr ""
+
+#: includes/class-lrm-metabox.php:234
+msgid "3. Verhalten bei fehlendem Zugriff"
+msgstr ""
+
+#: includes/class-lrm-metabox.php:273
+msgid "4. Weitere Optionen"
+msgstr ""
+
+#: includes/class-lrm-backend-admin.php:1064
+msgid "Abgeschaltete Bereiche erscheinen für diese Rolle nicht mehr auf der Startseite des Backends."
+msgstr ""
+
+#: includes/class-lrm-backend-admin.php:1008
+msgid "Abgeschaltete Punkte verschwinden aus dem Menü und sind auch über die Adresszeile gesperrt. Bei Benutzern mit mehreren Rollen bleibt ein Punkt abgeschaltet, sobald eine ihrer Rollen ihn abschaltet."
+msgstr ""
+
+#: includes/class-lrm-admin.php:962
+msgid "Abweisen (403)"
+msgstr ""
+
+#: includes/class-lrm-admin.php:958
+msgid "Abweisung"
+msgstr ""
+
+#: includes/class-lrm-admin.php:196
+msgid "Achtung: Es ist keine Rolle freigegeben – niemand außer Benutzern mit Umgehungsrecht erhält Zugriff."
+msgstr ""
+
+#: includes/class-lrm-admin.php:823
+msgid "Administratoren sehen alle Inhalte – außer ihre Rolle wurde ausdrücklich gesperrt."
+msgstr ""
+
+#: includes/class-lrm-backend.php:835
+msgid "Aktivität"
+msgstr ""
+
+#: includes/class-lrm-admin.php:353 includes/class-lrm-metabox.php:190 includes/class-lrm-metabox.php:209
+msgid "Alle"
+msgstr ""
+
+#: includes/class-lrm-admin.php:898
+msgid "Alle Anfragen an den Uploads-Ordner laufen über WordPress und werden geprüft. Freigegebene Dateien liefert der Server weiterhin direkt aus."
+msgstr ""
+
+#: includes/class-lrm-backend-admin.php:815
+msgid "Alle Inhalte"
+msgstr ""
+
+#: includes/class-lrm-media.php:904
+msgid "Alle Zugriffsrechte bearbeiten"
+msgstr ""
+
+#: includes/class-lrm-backend-admin.php:1010 includes/class-lrm-backend-admin.php:1066
+msgid "Alle anzeigen"
+msgstr ""
+
+#: includes/class-lrm-backend-admin.php:1011 includes/class-lrm-backend-admin.php:1067
+msgid "Alle ausblenden"
+msgstr ""
+
+#: includes/class-lrm-admin.php:577
+msgid "Alle von WordPress bereitgestellten Rollen, ergänzt um die virtuelle Rolle „Gast“ für nicht angemeldete Besucher."
+msgstr ""
+
+#: includes/class-lrm-backend-admin.php:820
+msgid "Alles innerhalb der gewählten Begriffe."
+msgstr ""
+
+#: includes/class-lrm-admin.php:907
+msgid "Alles sperren ohne Anmeldung"
+msgstr ""
+
+#: includes/class-lrm-backend-admin.php:815
+msgid "Alles von diesem Typ darf bearbeitet werden."
+msgstr ""
+
+#: includes/class-lrm-admin.php:1106
+msgid "Angemeldet"
+msgstr ""
+
+#: includes/class-lrm-admin.php:826
+msgid "Anmeldeformular im Hinweis anzeigen"
+msgstr ""
+
+#: includes/class-lrm-frontend.php:660
+msgid "Anmelden"
+msgstr ""
+
+#: includes/class-lrm-access.php:312
+msgid "Anmeldung erforderlich."
+msgstr ""
+
+#: includes/class-lrm-admin.php:480
+msgid "Ansehen"
+msgstr ""
+
+#: includes/class-lrm-metabox.php:288
+msgid "Anzeigen"
+msgstr ""
+
+#: includes/class-lrm-backend.php:834
+msgid "Auf einen Blick"
+msgstr ""
+
+#: includes/class-lrm-backend-admin.php:229
+msgid "Aufrufe von /wp-admin werden zur Website zurückgeleitet. Hat jemand zusätzlich eine Rolle mit Zugang, darf er hinein – dann gelten deren Rechte."
+msgstr ""
+
+#: includes/class-lrm-admin.php:926
+msgid "Ausnahmen (Whitelist)"
+msgstr ""
+
+#: includes/class-lrm-admin.php:74 includes/class-lrm-admin.php:238
+msgid "Backend"
+msgstr ""
+
+#: includes/class-lrm-admin.php:73
+msgid "Backend-Rechte"
+msgstr ""
+
+#: includes/class-lrm-backend-admin.php:219
+msgid "Backend-Rechte dieser Rolle beschränken"
+msgstr ""
+
+#: includes/class-lrm-admin.php:479
+msgid "Bearbeiten"
+msgstr ""
+
+#: includes/class-lrm-admin.php:664
+msgid "Begründung"
+msgstr ""
+
+#: includes/class-lrm-admin.php:444
+msgid "Bei fehlendem Zugriff"
+msgstr ""
+
+#: includes/class-lrm-backend-admin.php:178
+msgid "Bei mehreren Rollen addieren sich beide Seiten: Was eine Rolle freigibt, bleibt freigegeben; was eine Rolle ausblendet, bleibt ausgeblendet."
+msgstr ""
+
+#: includes/class-lrm-backend-admin.php:885
+msgid "Beim Speichern immer einen freigegebenen Begriff setzen"
+msgstr ""
+
+#: includes/class-lrm-admin.php:584
+msgid "Benutzer"
+msgstr ""
+
+#: includes/class-lrm-backend-admin.php:177
+msgid "Benutzer mit Umgehungsrecht – im Regelfall Administratoren – bleiben davon unberührt."
+msgstr ""
+
+#: includes/class-lrm-admin.php:510
+msgid "Benutzer mit dem Recht „lrm_bypass_restrictions“ (Standard: Administratoren) sehen alles, sofern ihre Rolle nicht gesperrt ist."
+msgstr ""
+
+#. translators: %s: Anzahl der Benutzer.
+#: includes/class-lrm-backend-admin.php:699
+msgid "Benutzer mit dieser Rolle: %s"
+msgstr ""
+
+#: includes/class-lrm-backend-admin.php:1063
+msgid "Bereiche auf dem Dashboard"
+msgstr ""
+
+#: includes/class-lrm-backend-admin.php:548
+msgid "Beschränkung"
+msgstr ""
+
+#. translators: %s: Liste der Rollen.
+#: includes/class-lrm-backend-admin.php:379
+msgid "Beschränkung eingeschaltet für: %s"
+msgstr ""
+
+#: includes/class-lrm-metabox.php:429
+msgid "Bestehende Rollenauswahl ersetzen statt ergänzen"
+msgstr ""
+
+#: includes/class-lrm-admin.php:819
+msgid "Betrifft Suchergebnisse, Archive und Seitenlisten im Frontend."
+msgstr ""
+
+#: includes/class-lrm-admin.php:742
+msgid "Breites Layout mit zwei Rollenspalten. Im Block-Editor muss die untere Leiste aufgezogen werden."
+msgstr ""
+
+#: includes/class-lrm-backend-admin.php:898
+msgid "Darf Inhalte löschen"
+msgstr ""
+
+#: includes/class-lrm-backend-admin.php:894
+msgid "Darf neue Inhalte anlegen"
+msgstr ""
+
+#: includes/class-lrm-backend-admin.php:692
+msgid "Das gilt zurzeit"
+msgstr ""
+
+#: includes/class-lrm-media.php:545
+msgid "Datei nicht gefunden."
+msgstr ""
+
+#: includes/class-lrm-admin.php:889
+msgid "Dateien im Uploads-Ordner"
+msgstr ""
+
+#: includes/class-lrm-admin.php:897
+msgid "Dateien schützen"
+msgstr ""
+
+#. translators: %s: Anzahl der bekannten Menüpunkte.
+#: includes/class-lrm-backend-admin.php:501
+msgid "Dazu jeder Punkt, der beim Speichern noch nicht vorhanden war (%s bekannt)."
+msgstr ""
+
+#: includes/class-lrm-backend-admin.php:970
+msgid "Der Bestand ist zu groß für eine Liste. Suchen Sie die Inhalte, die zugewiesen werden sollen."
+msgstr ""
+
+#: includes/class-lrm-admin.php:770
+msgid "Der Inhalt wird wie nicht vorhanden behandelt."
+msgstr ""
+
+#. translators: %d: Statuscode.
+#: includes/class-lrm-media.php:815
+msgid "Der Schutz greift: Der Abruf ohne Anmeldung wurde mit Status %d abgewiesen."
+msgstr ""
+
+#: includes/class-lrm-admin.php:979
+msgid "Die .htaccess konnte nicht geschrieben werden. Bei nginx ist das normal – siehe unten."
+msgstr ""
+
+#: includes/class-lrm-backend-admin.php:680
+msgid "Die Beschränkung ist nicht eingeschaltet"
+msgstr ""
+
+#. translators: %d: Statuscode.
+#: includes/class-lrm-media.php:826
+msgid "Die Datei war ohne Anmeldung abrufbar (Status %d). Die Serverregel greift nicht – prüfen Sie die Hinweise unten."
+msgstr ""
+
+#. translators: %s: Liste der Dateinamen.
+#: loheide-rights-management.php:118
+msgid "Die Installation ist unvollständig. Diese Dateien fehlen im Ordner „includes“: %s. Bitte laden Sie das Plugin vollständig hoch."
+msgstr ""
+
+#. translators: %s: Fehlermeldung.
+#: includes/class-lrm-media.php:801
+msgid "Die Prüfung konnte nicht durchgeführt werden: %s. Manche Server beantworten keine Anfragen an sich selbst; das sagt nichts über den Schutz aus. Rufen Sie die Datei stattdessen in einem privaten Browserfenster auf."
+msgstr ""
+
+#: includes/class-lrm-admin.php:1008
+msgid "Die Prüfung ruft eine geschützte Datei ohne Anmeldung ab."
+msgstr ""
+
+#: includes/class-lrm-backend-admin.php:55
+msgid "Die Rechte wurden gespeichert."
+msgstr ""
+
+#: includes/class-lrm-admin.php:977
+msgid "Die Regel steht in der .htaccess des Uploads-Ordners."
+msgstr ""
+
+#: includes/class-lrm-access.php:310
+msgid "Die Rolle des Benutzers ist nicht freigegeben."
+msgstr ""
+
+#: includes/class-lrm-backend-admin.php:814
+msgid "Die Rolle sieht diesen Inhaltstyp nicht."
+msgstr ""
+
+#: includes/class-lrm-backend-admin.php:257
+msgid "Die Rolle sieht in der Mediathek ausschließlich ihre eigenen Uploads."
+msgstr ""
+
+#: includes/class-lrm-admin.php:768
+msgid "Die Seite wird geladen, der Inhalt durch einen Hinweis ersetzt."
+msgstr ""
+
+#: includes/class-lrm-backend-admin.php:176
+msgid "Die nötigen Fähigkeiten vergibt das Plugin automatisch und nimmt sie zurück, sobald die Beschränkung endet."
+msgstr ""
+
+#: includes/class-lrm-metabox.php:298
+msgid "Diese Regel auch für Unterseiten anwenden"
+msgstr ""
+
+#: includes/class-lrm-backend-admin.php:660
+msgid "Diese Rolle darf alle Beschränkungen umgehen"
+msgstr ""
+
+#. translators: %s: Name der Fähigkeit.
+#: includes/class-lrm-backend-admin.php:348
+msgid "Dieser Benutzer darf alle Beschränkungen umgehen (Fähigkeit „%s“). Deshalb sieht und bearbeitet er alles. Das ist bei Administratoren gewollt – bei anderen Rollen entziehen Sie die Fähigkeit oder schalten das Umgehungsrecht unter „Einstellungen“ ganz ab."
+msgstr ""
+
+#: includes/class-lrm-settings.php:42
+msgid "Dieser Bereich ist geschützt. Bitte melden Sie sich mit einem berechtigten Konto an."
+msgstr ""
+
+#. translators: 1: benötigte Version, 2: vorhandene Version.
+#: loheide-rights-management.php:43
+msgid "Dieses Plugin benötigt PHP %1$s oder neuer. Auf diesem Server läuft PHP %2$s."
+msgstr ""
+
+#. translators: 1: benötigte Version, 2: vorhandene Version.
+#: loheide-rights-management.php:52
+msgid "Dieses Plugin benötigt WordPress %1$s oder neuer. Diese Website nutzt WordPress %2$s."
+msgstr ""
+
+#: includes/class-lrm-admin.php:801
+msgid "Eigene Anmeldeseite"
+msgstr ""
+
+#: includes/class-lrm-metabox.php:263
+msgid "Eigener Hinweistext"
+msgstr ""
+
+#: includes/class-lrm-admin.php:952
+msgid "Ein Eintrag je Zeile, relativ zum Uploads-Ordner. * steht für beliebige Zeichen, ? für ein einzelnes. Ein reiner Dateiname passt auf jeden Ordner. Vollständige Adressen werden automatisch gekürzt."
+msgstr ""
+
+#: includes/class-lrm-admin.php:908
+msgid "Eine Datei ist gesperrt, wenn sie selbst oder die Seite, an der sie hängt, eine Regel hat."
+msgstr ""
+
+#: includes/class-lrm-backend-admin.php:284
+msgid "Einrichtung prüfen"
+msgstr ""
+
+#: includes/class-lrm-metabox.php:406
+msgid "Einschränkung entfernen"
+msgstr ""
+
+#: includes/class-lrm-admin.php:82 includes/class-lrm-admin.php:83 includes/class-lrm-admin.php:100 includes/class-lrm-admin.php:242
+msgid "Einstellungen"
+msgstr ""
+
+#: includes/class-lrm-admin.php:866
+msgid "Einstellungen speichern"
+msgstr ""
+
+#: includes/class-lrm-backend-admin.php:816
+msgid "Einzeln zugewiesene Inhalte."
+msgstr ""
+
+#: includes/class-lrm-admin.php:190 includes/class-lrm-backend-admin.php:988
+msgid "Entfernen"
+msgstr ""
+
+#. translators: %s: Name des Herstellers.
+#: includes/class-lrm-admin.php:109 includes/class-lrm-admin.php:127 includes/class-lrm-admin.php:260 includes/class-lrm-frontend.php:485
+msgid "Entwickelt von %s"
+msgstr ""
+
+#. translators: %s: Rollenname.
+#: includes/class-lrm-admin.php:654
+msgid "Ergebnis für die Rolle „%s“ ohne Umgehungsrecht:"
+msgstr ""
+
+#: includes/class-lrm-admin.php:193
+msgid "Ergebnis: Der Inhalt ist öffentlich sichtbar."
+msgstr ""
+
+#: includes/class-lrm-backend-admin.php:407
+msgid "Ergebnis: Die Beschränkung greift. Im Einzelnen:"
+msgstr ""
+
+#: includes/class-lrm-backend-admin.php:402
+msgid "Ergebnis: Für diesen Benutzer gilt keine Beschränkung – er sieht und bearbeitet alles, was seine WordPress-Rechte zulassen."
+msgstr ""
+
+#: includes/class-lrm-admin.php:198
+msgid "Ergebnis: Keine eigene Einschränkung für diesen Inhalt."
+msgstr ""
+
+#: includes/class-lrm-admin.php:195
+msgid "Ergebnis: Sichtbar für %s."
+msgstr ""
+
+#: includes/class-lrm-admin.php:194
+msgid "Ergebnis: Sichtbar für alle angemeldeten Benutzer."
+msgstr ""
+
+#. translators: %s: Liste der Dateinamen.
+#: includes/class-lrm-admin.php:937
+msgid "Erkannt: %s"
+msgstr ""
+
+#. translators: %s: Art des Webservers.
+#: includes/class-lrm-admin.php:988
+msgid "Erkannter Webserver: %s"
+msgstr ""
+
+#: includes/class-lrm-admin.php:833
+msgid "Erscheint als dezente Zeile unter dem Hinweistext auf gesperrten Seiten."
+msgstr ""
+
+#: includes/class-lrm-backend-admin.php:681
+msgid "Es sind Angaben hinterlegt, aber der Schalter unten ist aus. Solange er aus ist, gelten die gewohnten WordPress-Rechte der Rolle."
+msgstr ""
+
+#: includes/class-lrm-backend-admin.php:932
+msgid "Es sind noch keine Inhalte dieses Typs vorhanden."
+msgstr ""
+
+#: includes/class-lrm-admin.php:687
+msgid "Es sind noch keine Inhalte eingeschränkt."
+msgstr ""
+
+#: includes/class-lrm-media.php:779
+msgid "Es wurde keine Datei gefunden, die zum Prüfen geeignet ist. Laden Sie eine Datei hoch."
+msgstr ""
+
+#: includes/class-lrm-admin.php:821
+msgid "Feeds schützen"
+msgstr ""
+
+#: includes/class-lrm-admin.php:284 includes/class-lrm-admin.php:536 includes/class-lrm-admin.php:703 includes/class-lrm-admin.php:1033 includes/class-lrm-admin.php:1047 includes/class-lrm-backend-admin.php:39 includes/class-lrm-backend-admin.php:1113 includes/class-lrm-backend-admin.php:1172
+msgid "Fehlende Berechtigung."
+msgstr ""
+
+#: includes/class-lrm-admin.php:192
+msgid "Folgende Rollen sind freigegeben und gleichzeitig gesperrt: %s. Für diese Rollen gilt die Sperre."
+msgstr ""
+
+#: includes/class-lrm-admin.php:442
+msgid "Freigegeben"
+msgstr ""
+
+#: includes/class-lrm-admin.php:585
+msgid "Freigegeben auf"
+msgstr ""
+
+#: includes/class-lrm-backend-admin.php:551
+msgid "Freigegebene Inhaltstypen"
+msgstr ""
+
+#: includes/class-lrm-metabox.php:187
+msgid "Freigegebene Rollen"
+msgstr ""
+
+#: includes/class-lrm-metabox.php:413
+msgid "Freigegebene Rollen setzen"
+msgstr ""
+
+#: includes/class-lrm-metabox.php:152
+msgid "Für alle sichtbar. Gesperrte Rollen greifen trotzdem."
+msgstr ""
+
+#. translators: %s: Liste der Rollennamen.
+#: includes/class-lrm-metabox.php:134
+msgid "Für diese Rollen bleibt der Zugriff gesperrt, unabhängig von der Auswahl unten: %s"
+msgstr ""
+
+#: includes/class-lrm-access.php:316
+msgid "Für diesen Inhalt ist keine Einschränkung aktiv."
+msgstr ""
+
+#: includes/class-lrm-backend-admin.php:371
+msgid "Für keine seiner Rollen ist eine Beschränkung eingeschaltet. Wählen Sie oben die Rolle und setzen Sie den Schalter „Backend-Rechte dieser Rolle beschränken“."
+msgstr ""
+
+#: includes/class-lrm-admin.php:718
+msgid "Für welche Inhaltstypen sollen Zugriffsrechte verfügbar sein?"
+msgstr ""
+
+#: includes/class-lrm-roles.php:49
+msgid "Gast (nicht angemeldet)"
+msgstr ""
+
+#. translators: %s: Titel der übergeordneten Seite.
+#: includes/class-lrm-admin.php:1162
+msgid "Geerbt von „%s“"
+msgstr ""
+
+#. translators: %s: Titel der übergeordneten Seite.
+#: includes/class-lrm-frontend.php:501
+msgid "Geerbt von: %s"
+msgstr ""
+
+#: includes/class-lrm-metabox.php:105
+msgid "Geerbte Regel aktiv"
+msgstr ""
+
+#: includes/class-lrm-admin.php:907
+msgid "Genereller Block: keine Datei ohne Anmeldung – außer den Ausnahmen unten."
+msgstr ""
+
+#: includes/class-lrm-admin.php:367 includes/class-lrm-admin.php:410
+msgid "Geschützte Inhalte"
+msgstr ""
+
+#: includes/class-lrm-admin.php:443
+msgid "Gesperrt"
+msgstr ""
+
+#: includes/class-lrm-admin.php:586
+msgid "Gesperrt auf"
+msgstr ""
+
+#. translators: %s: Liste der Rollennamen.
+#: includes/class-lrm-access.php:308
+msgid "Gesperrt über die Rolle: %s"
+msgstr ""
+
+#: includes/class-lrm-admin.php:197
+msgid "Gesperrt: %s (Vorrang)."
+msgstr ""
+
+#: includes/class-lrm-admin.php:818
+msgid "Gesperrte Inhalte aus Menüs entfernen"
+msgstr ""
+
+#: includes/class-lrm-admin.php:819
+msgid "Gesperrte Inhalte aus Suche und Listen entfernen"
+msgstr ""
+
+#: includes/class-lrm-admin.php:509 includes/class-lrm-metabox.php:206
+msgid "Gesperrte Rollen"
+msgstr ""
+
+#: includes/class-lrm-metabox.php:283
+msgid "Globale Einstellung (anzeigen)"
+msgstr ""
+
+#: includes/class-lrm-metabox.php:282
+msgid "Globale Einstellung (verbergen)"
+msgstr ""
+
+#. translators: %s: Bezeichnung der globalen Aktion.
+#: includes/class-lrm-metabox.php:243
+msgid "Globale Einstellung verwenden (%s)"
+msgstr ""
+
+#: includes/class-lrm-backend-admin.php:285
+msgid "Greift eine Beschränkung nicht, zeigt die Prüfung eines Benutzers die Ursache."
+msgstr ""
+
+#: includes/class-lrm-admin.php:511
+msgid "Grundsichtbarkeit"
+msgstr ""
+
+#: includes/class-lrm-backend-admin.php:179
+msgid "Hat jemand daneben eine Rolle ohne eingeschaltete Beschränkung, darf er arbeiten wie gewohnt: Sonst legte eine Nebenrolle wie „Abonnent“ jede noch nicht eingerichtete Arbeitsrolle lahm."
+msgstr ""
+
+#: includes/class-lrm-admin.php:768
+msgid "Hinweis anzeigen"
+msgstr ""
+
+#: includes/class-lrm-frontend.php:674
+msgid "Hinweis für Redaktionen:"
+msgstr ""
+
+#: includes/class-lrm-metabox.php:330
+msgid "Hinweis statt Inhalt anzeigen"
+msgstr ""
+
+#. translators: %s: Name des Herstellers.
+#: includes/class-lrm-admin.php:830
+msgid "Hinweis „Zugriffsschutz von %s“ im Frontend anzeigen"
+msgstr ""
+
+#: includes/class-lrm-admin.php:797
+msgid "Hinweistext"
+msgstr ""
+
+#: includes/class-lrm-frontend.php:668
+msgid "Ihr Benutzerkonto ist für diesen Bereich ausdrücklich gesperrt."
+msgstr ""
+
+#: includes/class-lrm-frontend.php:670
+msgid "Ihr Benutzerkonto verfügt nicht über die erforderliche Berechtigung."
+msgstr ""
+
+#: includes/class-lrm-admin.php:821
+msgid "Im RSS-Feed erscheint statt des Inhalts der Hinweistext."
+msgstr ""
+
+#: includes/class-lrm-metabox.php:276
+msgid "In Menüs und Listen verbergen"
+msgstr ""
+
+#: includes/class-lrm-backend-admin.php:939
+msgid "In der Liste suchen …"
+msgstr ""
+
+#: includes/class-lrm-admin.php:440 includes/class-lrm-admin.php:662
+msgid "Inhalt"
+msgstr ""
+
+#: includes/class-lrm-access.php:318
+msgid "Inhalt ist öffentlich."
+msgstr ""
+
+#: includes/class-lrm-admin.php:820
+msgid "Inhalt und Auszug werden für nicht berechtigte Zugriffe entfernt."
+msgstr ""
+
+#: includes/class-lrm-admin.php:717
+msgid "Inhaltstypen"
+msgstr ""
+
+#: includes/class-lrm-metabox.php:96
+msgid "Ist die Option aus, bleibt der Inhalt frei zugänglich – sofern keine Regel von einer übergeordneten Seite geerbt wird."
+msgstr ""
+
+#: includes/class-lrm-backend-admin.php:220
+msgid "Ist die Option aus, gelten die gewohnten WordPress-Rechte der Rolle."
+msgstr ""
+
+#: includes/class-lrm-backend-admin.php:174
+msgid "Je Inhaltstyp lässt sich festlegen: nichts, alles, einzeln ausgewählte Inhalte oder alles innerhalb bestimmter Kategorien."
+msgstr ""
+
+#: includes/class-lrm-backend-admin.php:228
+msgid "Kein Zugang zum Verwaltungsbereich"
+msgstr ""
+
+#. translators: %s: Liste der Rollen mit gesetzter Sperre.
+#: includes/class-lrm-backend-admin.php:423
+msgid "Kein Zugang zum Verwaltungsbereich – Aufrufe werden zur Website geleitet. Gesetzt ist der Haken bei: %s. Der Zugang steht offen, sobald ihn eine dieser Rollen erlaubt."
+msgstr ""
+
+#: includes/class-lrm-backend-guard.php:1076 includes/class-lrm-frontend.php:614 includes/class-lrm-settings.php:41
+msgid "Kein Zugriff"
+msgstr ""
+
+#: includes/class-lrm-media.php:543
+msgid "Kein Zugriff auf diese Datei."
+msgstr ""
+
+#: includes/class-lrm-backend-admin.php:869
+msgid "Keine Begriffe vorhanden."
+msgstr ""
+
+#: includes/class-lrm-rule.php:230
+msgid "Keine Einschränkung"
+msgstr ""
+
+#: includes/class-lrm-admin.php:430
+msgid "Keine Einträge gefunden"
+msgstr ""
+
+#: includes/class-lrm-admin.php:191
+msgid "Keine Treffer."
+msgstr ""
+
+#: includes/class-lrm-backend-admin.php:627
+msgid "Keine seiner Rollen besitzt die Fähigkeit „read“. WordPress weist den Aufruf dann unabhängig von diesem Plugin ab. Geben Sie der Rolle mit einem Rollen-Plugin die Fähigkeit „read“ zurück."
+msgstr ""
+
+#: includes/class-lrm-admin.php:822
+msgid "Kommentare auf gesperrten Inhalten schließen"
+msgstr ""
+
+#: includes/class-lrm-backend-admin.php:633
+msgid "Kommt jemand trotz offenem Zugang nicht hinein, sperrt ihn nicht dieses Plugin: Dann bleiben eine Weiterleitung in der functions.php, ein anderes Plugin oder eine fehlende Fähigkeit als Ursache."
+msgstr ""
+
+#: includes/class-lrm-metabox.php:265
+msgid "Leer lassen, um den global hinterlegten Text zu verwenden."
+msgstr ""
+
+#: includes/class-lrm-admin.php:803
+msgid "Leer lassen, um die Standard-Anmeldeseite von WordPress zu verwenden."
+msgstr ""
+
+#: includes/class-lrm-backend-admin.php:62
+msgid "Legen Sie je Rolle fest, welche Inhalte im Backend bearbeitet werden dürfen und welche Menüpunkte sichtbar sind."
+msgstr ""
+
+#: includes/class-lrm-backend-admin.php:241
+msgid "Mediathek"
+msgstr ""
+
+#: includes/class-lrm-backend-admin.php:516
+msgid "Mediathek: alle Dateien"
+msgstr ""
+
+#: includes/class-lrm-backend-admin.php:512
+msgid "Mediathek: kein Zugriff"
+msgstr ""
+
+#: includes/class-lrm-backend-admin.php:514
+msgid "Mediathek: nur eigene Dateien"
+msgstr ""
+
+#: includes/class-lrm-backend-admin.php:484
+msgid "Menü: alle Punkte verborgen. Sichtbar bleibt nur, was erreichbar bleiben muss – das Dashboard, die Menüs der freigegebenen Inhaltstypen und die Mediathek, sofern erlaubt."
+msgstr ""
+
+#: includes/class-lrm-backend-admin.php:486
+msgid "Menü: nichts verborgen"
+msgstr ""
+
+#: includes/class-lrm-admin.php:385
+msgid "Mit Rollensperre"
+msgstr ""
+
+#: includes/class-lrm-admin.php:357
+msgid "Mit gesperrten Rollen"
+msgstr ""
+
+#: includes/class-lrm-metabox.php:403
+msgid "Modus"
+msgstr ""
+
+#: includes/class-lrm-backend-admin.php:820
+msgid "Nach Kategorie"
+msgstr ""
+
+#: includes/class-lrm-admin.php:818
+msgid "Navigationspunkte, auf die kein Zugriff besteht, werden ausgeblendet."
+msgstr ""
+
+#: includes/class-lrm-admin.php:824
+msgid "Neue Inhalte übernehmen die Regeln übergeordneter Seiten."
+msgstr ""
+
+#: includes/class-lrm-admin.php:826
+msgid "Nicht angemeldete Besucher können sich direkt auf der Seite anmelden."
+msgstr ""
+
+#: includes/class-lrm-backend-admin.php:814
+msgid "Nicht freigegeben"
+msgstr ""
+
+#: includes/class-lrm-backend-admin.php:175
+msgid "Nicht freigegebene Inhalte erscheinen nicht in den Listen und sind auch über die Adresszeile gesperrt."
+msgstr ""
+
+#: includes/class-lrm-admin.php:908
+msgid "Nur Dateien mit eigener Regel"
+msgstr ""
+
+#: includes/class-lrm-admin.php:354 includes/class-lrm-admin.php:373 includes/class-lrm-metabox.php:156 includes/class-lrm-metabox.php:408
+msgid "Nur angemeldet"
+msgstr ""
+
+#: includes/class-lrm-media.php:881 includes/class-lrm-rule.php:248
+msgid "Nur angemeldete Benutzer"
+msgstr ""
+
+#: includes/class-lrm-backend-admin.php:816
+msgid "Nur ausgewählte"
+msgstr ""
+
+#: includes/class-lrm-metabox.php:161 includes/class-lrm-metabox.php:409
+msgid "Nur ausgewählte Rollen"
+msgstr ""
+
+#: includes/class-lrm-rule.php:239
+msgid "Nur ausgewählte Rollen (keine ausgewählt)"
+msgstr ""
+
+#: includes/class-lrm-media.php:882
+msgid "Nur ausgewählte Rollen (unten bearbeiten)"
+msgstr ""
+
+#: includes/class-lrm-metabox.php:162
+msgid "Nur die unten freigegebenen Rollen erhalten Zugriff."
+msgstr ""
+
+#: includes/class-lrm-backend-admin.php:256
+msgid "Nur eigene Dateien anzeigen"
+msgstr ""
+
+#: includes/class-lrm-backend-admin.php:902
+msgid "Nur selbst verfasste Inhalte"
+msgstr ""
+
+#. translators: %s: Liste der Rollennamen.
+#: includes/class-lrm-rule.php:242
+msgid "Nur: %s"
+msgstr ""
+
+#. translators: %s: Liste der Rollen ohne Beschränkung.
+#: includes/class-lrm-backend-admin.php:392
+msgid "Ohne Beschränkung: %s. Eine solche Rolle darf arbeiten wie gewohnt und hebt die Beschränkung der übrigen Rollen auf – sonst würde eine Nebenrolle wie „Abonnent“ die Arbeitsrolle lahmlegen. Soll die Beschränkung greifen, schalten Sie sie auch für diese Rolle ein."
+msgstr ""
+
+#: includes/class-lrm-admin.php:890
+msgid "Ohne diesen Schutz bleibt eine Datei unter ihrer Adresse abrufbar, auch wenn die Seite gesperrt ist."
+msgstr ""
+
+#: includes/class-lrm-media.php:880
+msgid "Ohne eigene Regel"
+msgstr ""
+
+#. translators: %s: Titel der Seite.
+#: includes/class-lrm-media.php:899
+msgid "Ohne eigene Regel gilt die Regel von „%s“."
+msgstr ""
+
+#: includes/class-lrm-admin.php:734
+msgid "Position im Editor"
+msgstr ""
+
+#: includes/class-lrm-admin.php:645 includes/class-lrm-backend-admin.php:302
+msgid "Prüfen"
+msgstr ""
+
+#: includes/class-lrm-admin.php:820
+msgid "REST-API schützen"
+msgstr ""
+
+#: includes/class-lrm-metabox.php:237
+msgid "Reaktion"
+msgstr ""
+
+#: includes/class-lrm-admin.php:45
+msgid "Rechte"
+msgstr ""
+
+#. translators: %s: Rollenname.
+#: includes/class-lrm-backend-admin.php:206
+msgid "Rechte der Rolle „%s“"
+msgstr ""
+
+#: includes/class-lrm-backend-admin.php:267
+msgid "Rechte speichern"
+msgstr ""
+
+#: includes/class-lrm-admin.php:1015
+msgid "Regel für nginx"
+msgstr ""
+
+#: includes/class-lrm-admin.php:1006
+msgid "Regel neu schreiben"
+msgstr ""
+
+#: includes/class-lrm-metabox.php:225
+msgid "Regelkonflikt – das Verbot gewinnt"
+msgstr ""
+
+#: includes/class-lrm-metabox.php:294
+msgid "Regeln übergeordneter Seiten übernehmen"
+msgstr ""
+
+#: includes/class-lrm-admin.php:582 includes/class-lrm-backend-admin.php:547
+msgid "Rolle"
+msgstr ""
+
+#: includes/class-lrm-backend-admin.php:61
+msgid "Rolle wählen"
+msgstr ""
+
+#: includes/class-lrm-admin.php:64 includes/class-lrm-admin.php:65 includes/class-lrm-admin.php:234 includes/class-lrm-admin.php:1100
+msgid "Rollen"
+msgstr ""
+
+#: includes/class-lrm-admin.php:576
+msgid "Rollen im Überblick"
+msgstr ""
+
+#: includes/class-lrm-metabox.php:420
+msgid "Rollen sperren (Vorrang)"
+msgstr ""
+
+#: includes/class-lrm-admin.php:355 includes/class-lrm-admin.php:379
+msgid "Rollenbasiert"
+msgstr ""
+
+#: includes/class-lrm-admin.php:583
+msgid "Schlüssel"
+msgstr ""
+
+#: includes/class-lrm-backend.php:836
+msgid "Schnellentwurf"
+msgstr ""
+
+#: includes/class-lrm-admin.php:1003
+msgid "Schutz jetzt prüfen"
+msgstr ""
+
+#: includes/class-lrm-admin.php:770
+msgid "Seite nicht gefunden"
+msgstr ""
+
+#: includes/class-lrm-metabox.php:325
+msgid "Seite nicht gefunden (404)"
+msgstr ""
+
+#: includes/class-lrm-admin.php:252
+msgid "Seiten nach Anmeldung und WordPress-Rollen freigeben oder sperren."
+msgstr ""
+
+#: includes/class-lrm-admin.php:741
+msgid "Seitenleiste"
+msgstr ""
+
+#: includes/class-lrm-admin.php:856
+msgid "Shortcodes"
+msgstr ""
+
+#: includes/class-lrm-metabox.php:157
+msgid "Sichtbar, sobald ein Benutzer angemeldet ist – unabhängig von der Rolle."
+msgstr ""
+
+#: includes/class-lrm-backend-admin.php:1007
+msgid "Sichtbare Menüpunkte"
+msgstr ""
+
+#: includes/class-lrm-admin.php:441
+msgid "Sichtbarkeit"
+msgstr ""
+
+#. translators: %s: Bezeichnung des Inhaltstyps.
+#: includes/class-lrm-backend-guard.php:596
+msgid "Sie dürfen hier nichts Neues anlegen (%s)."
+msgstr ""
+
+#: includes/class-lrm-backend-guard.php:956
+msgid "Sie dürfen hier nichts Neues anlegen."
+msgstr ""
+
+#: includes/class-lrm-backend-guard.php:961
+msgid "Sie haben keinen Zugriff auf die Mediathek."
+msgstr ""
+
+#: includes/class-lrm-backend-guard.php:1071
+msgid "Sie haben keinen Zugriff auf diesen Bereich."
+msgstr ""
+
+#: includes/class-lrm-admin.php:507
+msgid "So wird entschieden"
+msgstr ""
+
+#: includes/class-lrm-backend-admin.php:172
+msgid "So wirkt die Beschränkung"
+msgstr ""
+
+#: includes/class-lrm-admin.php:741
+msgid "Sofort sichtbar – auch im Block-Editor. Empfohlen."
+msgstr ""
+
+#. translators: %s: Name der Fähigkeit.
+#: includes/class-lrm-backend-admin.php:665
+msgid "Solange die Rolle die Fähigkeit „%s“ besitzt, sieht und bearbeitet sie alles – die Angaben unten bleiben wirkungslos. Das Umgehungsrecht lässt sich unter „Einstellungen“ ganz abschalten oder der Rolle mit einem Rollen-Plugin entziehen."
+msgstr ""
+
+#: includes/class-lrm-backend-admin.php:1019
+msgid "Später hinzukommende Menüpunkte ausblenden"
+msgstr ""
+
+#: includes/class-lrm-admin.php:762
+msgid "Standardverhalten bei fehlendem Zugriff"
+msgstr ""
+
+#: includes/class-lrm-admin.php:970
+msgid "Status der Serverregel"
+msgstr ""
+
+#: includes/class-lrm-admin.php:825
+msgid "Status in der Werkzeugleiste anzeigen"
+msgstr ""
+
+#: includes/class-lrm-backend-admin.php:847
+msgid "Taxonomie"
+msgstr ""
+
+#: includes/class-lrm-admin.php:422 includes/class-lrm-backend-admin.php:974
+msgid "Titel suchen …"
+msgstr ""
+
+#: includes/class-lrm-admin.php:509
+msgid "Trifft eine Rolle des Benutzers auf die Sperrliste, ist der Zugriff beendet. Das gilt auch, wenn eine andere Rolle des Benutzers freigegeben wäre."
+msgstr ""
+
+#: includes/class-lrm-admin.php:903
+msgid "Umfang"
+msgstr ""
+
+#: includes/class-lrm-admin.php:510 includes/class-lrm-admin.php:587
+msgid "Umgehungsrecht"
+msgstr ""
+
+#: includes/class-lrm-admin.php:823
+msgid "Umgehungsrecht aktivieren"
+msgstr ""
+
+#. translators: %s: Rollenschlüssel.
+#: includes/class-lrm-roles.php:94
+msgid "Unbekannte Rolle (%s)"
+msgstr ""
+
+#: includes/class-lrm-backend-admin.php:1119
+msgid "Unbekannte Rolle."
+msgstr ""
+
+#: includes/class-lrm-backend-admin.php:1179
+msgid "Unbekannter Inhaltstyp."
+msgstr ""
+
+#: includes/class-lrm-admin.php:742
+msgid "Unter dem Inhalt"
+msgstr ""
+
+#: includes/class-lrm-admin.php:512
+msgid "Unterseiten übernehmen die Regel der nächstgelegenen übergeordneten Seite. Sperren aus der gesamten Kette bleiben bestehen."
+msgstr ""
+
+#: includes/class-lrm-metabox.php:287
+msgid "Verbergen"
+msgstr ""
+
+#: includes/class-lrm-backend-admin.php:550
+msgid "Verborgene Menüpunkte"
+msgstr ""
+
+#. translators: 1: Anzahl, 2: Liste der Einträge.
+#: includes/class-lrm-backend-admin.php:491
+msgid "Verborgene Menüpunkte (%1$s): %2$s"
+msgstr ""
+
+#. translators: %s: Anzahl der verborgenen Menüpunkte.
+#: includes/class-lrm-backend-admin.php:755
+msgid "Verborgene Menüpunkte: %s"
+msgstr ""
+
+#: includes/class-lrm-admin.php:512
+msgid "Vererbung"
+msgstr ""
+
+#: includes/class-lrm-admin.php:824
+msgid "Vererbung standardmäßig aktiv"
+msgstr ""
+
+#: includes/class-lrm-admin.php:391
+msgid "Verfügbare Rollen"
+msgstr ""
+
+#: includes/class-lrm-admin.php:822
+msgid "Verhindert das Mitlesen und Schreiben von Kommentaren."
+msgstr ""
+
+#. translators: 1: Titel der übergeordneten Seite, 2: Beschreibung der Regel.
+#: includes/class-lrm-metabox.php:110
+msgid "Von „%1$s“ wird übernommen: %2$s"
+msgstr ""
+
+#: includes/class-lrm-metabox.php:207
+msgid "Vorrang vor allem anderen – unabhängig vom Modus."
+msgstr ""
+
+#: includes/class-lrm-backend-admin.php:544
+msgid "Was in welcher Rolle gesetzt ist"
+msgstr ""
+
+#: includes/class-lrm-admin.php:931
+msgid "Website-Logo und Website-Icon automatisch freigeben"
+msgstr ""
+
+#: includes/class-lrm-backend.php:838
+msgid "Website-Zustand"
+msgstr ""
+
+#: includes/class-lrm-admin.php:949
+msgid "Weitere freigegebene Dateien"
+msgstr ""
+
+#: includes/class-lrm-admin.php:771
+msgid "Weiterleiten"
+msgstr ""
+
+#: includes/class-lrm-admin.php:771
+msgid "Weiterleitung an eine frei wählbare Adresse."
+msgstr ""
+
+#: includes/class-lrm-admin.php:769
+msgid "Weiterleitung zum Anmeldeformular mit Rücksprung."
+msgstr ""
+
+#: includes/class-lrm-admin.php:960
+msgid "Wenn kein Zugriff besteht"
+msgstr ""
+
+#: includes/class-lrm-backend-admin.php:249
+msgid "Wird die Option abgeschaltet, kann die Rolle keine Dateien hochladen und die Mediathek nicht öffnen."
+msgstr ""
+
+#: includes/class-lrm-backend-admin.php:1020
+msgid "Wird ein neues Plugin installiert, bleibt dessen Menü für diese Rolle verborgen, bis Sie es hier freigeben."
+msgstr ""
+
+#: includes/class-lrm-metabox.php:188
+msgid "Wirkt im Modus „Nur ausgewählte Rollen“."
+msgstr ""
+
+#: includes/class-lrm-admin.php:813
+msgid "Wirkungsbereich"
+msgstr ""
+
+#: includes/class-lrm-admin.php:735
+msgid "Wo der Bereich „Zugriffsrechte“ beim Bearbeiten erscheint."
+msgstr ""
+
+#: includes/class-lrm-backend-admin.php:626
+msgid "WordPress selbst lässt diesen Benutzer nicht in den Verwaltungsbereich"
+msgstr ""
+
+#: includes/class-lrm-backend.php:837
+msgid "WordPress-Neuigkeiten"
+msgstr ""
+
+#: includes/class-lrm-admin.php:825
+msgid "Zeigt Redaktionen im Frontend, welche Regel gerade greift."
+msgstr ""
+
+#: includes/class-lrm-admin.php:793 includes/class-lrm-metabox.php:259
+msgid "Ziel der Weiterleitung"
+msgstr ""
+
+#: includes/class-lrm-admin.php:433
+msgid "Zu den Seiten"
+msgstr ""
+
+#: includes/class-lrm-metabox.php:327
+msgid "Zu eigener Adresse weiterleiten"
+msgstr ""
+
+#: includes/class-lrm-backend-admin.php:549
+msgid "Zugang zum Backend"
+msgstr ""
+
+#: includes/class-lrm-admin.php:663 includes/class-lrm-admin.php:678 includes/class-lrm-media.php:907 includes/class-lrm-media.php:955 includes/class-lrm-metabox.php:502 includes/class-lrm-metabox.php:507
+msgid "Zugriff"
+msgstr ""
+
+#: includes/class-lrm-backend-admin.php:248
+msgid "Zugriff auf die Mediathek"
+msgstr ""
+
+#: includes/class-lrm-access.php:320
+msgid "Zugriff für angemeldete Benutzer."
+msgstr ""
+
+#: includes/class-lrm-admin.php:636
+msgid "Zugriff simulieren"
+msgstr ""
+
+#: includes/class-lrm-access.php:314
+msgid "Zugriff über das Umgehungsrecht."
+msgstr ""
+
+#. translators: %s: Liste der Rollennamen.
+#: includes/class-lrm-access.php:323
+msgid "Zugriff über die Rolle: %s"
+msgstr ""
+
+#: includes/class-lrm-frontend.php:454
+msgid "Zugriff: frei"
+msgstr ""
+
+#: includes/class-lrm-frontend.php:457
+msgid "Zugriff: geschützt"
+msgstr ""
+
+#: includes/class-lrm-metabox.php:54 includes/class-lrm-metabox.php:55 includes/class-lrm-metabox.php:400
+msgid "Zugriffsrechte"
+msgstr ""
+
+#: includes/class-lrm-metabox.php:95
+msgid "Zugriffsrechte für diesen Inhalt aktivieren"
+msgstr ""
+
+#. translators: %s: Name des Herstellers.
+#: includes/class-lrm-frontend.php:681
+msgid "Zugriffsschutz von %s"
+msgstr ""
+
+#: includes/class-lrm-admin.php:769 includes/class-lrm-frontend.php:665
+msgid "Zur Anmeldung"
+msgstr ""
+
+#: includes/class-lrm-admin.php:963 includes/class-lrm-metabox.php:323
+msgid "Zur Anmeldung weiterleiten"
+msgstr ""
+
+#: includes/class-lrm-admin.php:941
+msgid "Zurzeit ist kein Logo und kein Website-Icon hinterlegt."
+msgstr ""
+
+#: includes/class-lrm-metabox.php:129
+msgid "Zusätzliche Sperren aus übergeordneten Seiten"
+msgstr ""
+
+#. translators: %s: Bezeichnung des Inhaltstyps.
+#: includes/class-lrm-backend-admin.php:134
+msgid "alle %s"
+msgstr ""
+
+#: includes/class-lrm-backend-admin.php:610
+msgid "alle (kein Zugang)"
+msgstr ""
+
+#: includes/class-lrm-backend-admin.php:590
+msgid "eingeschaltet"
+msgstr ""
+
+#: includes/class-lrm-admin.php:1153
+msgid "frei"
+msgstr ""
+
+#: includes/class-lrm-media.php:975
+msgid "freigegeben"
+msgstr ""
+
+#: includes/class-lrm-admin.php:680 includes/class-lrm-backend-admin.php:599
+msgid "gesperrt"
+msgstr ""
+
+#. translators: %s: Liste der Rollennamen.
+#: includes/class-lrm-rule.php:255
+msgid "gesperrt: %s"
+msgstr ""
+
+#: includes/class-lrm-admin.php:623
+msgid "ja"
+msgstr ""
+
+#: includes/class-lrm-backend-admin.php:337 includes/class-lrm-backend-admin.php:616
+msgid "keine"
+msgstr ""
+
+#: includes/class-lrm-backend-admin.php:88
+msgid "keine Beschränkung"
+msgstr ""
+
+#: includes/class-lrm-backend-admin.php:591
+msgid "keine Regel"
+msgstr ""
+
+#: includes/class-lrm-admin.php:199
+msgid "keine Rolle"
+msgstr ""
+
+#: includes/class-lrm-admin.php:1016
+msgid "nginx wertet keine .htaccess aus. Tragen Sie folgende Regel in die Server-Konfiguration ein:"
+msgstr ""
+
+#: includes/class-lrm-backend-admin.php:160
+msgid "nichts freigegeben"
+msgstr ""
+
+#: includes/class-lrm-media.php:982
+msgid "nur angemeldet"
+msgstr ""
+
+#: includes/class-lrm-backend-admin.php:601
+msgid "offen"
+msgstr ""
+
+#: includes/class-lrm-backend-admin.php:597
+msgid "offen (keine Regel)"
+msgstr ""
+
+#: includes/class-lrm-admin.php:470
+msgid "ohne Unterseiten"
+msgstr ""
+
+#. translators: %s: Anzahl weiterer Inhalte.
+#: includes/class-lrm-admin.php:1076
+msgid "und %s weitere"
+msgstr ""
+
+#: includes/class-lrm-backend-admin.php:84
+msgid "uneingeschränkt"
+msgstr ""
+
+#: includes/class-lrm-admin.php:859
+msgid "verbirgt den Inhalt vor diesen Rollen (Vorrang)."
+msgstr ""
+
+#: includes/class-lrm-admin.php:860
+msgid "zeigt den Inhalt nur angemeldeten Besuchern."
+msgstr ""
+
+#: includes/class-lrm-admin.php:858
+msgid "zeigt den Inhalt nur diesen Rollen."
+msgstr ""
+
+#: includes/class-lrm-admin.php:861
+msgid "zeigt den Inhalt nur nicht angemeldeten Besuchern."
+msgstr ""
+
+#: includes/class-lrm-admin.php:1095 includes/class-lrm-media.php:883 includes/class-lrm-metabox.php:151 includes/class-lrm-metabox.php:407 includes/class-lrm-rule.php:235
+msgid "Öffentlich"
+msgstr ""
+
+#: includes/class-lrm-admin.php:356
+msgid "Öffentlich mit Sperren"
+msgstr ""
+
+#: includes/class-lrm-admin.php:511
+msgid "Öffentlich, nur angemeldet oder nur ausgewählte Rollen."
+msgstr ""
+
+#: includes/class-lrm-admin.php:431
+msgid "Öffnen Sie eine Seite im Editor und aktivieren Sie dort den Bereich „Zugriffsrechte“."
+msgstr ""
+
+#: includes/class-lrm-admin.php:789
+msgid "Überschrift des Hinweises"
+msgstr ""
+
+#: includes/class-lrm-admin.php:55 includes/class-lrm-admin.php:56 includes/class-lrm-admin.php:230
+msgid "Übersicht"
+msgstr ""
+
+#: includes/class-lrm-backend-admin.php:296
+msgid "— Benutzer wählen —"
+msgstr ""
+
+#: includes/class-lrm-metabox.php:405
+msgid "— Nicht ändern —"
+msgstr ""
+
+#: includes/class-lrm-admin.php:640
+msgid "— Rolle wählen —"
+msgstr ""
+
+#: includes/class-lrm-backend-admin.php:180
+msgid "„Kein Zugang zum Verwaltungsbereich“ gibt nichts frei: Öffnet eine zweite Rolle den Zugang, bleibt von dieser Rolle kein Menüpunkt und kein Dashboard-Bereich übrig."
+msgstr ""
+

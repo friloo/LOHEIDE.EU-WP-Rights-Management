@@ -116,7 +116,37 @@ Welche Rolle ist wo freigegeben, wo gesperrt? Und was sieht sie tatsächlich –
 
 <img src="docs/images/10-dateischutz.png" alt="Einstellungen für den Dateischutz mit Umfang, Ausnahmeliste und Statusprüfung" width="900">
 
-### Einstellungen
+### Für den Einsatz gerüstet
+
+Das Plugin geht davon aus, dass in einer gewachsenen Installation nicht alles
+so vorliegt, wie es soll:
+
+| | |
+| --- | --- |
+| **Unvollständig hochgeladen** | Fehlt nach einer Übertragung per FTP eine Klassendatei, endet der Aufruf nicht in einem weißen Bildschirm. Das Plugin startet gar nicht erst und nennt die fehlenden Dateien im Verwaltungsbereich. |
+| **Zu alte Umgebung** | PHP- und WordPress-Version werden vor dem Laden geprüft; darunter bleibt das Plugin still und erklärt, was fehlt. |
+| **Namensgleichheit** | Die globale Funktion `lrm()` wird nur angelegt, wenn sie frei ist – ein zweites Plugin mit demselben Namen legt nicht beide lahm. |
+| **Beschädigte Daten** | Steht in den Optionen Unsinn – ein Text statt einer Liste, eine Rolle oder ein Inhaltstyp, den es nicht mehr gibt –, arbeitet das Plugin weiter, ohne Fehlermeldungen zu erzeugen. |
+| **Fremde Stile** | Das Kastenmodell wird im eigenen Bereich gesetzt, nicht vorausgesetzt. Ein Theme, das `box-sizing` überschreibt, verschiebt die Oberfläche nicht. |
+
+Geprüft wird das nicht nur von Hand: `php tests/test-bootstrap.php` sichert die
+Kopfdaten, die Ladeprüfungen und die Deinstallation ab – einschließlich der
+Zusicherung, dass jede Klassendatei in der geprüften Liste steht.
+
+## Übersetzungen
+
+Alle Texte sind gekapselt. Die Vorlage liegt in
+`languages/loheide-rights-management.pot` und entsteht neu mit:
+
+```bash
+php tools/make-pot.php
+```
+
+Das Werkzeug kommt ohne WP-CLI und ohne gettext aus – es liest die Aufrufe
+direkt aus dem Quelltext, samt der Hinweise für Übersetzer. Die GitHub Action
+prüft bei jedem Push, ob die Vorlage zum Quelltext passt.
+
+## Einstellungen
 
 <img src="docs/images/03-einstellungen.png" alt="Einstellungsseite mit Inhaltstypen, Standardverhalten und Wirkungsbereich" width="900">
 

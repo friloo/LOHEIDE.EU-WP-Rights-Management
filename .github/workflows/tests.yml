@@ -41,6 +41,20 @@ jobs:
       - name: Backend-Rechte
         run: php tests/test-backend.php
 
+      - name: Laden und Deinstallation
+        run: php tests/test-bootstrap.php
+
+      - name: Vorlage für Übersetzungen ist aktuell
+        run: |
+          set -e
+          php tools/make-pot.php
+          git diff --quiet -- languages/ || {
+            echo 'Die Vorlage languages/*.pot ist nicht aktuell.'
+            echo 'Bitte "php tools/make-pot.php" ausführen und das Ergebnis mit einchecken.'
+            git --no-pager diff --stat -- languages/
+            exit 1
+          }
+
   javascript:
     name: JavaScript
     runs-on: ubuntu-latest

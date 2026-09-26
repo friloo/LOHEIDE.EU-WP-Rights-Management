@@ -419,9 +419,24 @@ Sieht er **nichts**, greift sie, aber der Inhaltstyp ist nicht freigegeben.
 
 ### Mehrere Rollen
 
-Hat jemand zwei beschränkte Rollen, werden deren Freigaben zusammengeführt –
-die weiter gefasste gewinnt. Sobald **eine** Rolle beschränkt ist, gilt die
-Beschränkung; nur das Umgehungsrecht (im Regelfall Administratoren) hebt sie auf.
+Hat jemand mehrere beschränkte Rollen, gilt beides gleichzeitig:
+
+| | |
+| --- | --- |
+| **Freigaben addieren sich** | Wer über eine Rolle eine Seite bearbeiten darf, darf das auch, wenn eine zweite Rolle strenger ist. |
+| **Sperren addieren sich auch** | Was eine Rolle ausblendet, bleibt ausgeblendet – selbst wenn eine andere Rolle es zeigen würde. |
+
+Der typische Fall: Jemand hat *Abonnent* und *Mitarbeitervertretung*. Der
+Abonnent ist vollständig gesperrt, trotzdem kann die Person ihre MAV-Seite
+bearbeiten – und ein in der MAV-Rolle abgeschaltetes „Profil" bleibt
+abgeschaltet.
+
+Damit das aufgeht, bleiben die Menüs freigegebener Inhaltstypen immer sichtbar.
+Sonst würde eine vollständig gesperrte Zweitrolle die zugewiesenen Inhalte
+unerreichbar machen.
+
+Sobald **eine** Rolle beschränkt ist, gilt die Beschränkung; nur das
+Umgehungsrecht (im Regelfall Administratoren) hebt sie auf.
 
 ---
 

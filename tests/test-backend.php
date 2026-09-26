@@ -276,7 +276,32 @@ lrm_assert( array( 10, 11 ) === $merged['types']['page']['items'], 'Die Inhalte 
 lrm_assert( 0 === $merged['types']['page']['own_only'], 'Bei abweichenden Angaben gilt die weitere Freigabe' );
 lrm_assert( 1 === $merged['types']['page']['create'], 'Das Recht zum Anlegen wird übernommen' );
 lrm_assert( isset( $merged['types']['verleih'] ), 'Inhaltstypen der zweiten Rolle kommen hinzu' );
-lrm_assert( array( 'tools.php' ) === $merged['hidden_menus'], 'Verborgen bleibt nur, was beide Rollen verbergen' );
+lrm_assert( array( 'tools.php', 'plugins.php' ) === $merged['hidden_menus'], 'Verborgen bleibt alles, was mindestens eine Rolle verbirgt' );
+
+// Der häufige Fall: Abonnent ist vollständig gesperrt, die Zweitrolle arbeitet.
+$GLOBALS['lrm_test_options']['lrm_backend']['subscriber'] = array_merge(
+	LRM_Backend::defaults(),
+	array(
+		'enabled'        => 1,
+		'types'          => array(),
+		'allow_media'    => 0,
+		'hidden_menus'   => array( 'index.php', 'edit.php', 'upload.php', 'profile.php', 'tools.php' ),
+		'hide_new_menus' => 1,
+	)
+);
+$GLOBALS['lrm_test_options']['lrm_backend']['mav']['allow_media']  = 1;
+$GLOBALS['lrm_test_options']['lrm_backend']['mav']['hidden_menus'] = array( 'profile.php' );
+LRM_Backend::flush();
+
+lrm_test_set_user( 11, array( 'subscriber', 'mav' ) );
+$doppel = LRM_Backend::for_user( wp_get_current_user() );
+
+lrm_assert( 'selected' === $doppel['types']['page']['mode'], 'Die Freigabe der Zweitrolle bleibt erhalten' );
+lrm_assert( array( 10 ) === $doppel['types']['page']['items'], 'Die zugewiesene Seite ebenfalls' );
+lrm_assert( 1 === $doppel['allow_media'], 'Erlaubt eine Rolle die Mediathek, bleibt sie erlaubt' );
+lrm_assert( in_array( 'profile.php', $doppel['hidden_menus'], true ), 'Ein Menüpunkt bleibt verborgen, den eine Rolle verbirgt' );
+lrm_assert( in_array( 'tools.php', $doppel['hidden_menus'], true ), 'Auch die Sperren der strengeren Rolle gelten' );
+lrm_assert( 1 === $doppel['hide_new_menus'], 'Die strengere Angabe zu neuen Menüs gewinnt' );
 
 lrm_test_set_user( 3, array( 'editor' ) );
 lrm_assert( null === LRM_Backend::for_user( wp_get_current_user() ), 'Eine Rolle ohne Regel bleibt unbeschränkt' );

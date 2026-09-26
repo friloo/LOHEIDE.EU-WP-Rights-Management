@@ -11,9 +11,16 @@ defined( 'ABSPATH' ) || exit;
  * Verwaltet, was eine Rolle im Backend bearbeiten und sehen darf.
  *
  * Die Beschränkung greift, sobald für eine Rolle des Benutzers eine Regel
- * aktiv ist. Hat jemand mehrere beschränkte Rollen, werden die Freigaben
- * zusammengeführt. Nur das Umgehungsrecht (Standard: Administrator) hebt die
- * Beschränkung auf.
+ * aktiv ist. Bei mehreren beschränkten Rollen gilt:
+ *
+ *   - Freigaben addieren sich. Wer über eine Rolle eine Seite bearbeiten darf,
+ *     darf das auch mit einer zweiten, strengeren Rolle.
+ *   - Sperren addieren sich ebenfalls. Was eine Rolle ausblendet, bleibt
+ *     ausgeblendet – auch wenn eine andere Rolle es zeigen würde. Menüs
+ *     freigegebener Inhaltstypen bleiben davon unberührt, sonst wären die
+ *     zugewiesenen Inhalte nicht erreichbar.
+ *
+ * Nur das Umgehungsrecht (Standard: Administrator) hebt die Beschränkung auf.
  */
 class LRM_Backend {
 
@@ -491,13 +498,18 @@ class LRM_Backend {
 				$merged['types']   = self::merge_types( $merged['types'], $config['types'] );
 				$merged['roles'][] = $role;
 
-				$merged['allow_media'] = ( $merged['allow_media'] || $config['allow_media'] ) ? 1 : 0;
-				// Die weitere Freigabe gewinnt.
+				// Was jemand bearbeiten darf, addiert sich über seine Rollen:
+				// Die weiter gefasste Freigabe gewinnt.
+				$merged['allow_media']    = ( $merged['allow_media'] || $config['allow_media'] ) ? 1 : 0;
 				$merged['own_media_only'] = ( $merged['own_media_only'] && $config['own_media_only'] ) ? 1 : 0;
-				$merged['hide_new_menus'] = ( $merged['hide_new_menus'] && $config['hide_new_menus'] ) ? 1 : 0;
 
-				$merged['hidden_menus']   = array_values( array_intersect( $merged['hidden_menus'], $config['hidden_menus'] ) );
-				$merged['hidden_widgets'] = array_values( array_intersect( $merged['hidden_widgets'], $config['hidden_widgets'] ) );
+				// Was ausgeblendet ist, bleibt ausgeblendet, sobald es eine Rolle
+				// ausblendet – wie im Frontend gewinnt die Sperre. Menüs
+				// freigegebener Inhaltstypen nimmt LRM_Backend_Guard davon aus.
+				$merged['hide_new_menus'] = ( $merged['hide_new_menus'] || $config['hide_new_menus'] ) ? 1 : 0;
+
+				$merged['hidden_menus']   = array_values( array_unique( array_merge( $merged['hidden_menus'], $config['hidden_menus'] ) ) );
+				$merged['hidden_widgets'] = array_values( array_unique( array_merge( $merged['hidden_widgets'], $config['hidden_widgets'] ) ) );
 				$merged['known_menus']    = array_values( array_unique( array_merge( $merged['known_menus'], $config['known_menus'] ) ) );
 			}
 

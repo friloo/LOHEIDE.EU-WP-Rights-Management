@@ -55,6 +55,10 @@ aller Demo-Benutzer: `demo1234`). Danach als Administrator anmelden und unter
   Inhaltstypen dürfen nie automatisch verborgen werden: WordPress sperrt
   Seiten, die in keinem Menü stehen. Fest geschützt ist nur das Dashboard
   (`index.php`); alles andere muss abschaltbar bleiben.
+- **Mehrere Rollen:** Freigaben addieren sich (die weiter gefasste gewinnt),
+  Sperren ebenfalls (was eine Rolle ausblendet, bleibt ausgeblendet). Das hält
+  den Grundsatz „Sperre gewinnt“ auch im Backend ein, ohne eine strenge
+  Zweitrolle zur Totalsperre zu machen.
 - **Branding:** Der Hinweis „Entwickelt von LOHEIDE.EU“ erscheint im Kopf und
   Fuß der Plugin-Seiten, im Editor-Bereich, in der Plugin-Liste und in der
   Werkzeugleiste. Im Frontend ist er abschaltbar.

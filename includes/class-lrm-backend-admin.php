@@ -175,6 +175,7 @@ class LRM_Backend_Admin {
 				<li><?php esc_html_e( 'Nicht freigegebene Inhalte erscheinen nicht in den Listen und sind auch über die Adresszeile gesperrt.', 'loheide-rights-management' ); ?></li>
 				<li><?php esc_html_e( 'Die nötigen Fähigkeiten vergibt das Plugin automatisch und nimmt sie zurück, sobald die Beschränkung endet.', 'loheide-rights-management' ); ?></li>
 				<li><?php esc_html_e( 'Benutzer mit Umgehungsrecht – im Regelfall Administratoren – bleiben davon unberührt.', 'loheide-rights-management' ); ?></li>
+				<li><?php esc_html_e( 'Bei mehreren Rollen addieren sich beide Seiten: Was eine Rolle freigibt, bleibt freigegeben; was eine Rolle ausblendet, bleibt ausgeblendet.', 'loheide-rights-management' ); ?></li>
 			</ul>
 		</div>
 		<?php
@@ -812,7 +813,7 @@ class LRM_Backend_Admin {
 		<div class="lrm-panel">
 			<div class="lrm-panel__head">
 				<h2><?php esc_html_e( 'Sichtbare Menüpunkte', 'loheide-rights-management' ); ?></h2>
-				<p class="lrm-muted"><?php esc_html_e( 'Abgeschaltete Punkte verschwinden aus dem Menü und sind auch über die Adresszeile gesperrt.', 'loheide-rights-management' ); ?></p>
+				<p class="lrm-muted"><?php esc_html_e( 'Abgeschaltete Punkte verschwinden aus dem Menü und sind auch über die Adresszeile gesperrt. Bei Benutzern mit mehreren Rollen bleibt ein Punkt abgeschaltet, sobald eine ihrer Rollen ihn abschaltet.', 'loheide-rights-management' ); ?></p>
 				<span class="lrm-bulkactions">
 					<button type="button" class="lrm-linkbtn" data-lrm-toggle-all-in="#lrm-menulist" data-lrm-state="on"><?php esc_html_e( 'Alle anzeigen', 'loheide-rights-management' ); ?></button>
 					<button type="button" class="lrm-linkbtn" data-lrm-toggle-all-in="#lrm-menulist" data-lrm-state="off"><?php esc_html_e( 'Alle ausblenden', 'loheide-rights-management' ); ?></button>

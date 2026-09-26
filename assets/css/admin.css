@@ -1539,3 +1539,46 @@
 .lrm-status .lrm-checklist {
 	margin-bottom: 0;
 }
+
+/* Herkunft der Einschränkungen in der Benutzerprüfung. */
+.lrm-table--roles {
+	margin-top: 18px;
+	border: 1px solid var(--lrm-border);
+	border-radius: var(--lrm-radius);
+	overflow: hidden;
+}
+
+.lrm-table--roles caption {
+	padding: 12px 20px 11px;
+	text-align: left;
+	font-weight: 600;
+	font-size: 12.5px;
+	color: var(--lrm-text);
+	background: var(--lrm-surface);
+	border-bottom: 1px solid var(--lrm-border);
+}
+
+.lrm-table--roles th[scope="row"] {
+	text-transform: none;
+	letter-spacing: 0;
+	font-size: 13px;
+	background: transparent;
+	color: var(--lrm-text);
+}
+
+.lrm-state {
+	display: inline-block;
+	padding: 2px 9px;
+	border-radius: 999px;
+	font-size: 11.5px;
+	font-weight: 600;
+	color: var(--lrm-muted);
+	background: var(--lrm-bg);
+	border: 1px solid var(--lrm-border);
+}
+
+.lrm-state--on {
+	color: #1d6b45;
+	background: #e8f5ee;
+	border-color: #bfe3ce;
+}

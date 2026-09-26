@@ -176,6 +176,8 @@ class LRM_Backend_Admin {
 				<li><?php esc_html_e( 'Die nötigen Fähigkeiten vergibt das Plugin automatisch und nimmt sie zurück, sobald die Beschränkung endet.', 'loheide-rights-management' ); ?></li>
 				<li><?php esc_html_e( 'Benutzer mit Umgehungsrecht – im Regelfall Administratoren – bleiben davon unberührt.', 'loheide-rights-management' ); ?></li>
 				<li><?php esc_html_e( 'Bei mehreren Rollen addieren sich beide Seiten: Was eine Rolle freigibt, bleibt freigegeben; was eine Rolle ausblendet, bleibt ausgeblendet.', 'loheide-rights-management' ); ?></li>
+				<li><?php esc_html_e( 'Hat jemand daneben eine Rolle ohne eingeschaltete Beschränkung, darf er arbeiten wie gewohnt: Sonst legte eine Nebenrolle wie „Abonnent“ jede noch nicht eingerichtete Arbeitsrolle lahm.', 'loheide-rights-management' ); ?></li>
+				<li><?php esc_html_e( '„Kein Zugang zum Verwaltungsbereich“ gibt nichts frei: Öffnet eine zweite Rolle den Zugang, bleibt von dieser Rolle kein Menüpunkt und kein Dashboard-Bereich übrig.', 'loheide-rights-management' ); ?></li>
 			</ul>
 		</div>
 		<?php
@@ -407,7 +409,21 @@ class LRM_Backend_Admin {
 				<?php if ( ! empty( $config['block_admin'] ) ) : ?>
 					<li class="is-warn">
 						<span class="dashicons dashicons-external"></span>
-						<?php esc_html_e( 'Kein Zugang zum Verwaltungsbereich – Aufrufe werden zur Website geleitet.', 'loheide-rights-management' ); ?>
+						<?php
+						$blocking = array();
+
+						foreach ( array_keys( $roles ) as $role ) {
+							if ( LRM_Backend::is_restricted( $role ) && ! empty( LRM_Backend::get( $role )['block_admin'] ) ) {
+								$blocking[] = $roles[ $role ];
+							}
+						}
+
+						printf(
+							/* translators: %s: Liste der Rollen mit gesetzter Sperre. */
+							esc_html__( 'Kein Zugang zum Verwaltungsbereich – Aufrufe werden zur Website geleitet. Gesetzt ist der Haken bei: %s. Der Zugang steht offen, sobald ihn eine dieser Rollen erlaubt.', 'loheide-rights-management' ),
+							esc_html( implode( ', ', $blocking ) )
+						);
+						?>
 					</li>
 				<?php endif; ?>
 				<?php
@@ -457,18 +473,35 @@ class LRM_Backend_Admin {
 					<?php
 				endforeach;
 				?>
-				<li class="<?php echo empty( $config['hidden_menus'] ) ? 'is-ok' : 'is-warn'; ?>">
+				<?php
+				$hides_all = ! empty( $config['hide_new_menus'] ) && empty( $config['known_menus'] );
+				$menu_ok   = empty( $config['hidden_menus'] ) && empty( $config['hide_new_menus'] );
+				?>
+				<li class="<?php echo $menu_ok ? 'is-ok' : 'is-warn'; ?>">
 					<span class="dashicons dashicons-menu"></span>
 					<?php
-					if ( empty( $config['hidden_menus'] ) ) {
+					if ( $hides_all ) {
+						esc_html_e( 'Menü: alle Punkte verborgen. Sichtbar bleibt nur, was erreichbar bleiben muss – das Dashboard, die Menüs der freigegebenen Inhaltstypen und die Mediathek, sofern erlaubt.', 'loheide-rights-management' );
+					} elseif ( $menu_ok ) {
 						esc_html_e( 'Menü: nichts verborgen', 'loheide-rights-management' );
 					} else {
-						printf(
-							/* translators: 1: Anzahl, 2: Liste der Einträge. */
-							esc_html__( 'Verborgene Menüpunkte (%1$s): %2$s', 'loheide-rights-management' ),
-							esc_html( number_format_i18n( count( $config['hidden_menus'] ) ) ),
-							esc_html( implode( ', ', array_slice( (array) $config['hidden_menus'], 0, 12 ) ) )
-						);
+						if ( ! empty( $config['hidden_menus'] ) ) {
+							printf(
+								/* translators: 1: Anzahl, 2: Liste der Einträge. */
+								esc_html__( 'Verborgene Menüpunkte (%1$s): %2$s', 'loheide-rights-management' ),
+								esc_html( number_format_i18n( count( $config['hidden_menus'] ) ) ),
+								esc_html( implode( ', ', array_slice( (array) $config['hidden_menus'], 0, 12 ) ) )
+							);
+						}
+
+						if ( ! empty( $config['hide_new_menus'] ) ) {
+							echo ' ';
+							printf(
+								/* translators: %s: Anzahl der bekannten Menüpunkte. */
+								esc_html__( 'Dazu jeder Punkt, der beim Speichern noch nicht vorhanden war (%s bekannt).', 'loheide-rights-management' ),
+								esc_html( number_format_i18n( count( (array) $config['known_menus'] ) ) )
+							);
+						}
 					}
 					?>
 				</li>
@@ -486,6 +519,119 @@ class LRM_Backend_Admin {
 				</li>
 			<?php endif; ?>
 		</ul>
+
+		<?php $this->render_user_roles( $user, $roles ); ?>
+		<?php
+	}
+
+	/**
+	 * Herkunft der Einschränkungen: was in welcher Rolle gesetzt ist.
+	 *
+	 * Beantwortet die Frage „wo habe ich das gesperrt?“. Ohne diese Aufstellung
+	 * müsste man jede Rolle einzeln aufrufen, um die verantwortliche zu finden.
+	 *
+	 * @param WP_User $user  Benutzer.
+	 * @param array   $roles Schlüssel => Beschriftung.
+	 */
+	protected function render_user_roles( $user, $roles ) {
+		if ( empty( $roles ) ) {
+			return;
+		}
+
+		$can_read = user_can( $user, 'read' );
+		?>
+		<table class="lrm-table lrm-table--roles">
+			<caption><?php esc_html_e( 'Was in welcher Rolle gesetzt ist', 'loheide-rights-management' ); ?></caption>
+			<thead>
+				<tr>
+					<th scope="col"><?php esc_html_e( 'Rolle', 'loheide-rights-management' ); ?></th>
+					<th scope="col"><?php esc_html_e( 'Beschränkung', 'loheide-rights-management' ); ?></th>
+					<th scope="col"><?php esc_html_e( 'Zugang zum Backend', 'loheide-rights-management' ); ?></th>
+					<th scope="col"><?php esc_html_e( 'Verborgene Menüpunkte', 'loheide-rights-management' ); ?></th>
+					<th scope="col"><?php esc_html_e( 'Freigegebene Inhaltstypen', 'loheide-rights-management' ); ?></th>
+				</tr>
+			</thead>
+			<tbody>
+				<?php
+				foreach ( $roles as $role => $label ) :
+					$restricted = LRM_Backend::is_restricted( $role );
+					$stored     = LRM_Backend::get( $role );
+					$types      = array();
+
+					if ( $restricted ) {
+						foreach ( (array) $stored['types'] as $slug => $type ) {
+							$type = wp_parse_args( (array) $type, LRM_Backend::type_defaults() );
+
+							if ( 'none' !== $type['mode'] ) {
+								$types[] = $slug;
+							}
+						}
+					}
+					?>
+					<tr>
+						<th scope="row">
+							<a href="
+							<?php
+							echo esc_url(
+								add_query_arg(
+									array(
+										'page'     => self::PAGE,
+										'lrm_role' => $role,
+									),
+									admin_url( 'admin.php' )
+								)
+							);
+							?>
+							"><?php echo esc_html( $label ); ?></a>
+						</th>
+						<td>
+							<?php
+							echo $restricted
+								? '<span class="lrm-state lrm-state--on">' . esc_html__( 'eingeschaltet', 'loheide-rights-management' ) . '</span>'
+								: '<span class="lrm-state">' . esc_html__( 'keine Regel', 'loheide-rights-management' ) . '</span>';
+							?>
+						</td>
+						<td>
+							<?php
+							if ( ! $restricted ) {
+								esc_html_e( 'offen (keine Regel)', 'loheide-rights-management' );
+							} elseif ( ! empty( $stored['block_admin'] ) ) {
+								echo '<strong>' . esc_html__( 'gesperrt', 'loheide-rights-management' ) . '</strong>';
+							} else {
+								esc_html_e( 'offen', 'loheide-rights-management' );
+							}
+							?>
+						</td>
+						<td>
+							<?php
+							if ( ! $restricted ) {
+								echo '–';
+							} elseif ( ! empty( $stored['block_admin'] ) ) {
+								esc_html_e( 'alle (kein Zugang)', 'loheide-rights-management' );
+							} else {
+								echo esc_html( number_format_i18n( count( (array) $stored['hidden_menus'] ) ) );
+							}
+							?>
+						</td>
+						<td><?php echo $restricted ? esc_html( $types ? implode( ', ', $types ) : __( 'keine', 'loheide-rights-management' ) ) : '–'; ?></td>
+					</tr>
+				<?php endforeach; ?>
+			</tbody>
+		</table>
+
+		<?php if ( ! $can_read ) : ?>
+			<div class="lrm-notice lrm-notice--warning">
+				<span class="dashicons dashicons-warning"></span>
+				<div>
+					<strong><?php esc_html_e( 'WordPress selbst lässt diesen Benutzer nicht in den Verwaltungsbereich', 'loheide-rights-management' ); ?></strong>
+					<p><?php esc_html_e( 'Keine seiner Rollen besitzt die Fähigkeit „read“. WordPress weist den Aufruf dann unabhängig von diesem Plugin ab. Geben Sie der Rolle mit einem Rollen-Plugin die Fähigkeit „read“ zurück.', 'loheide-rights-management' ); ?></p>
+				</div>
+			</div>
+		<?php endif; ?>
+
+		<p class="lrm-hint">
+			<?php esc_html_e( 'Kommt jemand trotz offenem Zugang nicht hinein, sperrt ihn nicht dieses Plugin: Dann bleiben eine Weiterleitung in der functions.php, ein anderes Plugin oder eine fehlende Fähigkeit als Ursache.', 'loheide-rights-management' ); ?>
+		</p>
 		<?php
 	}
 

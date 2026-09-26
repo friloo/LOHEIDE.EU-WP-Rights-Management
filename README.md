@@ -400,7 +400,19 @@ Prüfungen, die nur im Verwaltungsbereich greifen, wären dort wirkungslos.
 Auf der Seite **Rechte → Backend** steht oben die Prüfung **Einrichtung prüfen**:
 Benutzer auswählen, und es erscheint im Klartext, was für ihn gilt und warum.
 
-<img src="docs/images/17-backend-pruefung.png" alt="Prüfung eines Benutzers mit Ergebnis im Klartext" width="820">
+<img src="docs/images/17-backend-pruefung.png" alt="Prüfung eines Benutzers mit Ergebnis im Klartext und Aufstellung der Rollen" width="820">
+
+Darunter steht **Was in welcher Rolle gesetzt ist**: je Rolle, ob eine Regel
+eingeschaltet ist, ob sie den Zugang sperrt, wie viele Menüpunkte sie verbirgt
+und welche Inhaltstypen sie freigibt. Die Rollennamen sind verlinkt. Damit
+beantwortet die Prüfung die Frage „wo habe ich das gesperrt?" – auch die Meldung
+zum fehlenden Zugang nennt die Rollen, in denen der Haken sitzt.
+
+Findet die Prüfung keine Sperre, sagt sie das ebenfalls: Dann kommt die
+Weiterleitung nicht von diesem Plugin, sondern aus der `functions.php`, einem
+anderen Plugin – oder der Rolle fehlt die WordPress-Fähigkeit `read`, ohne die
+WordPress den Verwaltungsbereich von sich aus abweist. Auch darauf weist die
+Prüfung ausdrücklich hin.
 
 Die drei üblichen Ursachen:
 

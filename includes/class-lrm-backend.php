@@ -256,8 +256,17 @@ class LRM_Backend {
 	 * @param array  $config Regel.
 	 */
 	public static function save( $role, $config ) {
-		$all          = self::all();
-		$all[ $role ] = self::sanitize( wp_parse_args( (array) $config, self::defaults() ) );
+		$all    = self::all();
+		$config = wp_parse_args( (array) $config, self::defaults() );
+
+		// Die Buchführung über vergebene Fähigkeiten gehört dem Plugin, nicht
+		// dem Aufrufer. Ginge sie beim Speichern verloren, ließen sich einmal
+		// vergebene Fähigkeiten später nicht mehr zurücknehmen.
+		$config['granted_caps'] = isset( $all[ $role ]['granted_caps'] )
+			? (array) $all[ $role ]['granted_caps']
+			: array();
+
+		$all[ $role ] = self::sanitize( $config );
 
 		update_option( self::OPTION, $all );
 		self::flush();

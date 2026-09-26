@@ -20,6 +20,32 @@ ersetzt.
 | Weiterleitung auf die Anmeldung | Rechte → Regel der Seite, Aktion „Zur Anmeldung weiterleiten" |
 | `nocache_headers()` für geschützte Seiten | setzt das Plugin selbst |
 
+## Eigene Inhaltstypen vorbereiten
+
+`fl-verleihsystem.php` zeigt, was ein Plugin mit eigenem Inhaltstyp braucht,
+damit sich der Zugriff darauf **getrennt** vergeben lässt.
+
+Der Kern sind zwei Zeilen bei `register_post_type()`:
+
+```php
+'capability_type' => array( 'bv_objekt', 'bv_objekte' ),
+'map_meta_cap'    => true,
+```
+
+Ohne sie nutzt der Inhaltstyp die Rechte gewöhnlicher Beiträge (`edit_posts`
+und so fort). Wer die Objekte bearbeiten darf, darf dann auch Beiträge – und
+umgekehrt. Mit eigenen Rechten (`edit_bv_objekte` …) erscheint der Typ in der
+Rechteverwaltung als eigener Eintrag und lässt sich einzeln zuweisen.
+
+Zwei Dinge gehören dazu:
+
+1. **Die Rolle Administrator braucht die neuen Rechte.** Sonst sind die
+   vorhandenen Inhalte zwar noch da, aber für niemanden mehr erreichbar. Das
+   Beispiel vergibt sie bei der Aktivierung und einmalig über eine gespeicherte
+   Versionsnummer, damit es auch bei einer Aktualisierung greift.
+2. **An den Daten ändert sich nichts.** Inhalte, Bilder und Metafelder bleiben
+   unverändert – die Umstellung betrifft nur die Rechteprüfung.
+
 ## Worauf beim Aufräumen zu achten ist
 
 - **Erst einstellen, dann löschen.** Solange beides parallel läuft, passiert

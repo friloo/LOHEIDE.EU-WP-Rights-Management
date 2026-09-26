@@ -213,6 +213,22 @@ LRM_Backend::save( 'redaktion', $redaktion );
 
 lrm_assert( get_role( 'redaktion' )->has_cap( 'edit_pages' ), 'Zuvor vorhandene Fähigkeiten bleiben unangetastet' );
 
+// Speichern ohne die interne Buchführung darf sie nicht verlieren.
+$GLOBALS['lrm_test_roles']['wechsler'] = new LRM_Test_Role( 'wechsler' );
+LRM_Backend::save( 'wechsler', $mav );
+lrm_assert( get_role( 'wechsler' )->has_cap( 'edit_pages' ), 'Die Rolle erhält die Fähigkeiten' );
+
+// Jetzt ein Aufruf mit frischem Array – wie aus einem Skript heraus.
+LRM_Backend::save(
+	'wechsler',
+	array(
+		'enabled' => 1,
+		'types'   => array( 'post' => lrm_type( array( 'mode' => 'terms', 'taxonomy' => 'category', 'terms' => array( 7 ) ) ) ),
+	)
+);
+lrm_assert( ! get_role( 'wechsler' )->has_cap( 'edit_pages' ), 'Nicht mehr benötigte Fähigkeiten werden auch dann zurückgenommen' );
+lrm_assert( get_role( 'wechsler' )->has_cap( 'edit_posts' ), 'Die neuen Fähigkeiten sind vorhanden' );
+
 /* -------------------------------------------------------------------------
  * 8. Übernahme älterer Regeln
  * ---------------------------------------------------------------------- */

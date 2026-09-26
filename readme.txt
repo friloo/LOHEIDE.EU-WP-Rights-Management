@@ -35,7 +35,8 @@ auch gegenüber dem Umgehungsrecht der Administratoren.
   Inhalte oder alles innerhalb bestimmter Kategorien. Gilt auch für eigene
   Inhaltstypen anderer Plugins. Dazu Rechte zum Anlegen und Löschen.
 * Menüpunkte und Dashboard-Bereiche je Rolle ein- und ausblenden, auf Wunsch
-  auch später hinzukommende Menüs. Die nötigen Fähigkeiten vergibt das Plugin
+  auch später hinzukommende Menüs. Ganze Rollen lassen sich vom
+  Verwaltungsbereich aussperren. Die nötigen Fähigkeiten vergibt das Plugin
   selbst und nimmt sie beim Abschalten zurück.
 * Shortcodes für einzelne Abschnitte.
 

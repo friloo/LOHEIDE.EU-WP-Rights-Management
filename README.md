@@ -335,6 +335,7 @@ automatisch; das lässt sich abschalten.
 | **Was immer bleibt** | Nur das Dashboard – WordPress leitet nach der Anmeldung dorthin. Alles andere, auch „Profil“, lässt sich abschalten. |
 | **Bereiche auf dem Dashboard** | „Auf einen Blick", „Aktivität" und alles andere lässt sich je Rolle abschalten. |
 | **Mediathek** | Zugriff ganz abschalten oder auf die eigenen Uploads begrenzen. |
+| **Kein Zugang zum Verwaltungsbereich** | Aufrufe von `/wp-admin` werden zur Website zurückgeleitet – passend für Rollen wie „Abonnent", die dort nichts zu suchen haben. |
 
 <img src="docs/images/16-backend-menues.png" alt="Auswahl der sichtbaren Menüpunkte mit Schaltflächen für alles an oder aus" width="900">
 
@@ -427,13 +428,18 @@ Hat jemand mehrere beschränkte Rollen, gilt beides gleichzeitig:
 | **Sperren addieren sich auch** | Was eine Rolle ausblendet, bleibt ausgeblendet – selbst wenn eine andere Rolle es zeigen würde. |
 
 Der typische Fall: Jemand hat *Abonnent* und *Mitarbeitervertretung*. Der
-Abonnent ist vollständig gesperrt, trotzdem kann die Person ihre MAV-Seite
-bearbeiten – und ein in der MAV-Rolle abgeschaltetes „Profil" bleibt
+Abonnent ist vollständig gesperrt – inklusive „Kein Zugang zum
+Verwaltungsbereich" –, trotzdem kommt die Person hinein und bearbeitet ihre
+MAV-Seite. Ein in der MAV-Rolle abgeschaltetes „Profil" bleibt dagegen
 abgeschaltet.
 
-Damit das aufgeht, bleiben die Menüs freigegebener Inhaltstypen immer sichtbar.
-Sonst würde eine vollständig gesperrte Zweitrolle die zugewiesenen Inhalte
-unerreichbar machen.
+Damit das aufgeht, bleiben die Menüs freigegebener Inhaltstypen immer sichtbar,
+einschließlich ihrer Unterpunkte. Sonst würde eine vollständig gesperrte
+Zweitrolle die zugewiesenen Inhalte unerreichbar machen – WordPress weist den
+Aufruf einer Seite ab, die in keinem Menü steht.
+
+Der Zugang selbst zählt dabei als Freigabe: Lässt **eine** Rolle ins Backend,
+kommt die Person hinein.
 
 Sobald **eine** Rolle beschränkt ist, gilt die Beschränkung; nur das
 Umgehungsrecht (im Regelfall Administratoren) hebt sie auf.

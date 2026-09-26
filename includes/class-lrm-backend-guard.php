@@ -57,6 +57,7 @@ class LRM_Backend_Guard {
 
 		// Menüpunkte, Dashboard und Direktaufrufe.
 		add_action( 'admin_menu', array( $this, 'hide_menus' ), 9999 );
+		add_action( 'admin_init', array( $this, 'block_admin_access' ), 0 );
 		add_action( 'admin_init', array( $this, 'block_forbidden_screens' ), 1 );
 		add_action( 'admin_bar_menu', array( $this, 'clean_admin_bar' ), 999 );
 		add_action( 'wp_dashboard_setup', array( $this, 'handle_dashboard' ), 9999 );
@@ -637,6 +638,8 @@ class LRM_Backend_Guard {
 			remove_menu_page( $entry );
 		}
 
+		$this->keep_menus_reachable();
+
 		// Neue Inhalte anlegen, sofern nicht erlaubt, auch aus dem Menü nehmen.
 		foreach ( LRM_Backend::managed_post_types() as $slug => $label ) {
 			$type = LRM_Backend::type_config( $config, $slug );
@@ -655,6 +658,38 @@ class LRM_Backend_Guard {
 	}
 
 	/**
+	 * Sicherstellen, dass jedes sichtbare Menü erreichbar bleibt.
+	 *
+	 * WordPress weist den Aufruf einer Seite ab, die in keinem Menü steht. Ein
+	 * Hauptmenü, dessen Unterpunkte alle entfernt wurden, wäre damit nur noch
+	 * Zierde – und der Klick darauf führte zu einer Fehlermeldung.
+	 */
+	protected function keep_menus_reachable() {
+		global $menu, $submenu;
+
+		foreach ( (array) $menu as $item ) {
+			if ( empty( $item[2] ) ) {
+				continue;
+			}
+
+			$slug = $item[2];
+
+			// Menüs ohne eigene Unterpunkte sind selbst die Zielseite.
+			if ( ! isset( $submenu[ $slug ] ) ) {
+				continue;
+			}
+
+			if ( ! empty( $submenu[ $slug ] ) ) {
+				continue;
+			}
+
+			// Der Unterpunkt wurde vollständig geleert: Menü ebenfalls entfernen,
+			// statt einen toten Eintrag stehen zu lassen.
+			remove_menu_page( $slug );
+		}
+	}
+
+	/**
 	 * Menüschlüssel, die wegen freigegebener Inhalte sichtbar bleiben müssen.
 	 *
 	 * @param array $config Regel.
@@ -665,6 +700,8 @@ class LRM_Backend_Guard {
 		// dorthin. Das eigene Profil lässt sich dagegen bewusst abschalten.
 		$keys = array( 'index.php' );
 
+		$keys[] = 'index.php|index.php';
+
 		foreach ( (array) $config['types'] as $slug => $type ) {
 			$type = wp_parse_args( (array) $type, LRM_Backend::type_defaults() );
 
@@ -673,8 +710,17 @@ class LRM_Backend_Guard {
 			}
 
 			$base = ( 'post' === $slug ) ? 'edit.php' : 'edit.php?post_type=' . $slug;
+			$new  = ( 'post' === $slug ) ? 'post-new.php' : 'post-new.php?post_type=' . $slug;
 
 			$keys[] = $base;
+
+			// Auch die Unterpunkte: Ein Menü ohne erreichbaren Unterpunkt wird
+			// von WordPress gesperrt.
+			$keys[] = $base . '|' . $base;
+
+			if ( ! empty( $type['create'] ) ) {
+				$keys[] = $base . '|' . $new;
+			}
 
 			$object = get_post_type_object( $slug );
 
@@ -682,11 +728,17 @@ class LRM_Backend_Guard {
 			if ( $object && is_string( $object->show_in_menu ) && 'edit.php' !== $object->show_in_menu ) {
 				$keys[] = $object->show_in_menu;
 				$keys[] = $object->show_in_menu . '|' . $base;
+
+				if ( ! empty( $type['create'] ) ) {
+					$keys[] = $object->show_in_menu . '|' . $new;
+				}
 			}
 		}
 
 		if ( ! empty( $config['allow_media'] ) ) {
 			$keys[] = 'upload.php';
+			$keys[] = 'upload.php|upload.php';
+			$keys[] = 'upload.php|media-new.php';
 		}
 
 		/**
@@ -735,6 +787,40 @@ class LRM_Backend_Guard {
 				remove_meta_box( $id, 'dashboard', $context );
 			}
 		}
+	}
+
+	/**
+	 * Rollen ohne Zugang zum Verwaltungsbereich zur Website zurückschicken.
+	 *
+	 * Betrifft nur Seitenaufrufe: admin-ajax.php und admin-post.php bleiben
+	 * erreichbar, weil auch das Frontend sie benötigt.
+	 */
+	public function block_admin_access() {
+		if ( wp_doing_ajax() || wp_doing_cron() ) {
+			return;
+		}
+
+		global $pagenow;
+
+		if ( in_array( $pagenow, array( 'admin-ajax.php', 'admin-post.php' ), true ) ) {
+			return;
+		}
+
+		$config = $this->config();
+
+		if ( null === $config || empty( $config['block_admin'] ) ) {
+			return;
+		}
+
+		/**
+		 * Zieladresse für abgewiesene Aufrufe des Verwaltungsbereichs.
+		 *
+		 * @param string $url Zieladresse.
+		 */
+		$target = apply_filters( 'lrm_backend_blocked_redirect', home_url( '/' ) );
+
+		wp_safe_redirect( $target );
+		exit;
 	}
 
 	/**

@@ -218,6 +218,15 @@ class LRM_Backend_Admin {
 							<em><?php esc_html_e( 'Ist die Option aus, gelten die gewohnten WordPress-Rechte der Rolle.', 'loheide-rights-management' ); ?></em>
 						</span>
 					</label>
+
+					<label class="lrm-switch lrm-switch--row">
+						<input type="checkbox" name="lrm_backend[block_admin]" value="1" <?php checked( ! empty( $config['block_admin'] ) ); ?> />
+						<span class="lrm-switch__track"><span class="lrm-switch__knob"></span></span>
+						<span class="lrm-switch__label">
+							<strong><?php esc_html_e( 'Kein Zugang zum Verwaltungsbereich', 'loheide-rights-management' ); ?></strong>
+							<em><?php esc_html_e( 'Aufrufe von /wp-admin werden zur Website zurückgeleitet. Hat jemand zusätzlich eine Rolle mit Zugang, darf er hinein – dann gelten deren Rechte.', 'loheide-rights-management' ); ?></em>
+						</span>
+					</label>
 				</div>
 			</div>
 
@@ -379,6 +388,12 @@ class LRM_Backend_Admin {
 					<span class="dashicons dashicons-lock"></span>
 					<?php esc_html_e( 'Ergebnis: Die Beschränkung greift. Im Einzelnen:', 'loheide-rights-management' ); ?>
 				</li>
+				<?php if ( ! empty( $config['block_admin'] ) ) : ?>
+					<li class="is-warn">
+						<span class="dashicons dashicons-external"></span>
+						<?php esc_html_e( 'Kein Zugang zum Verwaltungsbereich – Aufrufe werden zur Website geleitet.', 'loheide-rights-management' ); ?>
+					</li>
+				<?php endif; ?>
 				<?php
 				foreach ( LRM_Backend::managed_post_types() as $slug => $label ) :
 					$type = LRM_Backend::type_config( $config, $slug );
@@ -426,6 +441,21 @@ class LRM_Backend_Admin {
 					<?php
 				endforeach;
 				?>
+				<li class="<?php echo empty( $config['hidden_menus'] ) ? 'is-ok' : 'is-warn'; ?>">
+					<span class="dashicons dashicons-menu"></span>
+					<?php
+					if ( empty( $config['hidden_menus'] ) ) {
+						esc_html_e( 'Menü: nichts verborgen', 'loheide-rights-management' );
+					} else {
+						printf(
+							/* translators: 1: Anzahl, 2: Liste der Einträge. */
+							esc_html__( 'Verborgene Menüpunkte (%1$s): %2$s', 'loheide-rights-management' ),
+							esc_html( number_format_i18n( count( $config['hidden_menus'] ) ) ),
+							esc_html( implode( ', ', array_slice( (array) $config['hidden_menus'], 0, 12 ) ) )
+						);
+					}
+					?>
+				</li>
 				<li class="<?php echo empty( $config['allow_media'] ) ? 'is-warn' : 'is-ok'; ?>">
 					<span class="dashicons dashicons-admin-media"></span>
 					<?php
@@ -931,6 +961,7 @@ class LRM_Backend_Admin {
 		$config = LRM_Backend::get( $role );
 
 		$config['enabled']        = empty( $input['enabled'] ) ? 0 : 1;
+		$config['block_admin']    = empty( $input['block_admin'] ) ? 0 : 1;
 		$config['allow_media']    = empty( $input['allow_media'] ) ? 0 : 1;
 		$config['own_media_only'] = empty( $input['own_media_only'] ) ? 0 : 1;
 		$config['hide_new_menus'] = empty( $input['hide_new_menus'] ) ? 0 : 1;

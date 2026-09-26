@@ -283,6 +283,7 @@ $GLOBALS['lrm_test_options']['lrm_backend']['subscriber'] = array_merge(
 	LRM_Backend::defaults(),
 	array(
 		'enabled'        => 1,
+		'block_admin'    => 1,
 		'types'          => array(),
 		'allow_media'    => 0,
 		'hidden_menus'   => array( 'index.php', 'edit.php', 'upload.php', 'profile.php', 'tools.php' ),
@@ -302,6 +303,11 @@ lrm_assert( 1 === $doppel['allow_media'], 'Erlaubt eine Rolle die Mediathek, ble
 lrm_assert( in_array( 'profile.php', $doppel['hidden_menus'], true ), 'Ein Menüpunkt bleibt verborgen, den eine Rolle verbirgt' );
 lrm_assert( in_array( 'tools.php', $doppel['hidden_menus'], true ), 'Auch die Sperren der strengeren Rolle gelten' );
 lrm_assert( 1 === $doppel['hide_new_menus'], 'Die strengere Angabe zu neuen Menüs gewinnt' );
+lrm_assert( 0 === $doppel['block_admin'], 'Lässt eine Rolle ins Backend, bleibt der Zugang offen' );
+
+lrm_test_set_user( 12, array( 'subscriber' ) );
+$nur_abo = LRM_Backend::for_user( wp_get_current_user() );
+lrm_assert( 1 === $nur_abo['block_admin'], 'Für die gesperrte Rolle allein bleibt der Zugang zu' );
 
 lrm_test_set_user( 3, array( 'editor' ) );
 lrm_assert( null === LRM_Backend::for_user( wp_get_current_user() ), 'Eine Rolle ohne Regel bleibt unbeschränkt' );

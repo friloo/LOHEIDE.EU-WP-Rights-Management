@@ -56,6 +56,7 @@ class LRM_Backend {
 	public static function defaults() {
 		return array(
 			'enabled'         => 0,
+			'block_admin'     => 0,
 			'types'           => array(),
 			'allow_media'     => 1,
 			'own_media_only'  => 1,
@@ -271,7 +272,7 @@ class LRM_Backend {
 	public static function sanitize( $config ) {
 		$clean = self::defaults();
 
-		foreach ( array( 'enabled', 'allow_media', 'own_media_only', 'hide_new_menus' ) as $flag ) {
+		foreach ( array( 'enabled', 'block_admin', 'allow_media', 'own_media_only', 'hide_new_menus' ) as $flag ) {
 			$clean[ $flag ] = empty( $config[ $flag ] ) ? 0 : 1;
 		}
 
@@ -501,6 +502,9 @@ class LRM_Backend {
 				// Was jemand bearbeiten darf, addiert sich über seine Rollen:
 				// Die weiter gefasste Freigabe gewinnt.
 				$merged['allow_media']    = ( $merged['allow_media'] || $config['allow_media'] ) ? 1 : 0;
+
+				// Zugang ist eine Freigabe: Lässt eine Rolle ins Backend, gilt das.
+				$merged['block_admin'] = ( $merged['block_admin'] && $config['block_admin'] ) ? 1 : 0;
 				$merged['own_media_only'] = ( $merged['own_media_only'] && $config['own_media_only'] ) ? 1 : 0;
 
 				// Was ausgeblendet ist, bleibt ausgeblendet, sobald es eine Rolle

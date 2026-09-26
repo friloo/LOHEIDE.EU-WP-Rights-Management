@@ -510,8 +510,9 @@ class LRM_Backend {
 		$result = null;
 
 		if ( ! user_can( $user, LRM_Roles::CAP_BYPASS ) ) {
-			$merged      = null;
+			$merged       = null;
 			$unrestricted = false;
+			$known        = null;
 
 			foreach ( (array) $user->roles as $role ) {
 				if ( ! self::is_restricted( $role ) ) {
@@ -524,6 +525,22 @@ class LRM_Backend {
 				}
 
 				$config = self::locked_out( self::get( $role ) );
+
+				// Nur Rollen, die neue Menüpunkte verbergen, bringen eine
+				// Schranke mit: Was einer solchen Rolle unbekannt war, gilt als
+				// neu und bleibt verborgen. Deshalb die Schnittmenge – eine
+				// Union wäre eine Freigabe und höbe die Sperre der strengeren
+				// Rolle auf. Rollen, die neue Menüs zulassen, reden nicht mit.
+				//
+				// Rollen ohne Zugang reden ebenfalls nicht mit: Sie haben nichts
+				// ausgewählt, weil sie gar nicht hineinsollen. Ihre leere Liste
+				// würde sonst die ausdrückliche Auswahl der arbeitenden Rolle
+				// mitreißen – ein Menüpunkt, der dort angehakt ist, verschwände.
+				if ( ! empty( $config['hide_new_menus'] ) && empty( $config['block_admin'] ) ) {
+					$known = ( null === $known )
+						? (array) $config['known_menus']
+						: array_intersect( $known, (array) $config['known_menus'] );
+				}
 
 				if ( null === $merged ) {
 					$merged          = $config;
@@ -555,21 +572,17 @@ class LRM_Backend {
 				// Was ausgeblendet ist, bleibt ausgeblendet, sobald es eine Rolle
 				// ausblendet – wie im Frontend gewinnt die Sperre. Menüs
 				// freigegebener Inhaltstypen nimmt LRM_Backend_Guard davon aus.
-				// Nur Rollen, die neue Menüpunkte verbergen, bringen eine Schranke
-				// mit: Was einer solchen Rolle unbekannt war, gilt als neu und
-				// bleibt verborgen. Deshalb die Schnittmenge – eine Union wäre
-				// eine Freigabe und würde die Sperre der strengeren Rolle
-				// aufheben. Rollen, die neue Menüs zulassen, reden nicht mit.
-				if ( ! empty( $config['hide_new_menus'] ) ) {
-					$merged['known_menus'] = empty( $merged['hide_new_menus'] )
-						? $config['known_menus']
-						: array_values( array_intersect( $merged['known_menus'], $config['known_menus'] ) );
-				}
-
 				$merged['hide_new_menus'] = ( $merged['hide_new_menus'] || $config['hide_new_menus'] ) ? 1 : 0;
 
 				$merged['hidden_menus']   = array_values( array_unique( array_merge( $merged['hidden_menus'], $config['hidden_menus'] ) ) );
 				$merged['hidden_widgets'] = array_values( array_unique( array_merge( $merged['hidden_widgets'], $config['hidden_widgets'] ) ) );
+			}
+
+			if ( null !== $merged && ! empty( $merged['hide_new_menus'] ) ) {
+				// Bekannt bleibt, was die Rollen mit Zugang kennen. Kennt keine
+				// von ihnen etwas, bleibt nichts sichtbar außer dem, was
+				// LRM_Backend_Guard ohnehin schützt.
+				$merged['known_menus'] = ( null === $known ) ? array() : array_values( $known );
 			}
 
 			$result = $unrestricted ? null : $merged;

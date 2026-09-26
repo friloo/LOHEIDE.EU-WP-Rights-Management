@@ -64,6 +64,11 @@ class LRM_Backend_Guard {
 		// ein freigegebenes Menü landete dann auf einer gesperrten Seite.
 		add_action( 'admin_head', array( $this, 'hide_menus' ), 0 );
 		add_action( 'admin_init', array( $this, 'block_admin_access' ), 0 );
+		// „custom_menu_order“ ist die einzige Stelle, die dafür taugt: Sie liegt
+		// hinter dem Aufbau der Menüs – erst dort merkt sich WordPress die
+		// unerlaubten Dateien – und noch vor seiner Zugriffsprüfung, die am Ende
+		// von menu.php abbricht, lange vor „admin_init“.
+		add_filter( 'custom_menu_order', array( $this, 'unlock_shared_screens' ) );
 		add_action( 'admin_init', array( $this, 'block_forbidden_screens' ), 1 );
 		add_action( 'admin_bar_menu', array( $this, 'clean_admin_bar' ), 999 );
 		add_action( 'wp_dashboard_setup', array( $this, 'handle_dashboard' ), 9999 );
@@ -834,6 +839,60 @@ class LRM_Backend_Guard {
 				remove_meta_box( $id, 'dashboard', $context );
 			}
 		}
+	}
+
+	/**
+	 * WordPress' eigene Sperre für gemeinsam genutzte Verwaltungsseiten lösen.
+	 *
+	 * Die Listen aller Inhaltstypen laufen über dieselben Dateien: „edit.php“
+	 * und „post-new.php“. Fehlt einer Rolle „edit_posts“, kommt das Menü
+	 * „Beiträge“ nicht zustande, und WordPress merkt sich die Datei als
+	 * unerlaubt ($_wp_menu_nopriv). Von da an weist es jeden Aufruf von
+	 * „edit.php“ ab – auch den der Seitenliste oder eines eigenen Inhaltstyps,
+	 * die dieser Rolle ausdrücklich freigegeben sind. Die Meldung stammt dann
+	 * von WordPress, nicht von diesem Plugin.
+	 *
+	 * Gelöst wird die Sperre nur für einen Inhaltstyp, der freigegeben ist. Die
+	 * Rechteprüfung bleibt unberührt: WordPress verlangt für die Liste weiterhin
+	 * die Fähigkeiten des Typs, und die Inhalte begrenzt das Plugin wie bisher.
+	 */
+	public function unlock_shared_screens( $order = false ) {
+		global $pagenow;
+
+		if ( ! in_array( $pagenow, array( 'edit.php', 'post-new.php' ), true ) ) {
+			return $order;
+		}
+
+		$config = $this->config();
+
+		if ( null === $config ) {
+			return $order;
+		}
+
+		$type = isset( $_GET['post_type'] ) ? sanitize_key( wp_unslash( $_GET['post_type'] ) ) : 'post'; // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+
+		// Die Beiträge selbst bleiben gesperrt, wenn sie nicht freigegeben sind.
+		if ( 'post' === $type ) {
+			return $order;
+		}
+
+		$settings = LRM_Backend::type_config( $config, $type );
+
+		if ( 'none' === $settings['mode'] ) {
+			return $order;
+		}
+
+		if ( 'post-new.php' === $pagenow && empty( $settings['create'] ) ) {
+			return $order;
+		}
+
+		unset( $GLOBALS['_wp_menu_nopriv'][ $pagenow ] );
+
+		foreach ( array_keys( (array) $GLOBALS['_wp_submenu_nopriv'] ) as $parent ) {
+			unset( $GLOBALS['_wp_submenu_nopriv'][ $parent ][ $pagenow ] );
+		}
+
+		return $order;
 	}
 
 	/**

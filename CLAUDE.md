@@ -62,6 +62,13 @@ aller Demo-Benutzer: `demo1234`). Danach als Administrator anmelden und unter
   Plugins für Benutzer mit `LRM_Roles::CAP_MANAGE` – ein Werkzeug, das seinen
   eigenen Zugang sperren kann, lässt sich nicht mehr zurücknehmen. Alles andere
   muss abschaltbar bleiben.
+- **Gemeinsame Verwaltungsseiten:** Die Listen aller Inhaltstypen laufen über
+  `edit.php` und `post-new.php`. Fehlt `edit_posts`, merkt sich WordPress die
+  Datei in `$_wp_menu_nopriv` und weist danach jede Liste ab – auch die eines
+  freigegebenen Typs. Die Sperre wird für freigegebene Typen über
+  `custom_menu_order` gelöst: Der Filter liegt hinter dem Menüaufbau und vor
+  WordPress' Zugriffsprüfung, die am Ende von `menu.php` abbricht, lange vor
+  `admin_init`.
 - **Fähigkeiten:** Die Deaktivierung nimmt den Rollen ihre Fähigkeiten
   (`revoke_all_capabilities`), die Aktivierung gibt sie zurück
   (`restore_capabilities`) – sonst stünden die Regeln da und blieben wirkungslos.

@@ -41,6 +41,20 @@ class LRM_Guard_Probe extends LRM_Backend_Guard {
 	public function matches( $entry, $pagenow, $page ) {
 		return $this->screen_matches( self::menu_target( $entry ), $pagenow, $page );
 	}
+
+	/**
+	 * Regel für den Test vorgeben, statt sie aus dem Benutzer zu lesen.
+	 *
+	 * @var array|null
+	 */
+	public $test_config = null;
+
+	/**
+	 * @return array|null
+	 */
+	protected function config() {
+		return $this->test_config;
+	}
 }
 
 $GLOBALS['lrm_failures'] = 0;
@@ -419,6 +433,37 @@ $eine = LRM_Backend::for_user( wp_get_current_user() );
 
 lrm_assert( array( 'index.php', 'tools.php' ) === array_values( $eine['known_menus'] ), 'Eine Rolle, die neue Menüs zulässt, engt die Liste nicht ein' );
 
+// Gemeldeter Fall: Die Arbeitsrolle hat das Menü eines Plugins ausdrücklich
+// sichtbar gelassen. Die gesperrte Nebenrolle hat dazu nichts gesagt – sie soll
+// ja nicht hinein. Die ausdrückliche Auswahl muss das überleben.
+$GLOBALS['lrm_test_options']['lrm_backend']['subscriber'] = array_merge(
+	LRM_Backend::defaults(),
+	array( 'enabled' => 1, 'block_admin' => 1, 'types' => array(), 'hidden_menus' => array(), 'known_menus' => array(), 'hide_new_menus' => 0 )
+);
+$GLOBALS['lrm_test_options']['lrm_backend']['mav']['hide_new_menus'] = 1;
+$GLOBALS['lrm_test_options']['lrm_backend']['mav']['known_menus']    = array( 'index.php', 'wp-qm', 'wp-qm|wp-qm', 'tools.php' );
+$GLOBALS['lrm_test_options']['lrm_backend']['mav']['hidden_menus']   = array( 'tools.php' );
+LRM_Backend::flush();
+
+lrm_test_set_user( 18, array( 'subscriber', 'mav' ) );
+$plugin_menue = LRM_Backend::for_user( wp_get_current_user() );
+
+lrm_assert( in_array( 'wp-qm', $plugin_menue['known_menus'], true ), 'Ein ausdrücklich sichtbarer Menüpunkt bleibt bekannt' );
+lrm_assert( in_array( 'wp-qm|wp-qm', $plugin_menue['known_menus'], true ), 'Samt seiner Unterpunkte' );
+lrm_assert( in_array( 'tools.php', $plugin_menue['hidden_menus'], true ), 'Was die Rolle abgewählt hat, bleibt verborgen' );
+lrm_assert( 1 === $plugin_menue['hide_new_menus'], 'Alles Unbekannte bleibt trotzdem verborgen' );
+
+// Sagt keine Rolle mit Zugang etwas, bleibt es bei „nichts sichtbar“.
+$GLOBALS['lrm_test_options']['lrm_backend']['mav']['hide_new_menus'] = 0;
+$GLOBALS['lrm_test_options']['lrm_backend']['mav']['known_menus']    = array();
+LRM_Backend::flush();
+
+lrm_test_set_user( 19, array( 'subscriber', 'mav' ) );
+$ohne_auswahl = LRM_Backend::for_user( wp_get_current_user() );
+
+lrm_assert( array() === $ohne_auswahl['known_menus'], 'Ohne Auswahl bleibt nichts bekannt' );
+lrm_assert( 1 === $ohne_auswahl['hide_new_menus'], 'Und damit alles verborgen' );
+
 lrm_test_set_user( 1, array( 'administrator', 'mav' ) );
 $GLOBALS['lrm_test_caps'][1][ LRM_Roles::CAP_BYPASS ] = true;
 LRM_Backend::flush();
@@ -495,9 +540,62 @@ lrm_assert( in_array( 'lrm-backend', LRM_Backend_Guard::own_pages(), true ), 'Di
 lrm_assert( in_array( 'lrm-settings', LRM_Backend_Guard::own_pages(), true ), 'Die Einstellungen ebenfalls' );
 
 /* -------------------------------------------------------------------------
- * 12. Bereinigung
+ * 12. Gemeinsam genutzte Verwaltungsseiten
  * ---------------------------------------------------------------------- */
-echo PHP_EOL . '12) Bereinigung' . PHP_EOL;
+echo PHP_EOL . '12) Gemeinsam genutzte Verwaltungsseiten' . PHP_EOL;
+
+// Die Listen aller Inhaltstypen laufen über „edit.php“. Fehlt „edit_posts“,
+// merkt sich WordPress die Datei als unerlaubt und weist auch die Liste eines
+// freigegebenen Typs ab – die Sperre gehört für diesen Typ gelöst.
+$wächter = new LRM_Guard_Probe();
+$wächter->test_config = array_merge(
+	LRM_Backend::defaults(),
+	array(
+		'enabled' => 1,
+		'types'   => array(
+			'page'        => array( 'mode' => 'selected', 'items' => array( 10 ), 'create' => 0, 'delete' => 0 ),
+			'qm_document' => array( 'mode' => 'all', 'items' => array(), 'create' => 1, 'delete' => 0 ),
+		),
+	)
+);
+
+$GLOBALS['pagenow'] = 'edit.php';
+
+$_GET['post_type']              = 'page';
+$GLOBALS['_wp_menu_nopriv']     = array( 'edit.php' => true );
+$GLOBALS['_wp_submenu_nopriv']  = array( 'edit.php' => array( 'edit.php' => true ) );
+$wächter->unlock_shared_screens();
+lrm_assert( ! isset( $GLOBALS['_wp_menu_nopriv']['edit.php'] ), 'Die Liste eines freigegebenen Typs wird entsperrt' );
+lrm_assert( ! isset( $GLOBALS['_wp_submenu_nopriv']['edit.php']['edit.php'] ), 'Auch als Unterpunkt' );
+
+$_GET['post_type']          = 'post';
+$GLOBALS['_wp_menu_nopriv'] = array( 'edit.php' => true );
+$wächter->unlock_shared_screens();
+lrm_assert( isset( $GLOBALS['_wp_menu_nopriv']['edit.php'] ), 'Die Beitragsliste bleibt gesperrt' );
+
+$_GET['post_type']          = 'bv_objekt';
+$GLOBALS['_wp_menu_nopriv'] = array( 'edit.php' => true );
+$wächter->unlock_shared_screens();
+lrm_assert( isset( $GLOBALS['_wp_menu_nopriv']['edit.php'] ), 'Ein nicht freigegebener Inhaltstyp ebenfalls' );
+
+// Anlegen: nur, wenn die Regel es erlaubt.
+$GLOBALS['pagenow']         = 'post-new.php';
+$_GET['post_type']          = 'page';
+$GLOBALS['_wp_menu_nopriv'] = array( 'post-new.php' => true );
+$wächter->unlock_shared_screens();
+lrm_assert( isset( $GLOBALS['_wp_menu_nopriv']['post-new.php'] ), 'Ohne Recht zum Anlegen bleibt „Neu“ gesperrt' );
+
+$_GET['post_type']          = 'qm_document';
+$GLOBALS['_wp_menu_nopriv'] = array( 'post-new.php' => true );
+$wächter->unlock_shared_screens();
+lrm_assert( ! isset( $GLOBALS['_wp_menu_nopriv']['post-new.php'] ), 'Mit Recht zum Anlegen wird es entsperrt' );
+
+unset( $_GET['post_type'], $GLOBALS['pagenow'], $GLOBALS['_wp_menu_nopriv'], $GLOBALS['_wp_submenu_nopriv'] );
+
+/* -------------------------------------------------------------------------
+ * 13. Bereinigung
+ * ---------------------------------------------------------------------- */
+echo PHP_EOL . '13) Bereinigung' . PHP_EOL;
 
 $schmutzig = LRM_Backend::sanitize(
 	array(

@@ -395,6 +395,28 @@ REST-Schnittstelle        → Bearbeiten und Löschen fremder Inhalte wird
 Der letzte Punkt ist wichtig: Der Block-Editor arbeitet über die REST-Schnittstelle.
 Prüfungen, die nur im Verwaltungsbereich greifen, wären dort wirkungslos.
 
+### „Du bist leider nicht berechtigt" bei Seiten oder einem Inhaltstyp
+
+Kommt diese Meldung – von WordPress, nicht vom Plugin –, obwohl der Inhaltstyp
+freigegeben ist, liegt es an einer Eigenheit von WordPress: Die Listen **aller**
+Inhaltstypen laufen über dieselbe Datei, `edit.php`. Fehlt einer Rolle
+`edit_posts`, kommt das Menü „Beiträge" nicht zustande, und WordPress merkt sich
+die Datei als unerlaubt. Von da an weist es jeden Aufruf von `edit.php` ab –
+auch den der Seitenliste oder eines eigenen Inhaltstyps, die dieser Rolle
+ausdrücklich freigegeben sind.
+
+Das Plugin löst diese Sperre gezielt für Inhaltstypen, die freigegeben sind. Die
+Rechteprüfung bleibt unberührt: Nicht freigegebene Listen bleiben gesperrt, und
+die Inhalte begrenzt das Plugin wie bisher.
+
+### Ein Plugin-Menü bleibt leer oder fehlt
+
+Hängt ein Inhaltstyp im Menü eines Plugins, entscheidet dessen eigene
+Fähigkeitsprüfung über die Sichtbarkeit. Solange der Inhaltstyp nicht
+freigegeben ist, erhält die Rolle die nötigen Fähigkeiten nicht – und das Menü
+bleibt aus, auch wenn es in der Menüliste angehakt ist. Geben Sie den
+Inhaltstyp frei, erscheint es.
+
 ### Wenn eine Beschränkung nicht greift
 
 Auf der Seite **Rechte → Backend** steht oben die Prüfung **Einrichtung prüfen**:
@@ -483,11 +505,16 @@ erreichbar; sonst stünde der freigegebene Inhalt in einem Menü, das sich nicht
 das Dashboard, Beiträge, Seiten und Medien – „Profil", „Werkzeuge" und
 „Kommentare" verschwinden.
 
+Was die **arbeitende** Rolle ausdrücklich sichtbar lässt, bleibt jedoch
+sichtbar. Eine Rolle ohne Zugang hat nichts ausgewählt – sie soll ja nicht
+hinein –, und diese leere Auswahl darf die getroffene Entscheidung der anderen
+Rolle nicht überstimmen. Das Menü eines Plugins, das Sie für die Arbeitsrolle
+angehakt haben, verschwindet also nicht, nur weil eine Nebenrolle gesperrt ist.
+
 > [!TIP]
-> Sollen einzelne Punkte doch bleiben, nehmen Sie der gesperrten Rolle den
-> Haken bei „Kein Zugang zum Verwaltungsbereich" und wählen stattdessen ihre
-> Menüpunkte ab. Dann zählt ihre Liste, und was sie sichtbar lässt, bleibt
-> sichtbar.
+> Sollen einzelne Punkte doch bleiben, haken Sie sie in der arbeitenden Rolle
+> an. Deren Auswahl zählt; die gesperrte Nebenrolle verbirgt nur, worüber keine
+> Rolle mit Zugang entschieden hat.
 
 ### Eine Rolle ohne Regel hebt die Beschränkung auf
 
